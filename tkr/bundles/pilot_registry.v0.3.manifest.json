@@ -1,0 +1,105 @@
+{
+  "schema_id": "registry-bundle-manifest/v1",
+  "bundle_id": "PILOT-REGISTRY-v0.3",
+  "revision": 3,
+  "status": "candidate_under_review",
+  "parent_bundle_digest": "2fbb89093346ad977b21ce93cde2dfa8564dfadf0b66f13bca9d4e32d13219c5",
+  "source_digest": "6ef8df5ebb2261605eab0d5beb104f9e3b7a5f3a6a4601de08c3f4960e8b82e1",
+  "objects": [
+    {
+      "knowledge_id": "ckp.method.boundary_value",
+      "revision": 1,
+      "digest": "9d4200ae339929a062bbfef5d7bada32807982c511b7241e7b33d9c93f8a6922",
+      "path": "objects/methods/boundary_value.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.method.decision_table",
+      "revision": 1,
+      "digest": "39adba4a32a9f55d1433270d1879e8f9e095cb13abfd1b17b0f78a7615a5c566",
+      "path": "objects/methods/decision_table.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.method.equivalence_partition",
+      "revision": 1,
+      "digest": "19644ea82184901e5f6547c6a0f44cea6d176a0b7372bc01f41734f9b67304e7",
+      "path": "objects/methods/equivalence_partition.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.method.requirement_expected",
+      "revision": 1,
+      "digest": "8ec889399fc8a9ad901f456f5da8cdc0ccb5c14dcecca9c33a9daf2905746b08",
+      "path": "objects/methods/requirement_expected.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.method.state_transition",
+      "revision": 2,
+      "digest": "e84a9bf036c742f24052f0e3a6b7700d164461380841ba02b1c1e2df47f7e63b",
+      "path": "objects/methods/ckp_method_state_transition.r2.json"
+    },
+    {
+      "knowledge_id": "ckp.method.temporal_boundary",
+      "revision": 1,
+      "digest": "2febae59774b90aa81711913765143f5341d1721c8043908662a34d4906b2337",
+      "path": "objects/methods/temporal_boundary.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.pattern.control_surface_equivalence",
+      "revision": 1,
+      "digest": "266215a3fa8cae4c6b883eb0f42dce1d8a08c37f5778dac68eb05897265119f2",
+      "path": "objects/patterns/ckp_pattern_control_surface_equivalence.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.pattern.cross_channel_consistency",
+      "revision": 1,
+      "digest": "8456334b3123e4b3a05f6437dd4e70dc0c82da5325bdd0ddc405c9b7a1f06dbb",
+      "path": "objects/patterns/cross_channel_consistency.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.pattern.external_session_lifecycle",
+      "revision": 1,
+      "digest": "85bd99d8cb849e966eb1ecfd87b4005c2e24b2efd5503d018334a6c53e9f2f0d",
+      "path": "objects/patterns/external_session_lifecycle.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.pattern.passive_indicator_visual",
+      "revision": 1,
+      "digest": "4c5fc824ba86cc0791a7558b196dbe8312e52e17bb17664119f9f64d6d71b23d",
+      "path": "objects/patterns/passive_indicator_visual.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.pattern.persistence_recovery",
+      "revision": 1,
+      "digest": "3a542ddc3f4b85456f75c43020743da0dcbe9a35abaabae9b811f43b72588961",
+      "path": "objects/patterns/persistence_recovery.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.pattern.request_feedback_loop",
+      "revision": 1,
+      "digest": "ac78719f6a5a9a9c73600dcec316d0b4e147a182dd5e828d2059e2dbe51f3155",
+      "path": "objects/patterns/request_feedback_loop.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.pattern.system_context_lifecycle",
+      "revision": 1,
+      "digest": "a882041063ed5db9b02c6773cf0800df0f58f7de92a665d274b8423be64da8d6",
+      "path": "objects/patterns/ckp_pattern_system_context_lifecycle.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.policy.no_unsourced_expected",
+      "revision": 1,
+      "digest": "ca5f02ec37c38e488c71c195af8fe906df8b741de21a27e7f29d66710d8daff9",
+      "path": "objects/policies/no_unsourced_expected.r1.json"
+    },
+    {
+      "knowledge_id": "ckp.risk.historical_regression",
+      "revision": 1,
+      "digest": "bd8fe05a225b49a63ba4bacdbd8141c413edcb7b218c7490fa22b92ede933fbc",
+      "path": "objects/risk_modifiers/historical_regression.r1.json"
+    }
+  ],
+  "decision_refs": [
+    "DEC-TKR-HVAC-R12-SOURCE-SCOPE-USER-APPROVED-PLAN"
+  ],
+  "approval_note": "Implementation scope approved; rule approval remains pending.",
+  "bundle_digest_sha256": "03e9da666a9f7aace64dcfb82c226c0254ad13e088d3ba5f724e54e3600e3027"
+}

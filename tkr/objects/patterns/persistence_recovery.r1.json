@@ -1,0 +1,113 @@
+{
+  "schema_id": "test-knowledge-rule/v1",
+  "knowledge_id": "ckp.pattern.persistence_recovery",
+  "kind": "coverage_pattern",
+  "revision": 1,
+  "title": "保存、退出与恢复",
+  "description": "覆盖保存范围、恢复触发、用户操作优先级和恢复默认，不从历史结果猜测记忆规则。",
+  "scope": {
+    "domains": [
+      "cockpit"
+    ],
+    "capability_archetypes": [
+      "persistent_profile",
+      "mode_arbitration"
+    ],
+    "module_profile_refs": [],
+    "exclusions": []
+  },
+  "input_contract": {
+    "required_features": [
+      "has_persistence"
+    ],
+    "required_ecsm_fields": [
+      "persistence_rule_ref"
+    ],
+    "optional_ecsm_fields": [
+      "snapshot_fields",
+      "restore_trigger",
+      "reset_behavior"
+    ],
+    "unknown_policy": "create_finding",
+    "conflict_policy": "block_and_create_finding"
+  },
+  "predicate": {
+    "all": [
+      "feature.has_persistence == true"
+    ]
+  },
+  "output_contract": [
+    {
+      "dimension": "persistence_restore",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    },
+    {
+      "dimension": "interruption_restore",
+      "output_class": "formal_or_finding",
+      "expected_policy": "require_ecsm_expected_else_finding",
+      "oracle_policy": "require_ecsm_oracle_else_finding"
+    }
+  ],
+  "parameter_source_policy": {
+    "product_behavior_allowed": [
+      "released_ecsm",
+      "human_product_decision"
+    ],
+    "coverage_policy_allowed": [
+      "approved_project_policy"
+    ],
+    "forbidden": [
+      "historical_case_literal",
+      "model_general_knowledge",
+      "execution_command"
+    ]
+  },
+  "dedup_key": [
+    "capability_id",
+    "coverage_dimension",
+    "condition_signature",
+    "source_state",
+    "event",
+    "expected_ref",
+    "oracle_intent"
+  ],
+  "priority_policy": {
+    "default": "recommended",
+    "waiver_roles": [
+      "project_test_owner"
+    ]
+  },
+  "composition": {
+    "merge_with": [],
+    "conflicts_with": [],
+    "supersedes": []
+  },
+  "evidence": {
+    "source_class": "expert_decision",
+    "authority_scope": "test_method",
+    "normative_force": "recommended",
+    "applicability_status": "pending_review",
+    "source_refs": [
+      "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md",
+      "SMP-STATE-A-001"
+    ],
+    "source_digest": "4718038cbac7d7f7bcc3aee77f2b40422ebd2bb71e388227e87e4c13b9e0113b",
+    "rationale": "覆盖保存范围、恢复触发、用户操作优先级和恢复默认，不从历史结果猜测记忆规则。"
+  },
+  "governance": {
+    "status": "candidate",
+    "owner_role": "cockpit_test_architecture_owner",
+    "approver_roles": [
+      "cockpit_test_architecture_owner"
+    ],
+    "effective_from": null,
+    "review_due_at": null,
+    "decision_refs": [
+      "DEC-TKR-0002",
+      "DEC-TKR-0004"
+    ]
+  },
+  "object_digest_sha256": "3a542ddc3f4b85456f75c43020743da0dcbe9a35abaabae9b811f43b72588961"
+}

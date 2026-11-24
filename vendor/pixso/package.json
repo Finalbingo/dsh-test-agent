@@ -1,0 +1,24 @@
+{
+  "name": "pixso-source-adapter",
+  "version": "1.0.1",
+  "private": true,
+  "description": "Deterministic offline Pixso Source Compiler and Compiled UI Store",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "bin": {
+    "pixso-source": "src/cli.js"
+  },
+  "scripts": {
+    "test": "node --no-warnings --test test/*.test.js",
+    "compile:ev18": "node --no-warnings src/cli.js compile --source-set ../../configs/ecsm/source_sets/ev18-ui-source-set.v1.json --store ../../artifacts/ecsm",
+    "status": "node --no-warnings src/cli.js status --store ../../artifacts/ecsm"
+  },
+  "dependencies": {
+    "adm-zip": "0.6.1",
+    "fzstd": "0.1.1",
+    "kiwi-schema": "0.5.0"
+  }
+}

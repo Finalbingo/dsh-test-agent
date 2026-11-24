@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "座舱测试 Agent",
+    "description": "独立工作台页面：agent 读 PRD、信号矩阵与设计稿，产出可追溯的产品事实、测试点与测试用例。"
+  },
+  "panel": { "title": "测试 Agent" }
+}

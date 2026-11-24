@@ -1,0 +1,27 @@
+{
+  "schema_id": "review-decision/v1",
+  "revision": 1,
+  "actor": "Codex implementation agent",
+  "actor_role": "implementation_agent",
+  "decided_at": "2026-09-02T19:00:00+09:00",
+  "decision_id": "DEC-TKR-0003",
+  "decision_type": "scope",
+  "subject_refs": [
+    "CFP-HVAC-FRONT-DEFROST",
+    "CFP-SETTINGS-FOLLOW-ME-HOME",
+    "CFP-TELLTALE-DOOR-OPEN"
+  ],
+  "question": "Pilot首批使用哪些代表切片？",
+  "outcome": "前除霜为唯一E2E切片；设置与仪表仅作为L2设计评测夹具。",
+  "rationale": "同时验证控制型、配置型和被动观察型规则不会串用。",
+  "evidence_refs": [
+    "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md",
+    "空调/ecsm/candidates/hvac_ecsm_candidate.v1.yaml",
+    "docs/telltale_lamp_catalog.md"
+  ],
+  "status": "recorded",
+  "follow_up": [
+    "设置夹具需补规范性产品资料和最小ECSM。"
+  ],
+  "object_digest_sha256": "9a3144dc63a737039867933b47d065201657d7d4023aa0debc8347f9b906cc32"
+}

@@ -1,0 +1,25 @@
+{
+  "schema_id": "review-decision/v1",
+  "revision": 1,
+  "actor": "Codex implementation agent",
+  "actor_role": "implementation_agent",
+  "decided_at": "2026-09-02T19:00:00+09:00",
+  "decision_id": "DEC-TKR-0004",
+  "decision_type": "publication",
+  "subject_refs": [
+    "PILOT-REGISTRY-v0.1",
+    "APPROVED-REGISTRY-v0.1"
+  ],
+  "question": "首批规则能否直接发布为Approved全局知识？",
+  "outcome": "生成可验证的Pilot Candidate Bundle；Approved Manifest保持空，等待测试架构负责人逐条审核。",
+  "rationale": "用户授权建库不等价于授权实现代理冒充人类批准角色。",
+  "evidence_refs": [
+    "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md"
+  ],
+  "status": "pending_human_approval",
+  "follow_up": [
+    "测试架构负责人审核12条规则的边界、触发条件、去重和优先级。",
+    "项目测试负责人审核EV18-G100P Project Policy。"
+  ],
+  "object_digest_sha256": "bcfbc3bdde1ed47fe78c2425e9264fbaf968f87766d8c9abc39c3b523ce06d67"
+}

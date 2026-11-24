@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.cockpit.test/schemas/selection_record.schema.json",
+  "title": "TKR-Lite Selection Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "selection_id",
+    "revision",
+    "capability_profile_ref",
+    "capability_profile_digest",
+    "registry_bundle_ref",
+    "registry_bundle_digest",
+    "project_policy_ref",
+    "project_policy_digest",
+    "planner_revision",
+    "formal_gate",
+    "applied_rules",
+    "not_applied_rules",
+    "outputs",
+    "findings",
+    "status",
+    "selection_digest_sha256"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "selection-record/v1"
+    },
+    "selection_id": {
+      "type": "string",
+      "pattern": "^SEL-[A-Z0-9-]+$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "capability_profile_ref": {
+      "type": "string"
+    },
+    "capability_profile_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "registry_bundle_ref": {
+      "type": "string"
+    },
+    "registry_bundle_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "project_policy_ref": {
+      "type": "string"
+    },
+    "project_policy_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "planner_revision": {
+      "type": "string"
+    },
+    "applied_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "knowledge_id",
+          "revision",
+          "reason"
+        ],
+        "properties": {
+          "knowledge_id": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "not_applied_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "knowledge_id",
+          "reason"
+        ],
+        "properties": {
+          "knowledge_id": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "output_id",
+          "output_class",
+          "dimension",
+          "source_refs"
+        ],
+        "properties": {
+          "output_id": {
+            "type": "string"
+          },
+          "output_class": {
+            "enum": [
+              "formal_coverage_target",
+              "risk_candidate",
+              "exploratory_candidate",
+              "requirement_finding",
+              "finding"
+            ]
+          },
+          "dimension": {
+            "type": "string"
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "support_ref": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "expected_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "oracle_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "formal_eligibility": {
+            "enum": [
+              "eligible",
+              "blocked_by_input_status",
+              "no_normative_expected",
+              "no_resolving_oracle",
+              "not_formal_class",
+              "profile_lacks_dimension_support"
+            ]
+          },
+          "formal_blockers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "state_machine_ref": {
+            "type": "string"
+          },
+          "source_state": {
+            "type": ["string", "null"]
+          },
+          "event": {
+            "type": ["string", "null"]
+          },
+          "target_state": {
+            "type": ["string", "null"]
+          },
+          "condition_signature": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "formal_gate": {
+      "type": "object",
+      "required": [
+        "eligible",
+        "checks",
+        "blockers"
+      ],
+      "properties": {
+        "eligible": {"type": "boolean"},
+        "checks": {
+          "type": "object",
+          "additionalProperties": {"type": "boolean"}
+        },
+        "blockers": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "status": {
+      "enum": [
+        "selected",
+        "blocked_by_unknown",
+        "blocked_by_conflict",
+        "blocked_by_input_status",
+        "evaluation_only"
+      ]
+    },
+    "selection_digest_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "mode": {
+      "enum": [
+        "formal",
+        "candidate_dry_run"
+      ],
+      "description": "candidate_dry_run keeps would-be formal targets visible with formal_eligibility instead of collapsing them to finding."
+    }
+  }
+}

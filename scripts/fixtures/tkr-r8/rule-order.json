@@ -1,0 +1,21 @@
+{
+ "note": "gold r8 的规则迭代序：registry_source.json(v1) 去掉变更项后追加 [state_transition, control_surface_equivalence, system_context_lifecycle]。来源 build_hvac_r12_candidate.py:75。清单 v0.3 自身按 knowledge_id 排序，与迭代序不同。",
+ "source": "upstream-20260907/workspace/tools/tkr_lite/build_hvac_r12_candidate.py:75",
+ "order": [
+  "ckp.method.requirement_expected",
+  "ckp.method.equivalence_partition",
+  "ckp.method.boundary_value",
+  "ckp.method.decision_table",
+  "ckp.method.temporal_boundary",
+  "ckp.pattern.request_feedback_loop",
+  "ckp.pattern.cross_channel_consistency",
+  "ckp.pattern.persistence_recovery",
+  "ckp.pattern.external_session_lifecycle",
+  "ckp.pattern.passive_indicator_visual",
+  "ckp.policy.no_unsourced_expected",
+  "ckp.risk.historical_regression",
+  "ckp.method.state_transition",
+  "ckp.pattern.control_surface_equivalence",
+  "ckp.pattern.system_context_lifecycle"
+ ]
+}

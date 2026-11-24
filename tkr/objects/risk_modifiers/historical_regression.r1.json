@@ -1,0 +1,103 @@
+{
+  "schema_id": "test-knowledge-rule/v1",
+  "knowledge_id": "ckp.risk.historical_regression",
+  "kind": "risk_modifier",
+  "revision": 1,
+  "title": "已审历史回归风险提升",
+  "description": "只有已批准缺陷、当前适用性及规范expected/Oracle齐全时提升回归优先级，否则仅生成风险Finding。",
+  "scope": {
+    "domains": [
+      "cockpit"
+    ],
+    "capability_archetypes": [],
+    "module_profile_refs": [],
+    "exclusions": []
+  },
+  "input_contract": {
+    "required_features": [],
+    "required_ecsm_fields": [
+      "current_normative_expected_ref",
+      "oracle_ref"
+    ],
+    "optional_ecsm_fields": [
+      "affected_component_ref",
+      "defect_root_cause_ref"
+    ],
+    "unknown_policy": "create_finding",
+    "conflict_policy": "block_and_create_finding"
+  },
+  "predicate": {
+    "all": [
+      "project_policy.approved_historical_regressions contains defect",
+      "current applicability approved"
+    ]
+  },
+  "output_contract": [
+    {
+      "dimension": "historical_regression_candidate",
+      "output_class": "risk_candidate",
+      "expected_policy": "never_define_expected",
+      "oracle_policy": "not_applicable"
+    }
+  ],
+  "parameter_source_policy": {
+    "product_behavior_allowed": [
+      "released_ecsm",
+      "human_product_decision"
+    ],
+    "coverage_policy_allowed": [
+      "approved_project_policy"
+    ],
+    "forbidden": [
+      "historical_case_literal",
+      "model_general_knowledge",
+      "execution_command"
+    ]
+  },
+  "dedup_key": [
+    "capability_id",
+    "coverage_dimension",
+    "condition_signature",
+    "source_state",
+    "event",
+    "expected_ref",
+    "oracle_intent"
+  ],
+  "priority_policy": {
+    "default": "risk_based",
+    "waiver_roles": [
+      "project_test_owner"
+    ]
+  },
+  "composition": {
+    "merge_with": [],
+    "conflicts_with": [],
+    "supersedes": []
+  },
+  "evidence": {
+    "source_class": "expert_decision",
+    "authority_scope": "risk_evidence",
+    "normative_force": "recommended",
+    "applicability_status": "pending_review",
+    "source_refs": [
+      "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md",
+      "SMP-DEFECT-A-001"
+    ],
+    "source_digest": "4718038cbac7d7f7bcc3aee77f2b40422ebd2bb71e388227e87e4c13b9e0113b",
+    "rationale": "只有已批准缺陷、当前适用性及规范expected/Oracle齐全时提升回归优先级，否则仅生成风险Finding。"
+  },
+  "governance": {
+    "status": "candidate",
+    "owner_role": "cockpit_test_architecture_owner",
+    "approver_roles": [
+      "cockpit_test_architecture_owner"
+    ],
+    "effective_from": null,
+    "review_due_at": null,
+    "decision_refs": [
+      "DEC-TKR-0002",
+      "DEC-TKR-0004"
+    ]
+  },
+  "object_digest_sha256": "bd8fe05a225b49a63ba4bacdbd8141c413edcb7b218c7490fa22b92ede933fbc"
+}

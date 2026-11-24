@@ -1,0 +1,45 @@
+{
+  "schema_id": "project-test-policy/v1",
+  "revision": 3,
+  "policy_id": "PTP-EV18-G100P-PILOT",
+  "project_id": "EV18-G100P",
+  "product_variant": null,
+  "market_region": [],
+  "test_level": "L2",
+  "risk_tier": "normal",
+  "applicable_regulatory_scopes": [],
+  "customer_mandatory_rules": [],
+  "enterprise_mandatory_rules": [
+    "ckp.method.requirement_expected",
+    "ckp.policy.no_unsourced_expected"
+  ],
+  "approved_historical_regressions": [],
+  "combination_policy": {
+    "mode": "risk_and_constraint_based",
+    "default_strength": null
+  },
+  "optional_budget": {
+    "max_candidates": null
+  },
+  "waiver_policy": {
+    "allowed_roles": [
+      "project_test_owner"
+    ],
+    "non_waivable_scopes": [
+      "applicable_regulation",
+      "customer_mandatory",
+      "expected_source_gate"
+    ]
+  },
+  "status": "candidate",
+  "decision_refs": [
+    "DEC-TKR-0003",
+    "DEC-TKR-0004"
+  ],
+  "cross_context_policy": {
+    "required_authority": "explicit_ecsm_relation",
+    "unproven_combinations": "finding_or_exploratory",
+    "full_cartesian_expansion": false
+  },
+  "object_digest_sha256": "6e345a0426eed4d300ae300871233d579c52ef437ac3574dae2018f21aec7c1e"
+}

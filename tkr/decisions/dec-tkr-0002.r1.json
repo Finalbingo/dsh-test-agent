@@ -1,0 +1,21 @@
+{
+  "schema_id": "review-decision/v1",
+  "revision": 1,
+  "actor": "Codex implementation agent",
+  "actor_role": "implementation_agent",
+  "decided_at": "2026-09-02T19:00:00+09:00",
+  "decision_id": "DEC-TKR-0002",
+  "decision_type": "knowledge_boundary",
+  "subject_refs": [
+    "TKR-LITE-PILOT-20260902"
+  ],
+  "question": "测试知识是否能定义当前产品行为和expected？",
+  "outcome": "不能；规则只定义方法、覆盖义务、策略和风险，产品expected回到ECSM或人工Product Decision。",
+  "rationale": "避免历史产品字面量和模型常识污染当前项目真源。",
+  "evidence_refs": [
+    "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md"
+  ],
+  "status": "recorded",
+  "follow_up": [],
+  "object_digest_sha256": "16932f91a1307302ad8b97c8876bbc84aba7e378cfc4d239fed8df68a706f28b"
+}

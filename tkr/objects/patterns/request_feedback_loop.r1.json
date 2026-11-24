@@ -1,0 +1,121 @@
+{
+  "schema_id": "test-knowledge-rule/v1",
+  "knowledge_id": "ckp.pattern.request_feedback_loop",
+  "kind": "coverage_pattern",
+  "revision": 1,
+  "title": "请求—反馈闭环",
+  "description": "覆盖请求、有效反馈、超时/不一致和回弹；阈值与expected必须来自ECSM。",
+  "scope": {
+    "domains": [
+      "cockpit"
+    ],
+    "capability_archetypes": [
+      "request_feedback_control"
+    ],
+    "module_profile_refs": [],
+    "exclusions": []
+  },
+  "input_contract": {
+    "required_features": [
+      "has_request_feedback"
+    ],
+    "required_ecsm_fields": [
+      "request_signal_ref",
+      "feedback_signal_ref",
+      "oracle_ref"
+    ],
+    "optional_ecsm_fields": [
+      "feedback_timeout",
+      "invalid_feedback_values",
+      "rollback_behavior"
+    ],
+    "unknown_policy": "create_finding",
+    "conflict_policy": "block_and_create_finding"
+  },
+  "predicate": {
+    "all": [
+      "feature.has_request_feedback == true"
+    ]
+  },
+  "output_contract": [
+    {
+      "dimension": "request_feedback_normal",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    },
+    {
+      "dimension": "feedback_timeout",
+      "output_class": "formal_or_finding",
+      "expected_policy": "require_ecsm_expected_else_finding",
+      "oracle_policy": "require_ecsm_oracle_else_finding"
+    },
+    {
+      "dimension": "feedback_mismatch",
+      "output_class": "formal_or_finding",
+      "expected_policy": "require_ecsm_expected_else_finding",
+      "oracle_policy": "require_ecsm_oracle_else_finding"
+    }
+  ],
+  "parameter_source_policy": {
+    "product_behavior_allowed": [
+      "released_ecsm",
+      "human_product_decision"
+    ],
+    "coverage_policy_allowed": [
+      "approved_project_policy"
+    ],
+    "forbidden": [
+      "historical_case_literal",
+      "model_general_knowledge",
+      "execution_command"
+    ]
+  },
+  "dedup_key": [
+    "capability_id",
+    "coverage_dimension",
+    "condition_signature",
+    "source_state",
+    "event",
+    "expected_ref",
+    "oracle_intent"
+  ],
+  "priority_policy": {
+    "default": "recommended",
+    "waiver_roles": [
+      "project_test_owner"
+    ]
+  },
+  "composition": {
+    "merge_with": [],
+    "conflicts_with": [],
+    "supersedes": []
+  },
+  "evidence": {
+    "source_class": "expert_decision",
+    "authority_scope": "test_method",
+    "normative_force": "recommended",
+    "applicability_status": "pending_review",
+    "source_refs": [
+      "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md",
+      "SMP-NORMAL-A-001",
+      "SMP-RECOVERY-A-001"
+    ],
+    "source_digest": "4718038cbac7d7f7bcc3aee77f2b40422ebd2bb71e388227e87e4c13b9e0113b",
+    "rationale": "覆盖请求、有效反馈、超时/不一致和回弹；阈值与expected必须来自ECSM。"
+  },
+  "governance": {
+    "status": "candidate",
+    "owner_role": "cockpit_test_architecture_owner",
+    "approver_roles": [
+      "cockpit_test_architecture_owner"
+    ],
+    "effective_from": null,
+    "review_due_at": null,
+    "decision_refs": [
+      "DEC-TKR-0002",
+      "DEC-TKR-0004"
+    ]
+  },
+  "object_digest_sha256": "ac78719f6a5a9a9c73600dcec316d0b4e147a182dd5e828d2059e2dbe51f3155"
+}

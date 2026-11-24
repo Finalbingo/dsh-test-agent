@@ -1,0 +1,121 @@
+{
+  "schema_id": "test-knowledge-rule/v1",
+  "knowledge_id": "ckp.method.temporal_boundary",
+  "kind": "method_operator",
+  "revision": 1,
+  "title": "时序边界覆盖",
+  "description": "只使用ECSM或人工产品Decision给出的时序参数生成边界覆盖。",
+  "scope": {
+    "domains": [
+      "cockpit"
+    ],
+    "capability_archetypes": [
+      "request_feedback_control",
+      "external_session",
+      "persistent_profile"
+    ],
+    "module_profile_refs": [],
+    "exclusions": []
+  },
+  "input_contract": {
+    "required_features": [
+      "has_temporal_requirement"
+    ],
+    "required_ecsm_fields": [
+      "temporal_requirement_ref"
+    ],
+    "optional_ecsm_fields": [
+      "timeout",
+      "debounce",
+      "hold_time",
+      "settling_time"
+    ],
+    "unknown_policy": "create_finding",
+    "conflict_policy": "block_and_create_finding"
+  },
+  "predicate": {
+    "all": [
+      "feature.has_temporal_requirement == true"
+    ]
+  },
+  "output_contract": [
+    {
+      "dimension": "temporal_before_boundary",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    },
+    {
+      "dimension": "temporal_at_boundary",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    },
+    {
+      "dimension": "temporal_after_boundary",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    }
+  ],
+  "parameter_source_policy": {
+    "product_behavior_allowed": [
+      "released_ecsm",
+      "human_product_decision"
+    ],
+    "coverage_policy_allowed": [
+      "approved_project_policy"
+    ],
+    "forbidden": [
+      "historical_case_literal",
+      "model_general_knowledge",
+      "execution_command"
+    ]
+  },
+  "dedup_key": [
+    "capability_id",
+    "coverage_dimension",
+    "condition_signature",
+    "source_state",
+    "event",
+    "expected_ref",
+    "oracle_intent"
+  ],
+  "priority_policy": {
+    "default": "recommended",
+    "waiver_roles": [
+      "project_test_owner"
+    ]
+  },
+  "composition": {
+    "merge_with": [],
+    "conflicts_with": [],
+    "supersedes": []
+  },
+  "evidence": {
+    "source_class": "expert_decision",
+    "authority_scope": "test_method",
+    "normative_force": "recommended",
+    "applicability_status": "pending_review",
+    "source_refs": [
+      "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md",
+      "SMP-RECOVERY-A-001"
+    ],
+    "source_digest": "4718038cbac7d7f7bcc3aee77f2b40422ebd2bb71e388227e87e4c13b9e0113b",
+    "rationale": "只使用ECSM或人工产品Decision给出的时序参数生成边界覆盖。"
+  },
+  "governance": {
+    "status": "candidate",
+    "owner_role": "cockpit_test_architecture_owner",
+    "approver_roles": [
+      "cockpit_test_architecture_owner"
+    ],
+    "effective_from": null,
+    "review_due_at": null,
+    "decision_refs": [
+      "DEC-TKR-0002",
+      "DEC-TKR-0004"
+    ]
+  },
+  "object_digest_sha256": "2febae59774b90aa81711913765143f5341d1721c8043908662a34d4906b2337"
+}

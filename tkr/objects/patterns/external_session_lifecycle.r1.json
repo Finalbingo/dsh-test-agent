@@ -1,0 +1,120 @@
+{
+  "schema_id": "test-knowledge-rule/v1",
+  "knowledge_id": "ckp.pattern.external_session_lifecycle",
+  "kind": "coverage_pattern",
+  "revision": 1,
+  "title": "外部会话生命周期",
+  "description": "覆盖外部会话建立、占用、打断、结束和恢复；执行注入命令不进入知识规则。",
+  "scope": {
+    "domains": [
+      "cockpit"
+    ],
+    "capability_archetypes": [
+      "external_session",
+      "stream_or_media_session"
+    ],
+    "module_profile_refs": [],
+    "exclusions": []
+  },
+  "input_contract": {
+    "required_features": [
+      "has_external_peer"
+    ],
+    "required_ecsm_fields": [
+      "external_session_ref"
+    ],
+    "optional_ecsm_fields": [
+      "entry_conditions",
+      "exit_conditions",
+      "interruption_policy",
+      "restore_behavior"
+    ],
+    "unknown_policy": "create_finding",
+    "conflict_policy": "block_and_create_finding"
+  },
+  "predicate": {
+    "all": [
+      "feature.has_external_peer == true"
+    ]
+  },
+  "output_contract": [
+    {
+      "dimension": "external_session_entry",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    },
+    {
+      "dimension": "external_session_exit",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    },
+    {
+      "dimension": "interruption_restore",
+      "output_class": "formal_or_finding",
+      "expected_policy": "require_ecsm_expected_else_finding",
+      "oracle_policy": "require_ecsm_oracle_else_finding"
+    }
+  ],
+  "parameter_source_policy": {
+    "product_behavior_allowed": [
+      "released_ecsm",
+      "human_product_decision"
+    ],
+    "coverage_policy_allowed": [
+      "approved_project_policy"
+    ],
+    "forbidden": [
+      "historical_case_literal",
+      "model_general_knowledge",
+      "execution_command"
+    ]
+  },
+  "dedup_key": [
+    "capability_id",
+    "coverage_dimension",
+    "condition_signature",
+    "source_state",
+    "event",
+    "expected_ref",
+    "oracle_intent"
+  ],
+  "priority_policy": {
+    "default": "recommended",
+    "waiver_roles": [
+      "project_test_owner"
+    ]
+  },
+  "composition": {
+    "merge_with": [],
+    "conflicts_with": [],
+    "supersedes": []
+  },
+  "evidence": {
+    "source_class": "expert_decision",
+    "authority_scope": "test_method",
+    "normative_force": "recommended",
+    "applicability_status": "pending_review",
+    "source_refs": [
+      "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md",
+      "SMP-EXTERNAL-A-001"
+    ],
+    "source_digest": "4718038cbac7d7f7bcc3aee77f2b40422ebd2bb71e388227e87e4c13b9e0113b",
+    "rationale": "覆盖外部会话建立、占用、打断、结束和恢复；执行注入命令不进入知识规则。"
+  },
+  "governance": {
+    "status": "candidate",
+    "owner_role": "cockpit_test_architecture_owner",
+    "approver_roles": [
+      "cockpit_test_architecture_owner"
+    ],
+    "effective_from": null,
+    "review_due_at": null,
+    "decision_refs": [
+      "DEC-TKR-0002",
+      "DEC-TKR-0004"
+    ]
+  },
+  "object_digest_sha256": "85bd99d8cb849e966eb1ecfd87b4005c2e24b2efd5503d018334a6c53e9f2f0d"
+}

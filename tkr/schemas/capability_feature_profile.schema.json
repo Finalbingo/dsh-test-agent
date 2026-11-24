@@ -1,0 +1,341 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.cockpit.test/schemas/capability_feature_profile.schema.json",
+  "title": "TKR-Lite Capability Feature Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "profile_id",
+    "revision",
+    "capability_ref",
+    "scope",
+    "archetypes",
+    "features",
+    "available_contract_fields",
+    "ecsm_ref",
+    "ecsm_digest",
+    "status",
+    "decision_refs"
+  ],
+  "$defs": {
+    "feature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "value",
+        "derivation_rule_id",
+        "source_refs"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "known",
+            "unknown",
+            "conflict"
+          ]
+        },
+        "value": {
+          "type": [
+            "boolean",
+            "integer",
+            "string",
+            "array",
+            "null"
+          ]
+        },
+        "derivation_rule_id": {
+          "type": "string"
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "decision_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    }
+  },
+  "properties": {
+    "schema_id": {
+      "const": "capability-feature-profile/v1"
+    },
+    "profile_id": {
+      "type": "string",
+      "pattern": "^CFP-[A-Z0-9-]+$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "capability_ref": {
+      "type": "string"
+    },
+    "scope": {
+      "enum": [
+        "formal",
+        "pilot_scoped",
+        "evaluation_fixture"
+      ]
+    },
+    "archetypes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "features": {
+      "type": "object",
+      "minProperties": 15,
+      "additionalProperties": {
+        "$ref": "#/$defs/feature"
+      }
+    },
+    "available_contract_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "ecsm_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ecsm_digest": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "status": {
+      "enum": [
+        "candidate",
+        "under_review",
+        "approved_with_scope",
+        "approved",
+        "blocked"
+      ]
+    },
+    "decision_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "object_digest_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "derivation": {
+      "type": "object",
+      "description": "Present when the profile was derived from an ECSM by tools/tkr_lite/profile_from_ecsm.py.",
+      "required": [
+        "rule_id",
+        "tool"
+      ],
+      "properties": {
+        "rule_id": {
+          "type": "string"
+        },
+        "tool": {
+          "type": "string"
+        },
+        "own_requirement_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "inherited_requirement_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "coupled_requirement_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_model_digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "requirement_support": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "requirement_id",
+          "has_expected",
+          "oracle_refs",
+          "oracle_resolves"
+        ],
+        "properties": {
+          "requirement_id": {
+            "type": "string"
+          },
+          "inherited": {
+            "type": "boolean"
+          },
+          "contract_status": {
+            "type": "string"
+          },
+          "has_expected": {
+            "type": "boolean"
+          },
+          "observable_kind": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "oracle_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "oracle_resolves": {
+            "type": "boolean"
+          },
+          "condition_present": {
+            "type": "boolean"
+          },
+          "guard_polarity": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "valid",
+              "invalid",
+              null
+            ]
+          },
+          "coverage_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "contract_formal": {
+            "type": "boolean"
+          },
+          "semantic_proof_present": {
+            "type": "boolean"
+          },
+          "blocking_finding_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          },
+          "coupled_via_state_machine": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "dimension_support": {
+      "type": "object",
+      "description": "coverage dimension -> requirements (with expected and resolving oracle) that can support a formal target; consumed by the Planner's expected/oracle gate.",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "requirement_ids",
+          "oracle_refs"
+        ],
+        "properties": {
+          "requirement_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "oracle_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "support_items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "support_id",
+                "requirement_ids",
+                "oracle_refs",
+                "contract_statuses",
+                "contract_formal",
+                "semantic_proof_present",
+                "blocking_finding_refs"
+              ],
+              "properties": {
+                "support_id": {"type": "string"},
+                "requirement_ids": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+                "oracle_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+                "contract_statuses": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+                "contract_formal": {"type": "boolean"},
+                "semantic_proof_present": {"type": "boolean"},
+                "blocking_finding_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+                "state_machine_ref": {"type": "string"},
+                "source_state": {"type": ["string", "null"]},
+                "event": {"type": ["string", "null"]},
+                "target_state": {"type": ["string", "null"]},
+                "condition_signature": {"type": "string"}
+              },
+              "additionalProperties": false
+            }
+          }
+        }
+      }
+    },
+    "formal_readiness": {
+      "type": "object",
+      "required": [
+        "ecsm_status",
+        "ecsm_release_stage",
+        "ecsm_scope_approved",
+        "contract_status_counts",
+        "unresolved_finding_refs"
+      ],
+      "properties": {
+        "ecsm_status": {"type": ["string", "null"]},
+        "ecsm_release_stage": {"type": ["string", "null"]},
+        "ecsm_scope_approved": {"type": "boolean"},
+        "contract_status_counts": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "unresolved_finding_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    }
+  }
+}

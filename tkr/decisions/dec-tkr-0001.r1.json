@@ -1,0 +1,24 @@
+{
+  "schema_id": "review-decision/v1",
+  "revision": 1,
+  "actor": "Codex implementation agent",
+  "actor_role": "implementation_agent",
+  "decided_at": "2026-09-02T19:00:00+09:00",
+  "decision_id": "DEC-TKR-0001",
+  "decision_type": "sampling",
+  "subject_refs": [
+    "TKR-EV18-HIST-SAMPLE-20260902"
+  ],
+  "question": "首批1348条历史用例如何分层冻结？",
+  "outcome": "前7类各1条Authoring和1条Holdout，第8类3条Hard-negative，共17条。",
+  "rationale": "执行用户裁决的每类2至3条小样本策略，并在规则编写前冻结互斥数据集。",
+  "evidence_refs": [
+    "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md",
+    "test_knowledge/evaluation/sample_manifest.json"
+  ],
+  "status": "recorded",
+  "follow_up": [
+    "历史缺陷类补齐真实缺陷ID后再判断是否可晋升回归义务。"
+  ],
+  "object_digest_sha256": "728ca632d24e61ee57c47686ca195e991c626ee94fbed619128dd210e855e483"
+}

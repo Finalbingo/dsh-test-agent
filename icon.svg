@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="座舱测试 Agent">
+  <rect x="7" y="9" width="34" height="32" rx="5" fill="none" stroke="#2f6fed" stroke-width="2.4"/>
+  <path d="M17 9V6.5h14V9" fill="none" stroke="#2f6fed" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M14 20h8M14 26h5M14 32h7" stroke="#2f6fed" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M27 30l3-5 3 8 3-6 2 3" fill="none" stroke="#e5484d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

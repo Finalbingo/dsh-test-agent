@@ -1,0 +1,7 @@
+{
+  "meta": {
+    "title": "Cockpit test agent",
+    "description": "A dedicated workbench page where an agent reads PRDs, signal matrices and designs, then produces traceable facts, test points and test cases."
+  },
+  "panel": { "title": "Test agent" }
+}

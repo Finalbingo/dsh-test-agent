@@ -1,0 +1,114 @@
+{
+  "schema_id": "test-knowledge-rule/v1",
+  "knowledge_id": "ckp.method.decision_table",
+  "kind": "method_operator",
+  "revision": 1,
+  "title": "条件组合判定表",
+  "description": "按项目策略和约束选择有效/无效组合，不固定pairwise强度。",
+  "scope": {
+    "domains": [
+      "cockpit"
+    ],
+    "capability_archetypes": [
+      "guarded_setting",
+      "mode_arbitration",
+      "external_session"
+    ],
+    "module_profile_refs": [],
+    "exclusions": []
+  },
+  "input_contract": {
+    "required_features": [
+      "has_guard_set"
+    ],
+    "required_ecsm_fields": [
+      "guard_set_ref"
+    ],
+    "optional_ecsm_fields": [
+      "constraints",
+      "risk_tags",
+      "arbitration_rules"
+    ],
+    "unknown_policy": "create_finding",
+    "conflict_policy": "block_and_create_finding"
+  },
+  "predicate": {
+    "all": [
+      "feature.has_guard_set == true"
+    ]
+  },
+  "output_contract": [
+    {
+      "dimension": "valid_condition_combination",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    },
+    {
+      "dimension": "invalid_condition_combination",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    }
+  ],
+  "parameter_source_policy": {
+    "product_behavior_allowed": [
+      "released_ecsm",
+      "human_product_decision"
+    ],
+    "coverage_policy_allowed": [
+      "approved_project_policy"
+    ],
+    "forbidden": [
+      "historical_case_literal",
+      "model_general_knowledge",
+      "execution_command"
+    ]
+  },
+  "dedup_key": [
+    "capability_id",
+    "coverage_dimension",
+    "condition_signature",
+    "source_state",
+    "event",
+    "expected_ref",
+    "oracle_intent"
+  ],
+  "priority_policy": {
+    "default": "recommended",
+    "waiver_roles": [
+      "project_test_owner"
+    ]
+  },
+  "composition": {
+    "merge_with": [],
+    "conflicts_with": [],
+    "supersedes": []
+  },
+  "evidence": {
+    "source_class": "expert_decision",
+    "authority_scope": "test_method",
+    "normative_force": "recommended",
+    "applicability_status": "pending_review",
+    "source_refs": [
+      "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md",
+      "SMP-COMBINATION-A-001"
+    ],
+    "source_digest": "4718038cbac7d7f7bcc3aee77f2b40422ebd2bb71e388227e87e4c13b9e0113b",
+    "rationale": "按项目策略和约束选择有效/无效组合，不固定pairwise强度。"
+  },
+  "governance": {
+    "status": "candidate",
+    "owner_role": "cockpit_test_architecture_owner",
+    "approver_roles": [
+      "cockpit_test_architecture_owner"
+    ],
+    "effective_from": null,
+    "review_due_at": null,
+    "decision_refs": [
+      "DEC-TKR-0002",
+      "DEC-TKR-0004"
+    ]
+  },
+  "object_digest_sha256": "39adba4a32a9f55d1433270d1879e8f9e095cb13abfd1b17b0f78a7615a5c566"
+}

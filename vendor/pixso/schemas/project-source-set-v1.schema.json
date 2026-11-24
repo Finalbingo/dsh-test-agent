@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "project-source-set/v1",
+  "title": "Project Source Set v1",
+  "type": "object",
+  "required": ["schema_id", "source_set_id", "project", "pixso_sources"],
+  "properties": {
+    "schema_id": {"const": "project-source-set/v1"},
+    "source_set_id": {"type": "string", "minLength": 1},
+    "project": {"type": "string", "minLength": 1},
+    "scope": {"type": "string"},
+    "status": {"enum": ["candidate", "reviewed", "released", "superseded"]},
+    "workspace_root_relative_to_manifest": {"type": "string"},
+    "pixso_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["logical_file_id", "path", "role", "required"],
+        "properties": {
+          "logical_file_id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1},
+          "role": {"enum": ["product_design", "component_library", "design_reference"]},
+          "required": {"type": "boolean"},
+          "sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "prd_sources": {"type": "array"},
+    "can_sources": {"type": "array"},
+    "other_sources": {"type": "array"},
+    "excluded_sources": {"type": "array"}
+  },
+  "additionalProperties": true
+}

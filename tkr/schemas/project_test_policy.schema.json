@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.cockpit.test/schemas/project_test_policy.schema.json",
+  "title": "TKR-Lite Project Test Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "policy_id", "project_id", "product_variant", "market_region", "test_level", "risk_tier", "applicable_regulatory_scopes", "customer_mandatory_rules", "enterprise_mandatory_rules", "approved_historical_regressions", "combination_policy", "optional_budget", "waiver_policy", "status", "revision", "decision_refs"],
+  "properties": {
+    "schema_id": {"const": "project-test-policy/v1"},
+    "policy_id": {"type": "string", "pattern": "^PTP-[A-Z0-9-]+$"},
+    "project_id": {"type": "string"},
+    "product_variant": {"type": ["string", "null"]},
+    "market_region": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "test_level": {"enum": ["L1", "L2", "L3", "E2E"]},
+    "risk_tier": {"enum": ["low", "normal", "high", "safety_critical"]},
+    "applicable_regulatory_scopes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "customer_mandatory_rules": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "enterprise_mandatory_rules": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "approved_historical_regressions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "combination_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["mode", "default_strength"],
+      "properties": {"mode": {"const": "risk_and_constraint_based"}, "default_strength": {"type": ["integer", "null"], "minimum": 2}}
+    },
+    "optional_budget": {
+      "type": "object", "additionalProperties": false,
+      "required": ["max_candidates"],
+      "properties": {"max_candidates": {"type": ["integer", "null"], "minimum": 0}}
+    },
+    "waiver_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["allowed_roles", "non_waivable_scopes"],
+      "properties": {
+        "allowed_roles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "non_waivable_scopes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "status": {"enum": ["candidate", "under_review", "approved_with_scope", "approved"]},
+    "revision": {"type": "integer", "minimum": 1},
+    "decision_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "object_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

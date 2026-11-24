@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.cockpit.test/schemas/bench_testability_projection.schema.json",
+  "title": "TKR Bench Testability Projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "projection_id",
+    "classifier_revision",
+    "bench_profile_ref",
+    "bench_profile_digest",
+    "ecsm_ref",
+    "ecsm_sha256",
+    "selection_ref",
+    "selection_digest",
+    "capability_ref",
+    "request_signal_refs",
+    "summary",
+    "oracle_projection",
+    "requirement_projection",
+    "selection_output_projection",
+    "object_digest_sha256"
+  ],
+  "properties": {
+    "schema_id": {"const": "bench-testability-projection/v1"},
+    "projection_id": {"type": "string", "pattern": "^BTP-[A-Z0-9-]+$"},
+    "classifier_revision": {"type": "string"},
+    "bench_profile_ref": {"type": "string"},
+    "bench_profile_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "ecsm_ref": {"type": "string"},
+    "ecsm_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "selection_ref": {"type": "string"},
+    "selection_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "capability_ref": {"type": ["string", "null"]},
+    "request_signal_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requirements", "selection_outputs", "direct_subtargets", "unique_direct_subtargets"],
+      "properties": {
+        "requirements": {"$ref": "#/$defs/counts"},
+        "selection_outputs": {"$ref": "#/$defs/counts"},
+        "direct_subtargets": {"type": "integer", "minimum": 0},
+        "unique_direct_subtargets": {"type": "integer", "minimum": 0}
+      }
+    },
+    "oracle_projection": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/oracleProjection"}
+    },
+    "requirement_projection": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/subjectProjection"}
+    },
+    "selection_output_projection": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/subjectProjection"}
+    },
+    "object_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "$defs": {
+    "status": {
+      "enum": [
+        "directly_verifiable",
+        "partially_verifiable",
+        "supporting_evidence_only",
+        "deferred_requires_capability",
+        "not_assessed"
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": {"type": "integer", "minimum": 0}
+    },
+    "oracleProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["oracle_ref", "oracle_type", "support", "reason", "allowed_claims", "unverified_claims"],
+      "properties": {
+        "oracle_ref": {"type": "string"},
+        "oracle_type": {"type": ["string", "null"]},
+        "support": {"enum": ["direct", "supporting_only", "conditional", "unsupported"]},
+        "reason": {"type": "string"},
+        "allowed_claims": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "unverified_claims": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "directSubtarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["oracle_ref", "normative_requirement_refs", "context_requirement_refs", "allowed_claims"],
+      "properties": {
+        "oracle_ref": {"type": "string"},
+        "normative_requirement_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "context_requirement_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "allowed_claims": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "subjectProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "subject_ref",
+        "expected_refs",
+        "oracle_refs",
+        "verification_status",
+        "requirement_pass_allowed",
+        "direct_oracles",
+        "supporting_oracles",
+        "conditional_oracles",
+        "unsupported_oracles",
+        "direct_subtargets",
+        "disposition",
+        "claim_boundary"
+      ],
+      "properties": {
+        "subject_ref": {"type": "string"},
+        "expected_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "oracle_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "verification_status": {"$ref": "#/$defs/status"},
+        "requirement_pass_allowed": {"type": "boolean"},
+        "direct_oracles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "supporting_oracles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "conditional_oracles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "unsupported_oracles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "direct_subtargets": {"type": "array", "items": {"$ref": "#/$defs/directSubtarget"}},
+        "disposition": {"type": "string"},
+        "claim_boundary": {"type": "string"}
+      }
+    }
+  }
+}

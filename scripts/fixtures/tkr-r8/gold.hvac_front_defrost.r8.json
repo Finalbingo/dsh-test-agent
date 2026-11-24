@@ -1,0 +1,2310 @@
+{
+  "schema_id": "selection-record/v1",
+  "selection_id": "SEL-HVAC-FRONT-DEFROST",
+  "revision": 8,
+  "mode": "candidate_dry_run",
+  "capability_profile_ref": "CFP-HVAC-FRONT-DEFROST",
+  "capability_profile_digest": "bb242203ea581ce16328e987a7dd01e8167f06653e6c301176094843fdc52b28",
+  "registry_bundle_ref": "PILOT-REGISTRY-v0.3",
+  "registry_bundle_digest": "03e9da666a9f7aace64dcfb82c226c0254ad13e088d3ba5f724e54e3600e3027",
+  "project_policy_ref": "PTP-EV18-G100P-PILOT",
+  "project_policy_digest": "6e345a0426eed4d300ae300871233d579c52ef437ac3574dae2018f21aec7c1e",
+  "planner_revision": "deterministic-planner/0.3.0",
+  "formal_gate": {
+    "eligible": false,
+    "checks": {
+      "profile_digest_valid": true,
+      "profile_approved": false,
+      "profile_has_approval_decision": false,
+      "ecsm_scope_approved": true,
+      "registry_bundle_digest_valid": true,
+      "registry_bundle_approved": false,
+      "registry_rules_approved": false,
+      "registry_rules_applicable": false,
+      "project_policy_digest_valid": true,
+      "project_policy_approved": false,
+      "project_policy_has_approval_decision": true,
+      "registry_bundle_members_valid": true
+    },
+    "blockers": [
+      "profile_approved",
+      "profile_has_approval_decision",
+      "project_policy_approved",
+      "registry_bundle_approved",
+      "registry_rules_applicable",
+      "registry_rules_approved"
+    ]
+  },
+  "applied_rules": [
+    {
+      "knowledge_id": "ckp.method.requirement_expected",
+      "revision": 1,
+      "reason": "archetype_and_required_features_matched"
+    },
+    {
+      "knowledge_id": "ckp.method.decision_table",
+      "revision": 1,
+      "reason": "archetype_and_required_features_matched"
+    },
+    {
+      "knowledge_id": "ckp.method.temporal_boundary",
+      "revision": 1,
+      "reason": "archetype_and_required_features_matched"
+    },
+    {
+      "knowledge_id": "ckp.pattern.request_feedback_loop",
+      "revision": 1,
+      "reason": "archetype_and_required_features_matched"
+    },
+    {
+      "knowledge_id": "ckp.pattern.cross_channel_consistency",
+      "revision": 1,
+      "reason": "archetype_and_required_features_matched"
+    },
+    {
+      "knowledge_id": "ckp.pattern.persistence_recovery",
+      "revision": 1,
+      "reason": "archetype_and_required_features_matched"
+    },
+    {
+      "knowledge_id": "ckp.policy.no_unsourced_expected",
+      "revision": 1,
+      "reason": "archetype_and_required_features_matched"
+    },
+    {
+      "knowledge_id": "ckp.method.state_transition",
+      "revision": 2,
+      "reason": "archetype_and_required_features_matched"
+    },
+    {
+      "knowledge_id": "ckp.pattern.control_surface_equivalence",
+      "revision": 1,
+      "reason": "archetype_and_required_features_matched"
+    },
+    {
+      "knowledge_id": "ckp.pattern.system_context_lifecycle",
+      "revision": 1,
+      "reason": "archetype_and_required_features_matched"
+    }
+  ],
+  "not_applied_rules": [
+    {
+      "knowledge_id": "ckp.method.equivalence_partition",
+      "reason": "required_contract_fields_missing:input_domain_ref"
+    },
+    {
+      "knowledge_id": "ckp.method.boundary_value",
+      "reason": "capability_archetype_not_matched"
+    },
+    {
+      "knowledge_id": "ckp.pattern.external_session_lifecycle",
+      "reason": "capability_archetype_not_matched"
+    },
+    {
+      "knowledge_id": "ckp.pattern.passive_indicator_visual",
+      "reason": "capability_archetype_not_matched"
+    },
+    {
+      "knowledge_id": "ckp.risk.historical_regression",
+      "reason": "no_approved_historical_regression_in_project_policy"
+    }
+  ],
+  "outputs": [
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-32DA60422076",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-AUTO-003#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-AUTO-003#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-AUTO-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-3BC89AF5953A",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-001#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-001#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-A505C4589FBF",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-002#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-002#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-13071B1CA264",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-003#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-003#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-4D7F348EA3DB",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-004#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-004#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-004"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-500E09F53D20",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-005#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-005#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-005"
+      ],
+      "oracle_refs": [
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-95E88E830932",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-006#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-006#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-006"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-8ADB6A299F38",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-007#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-007#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-007"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-TEMPERATURE"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-5A6A1C9C3C2E",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-008#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-008#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-008"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-8EEDF4380752",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-009#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-009#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-009"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-1C8E3494737F",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-010#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-010#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-010"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-4418BBABDAF9",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DEFROST-011#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DEFROST-011#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-011"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-A04E1B63DB8E",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DISPLAY-001#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DISPLAY-001#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DISPLAY-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-F87E51066A9B",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DOCK-DEFROST-001#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DOCK-DEFROST-001#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DOCK-DEFROST-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-5B5FE4486D21",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-DOCK-DEFROST-002#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-DOCK-DEFROST-002#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DOCK-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-2CFA21A32D75",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-ENV-001#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-ENV-001#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-ENV-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-35033D02D724",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-GENERAL-001#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-GENERAL-001#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-B62A10BDB57B",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-GENERAL-002#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-GENERAL-002#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-requirement_expected-functional_expected-07043286B9E7",
+      "dimension": "functional_expected",
+      "support_ref": "REQ-HVAC-GENERAL-003#functional-expected",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.requirement_expected",
+        "REQ-HVAC-GENERAL-003#functional-expected"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-decision_table-valid_condition_combination-FE5C1264496A",
+      "dimension": "valid_condition_combination",
+      "support_ref": "REQ-HVAC-ENV-001#valid-guard",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.decision_table",
+        "REQ-HVAC-ENV-001#valid-guard"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-ENV-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "condition_signature": "valid",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-decision_table-invalid_condition_combination-FED17B3E1EEF",
+      "dimension": "invalid_condition_combination",
+      "support_ref": "REQ-HVAC-DEFROST-005#invalid-guard",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.decision_table",
+        "REQ-HVAC-DEFROST-005#invalid-guard"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-005"
+      ],
+      "oracle_refs": [
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "condition_signature": "invalid",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-temporal_boundary-temporal_before_boundary-7329DE9795BB",
+      "dimension": "temporal_before_boundary",
+      "support_ref": "REQ-HVAC-GENERAL-002#temporal_before_boundary",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.temporal_boundary",
+        "REQ-HVAC-GENERAL-002#temporal_before_boundary"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-temporal_boundary-temporal_before_boundary-3A6FB60B6494",
+      "dimension": "temporal_before_boundary",
+      "support_ref": "REQ-HVAC-GENERAL-003#temporal_before_boundary",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.temporal_boundary",
+        "REQ-HVAC-GENERAL-003#temporal_before_boundary"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-temporal_boundary-temporal_at_boundary-9643D33AC179",
+      "dimension": "temporal_at_boundary",
+      "support_ref": "REQ-HVAC-GENERAL-002#temporal_at_boundary",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.temporal_boundary",
+        "REQ-HVAC-GENERAL-002#temporal_at_boundary"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-temporal_boundary-temporal_at_boundary-A0D65C8C81A3",
+      "dimension": "temporal_at_boundary",
+      "support_ref": "REQ-HVAC-GENERAL-003#temporal_at_boundary",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.temporal_boundary",
+        "REQ-HVAC-GENERAL-003#temporal_at_boundary"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-temporal_boundary-temporal_after_boundary-33ED14D88594",
+      "dimension": "temporal_after_boundary",
+      "support_ref": "REQ-HVAC-GENERAL-002#temporal_after_boundary",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.temporal_boundary",
+        "REQ-HVAC-GENERAL-002#temporal_after_boundary"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-temporal_boundary-temporal_after_boundary-8C96FF027A26",
+      "dimension": "temporal_after_boundary",
+      "support_ref": "REQ-HVAC-GENERAL-003#temporal_after_boundary",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.temporal_boundary",
+        "REQ-HVAC-GENERAL-003#temporal_after_boundary"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-request_feedback_loop-request_feedback_normal-AFCB05DB3FB9",
+      "dimension": "request_feedback_normal",
+      "support_ref": "CAP-HVAC-FRONT-DEFROST#request-feedback-normal",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.request_feedback_loop",
+        "CAP-HVAC-FRONT-DEFROST#request-feedback-normal"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-002",
+        "REQ-HVAC-GENERAL-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-request_feedback_loop-feedback_timeout-A39C4449371C",
+      "dimension": "feedback_timeout",
+      "support_ref": "REQ-HVAC-GENERAL-003#feedback_timeout",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.request_feedback_loop",
+        "REQ-HVAC-GENERAL-003#feedback_timeout"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-request_feedback_loop-feedback_mismatch-AE48CD5AC001",
+      "dimension": "feedback_mismatch",
+      "support_ref": "CFP-HVAC-FRONT-DEFROST#feedback_mismatch-unsupported",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.request_feedback_loop",
+        "CFP-HVAC-FRONT-DEFROST#feedback_mismatch-unsupported"
+      ],
+      "expected_refs": [],
+      "oracle_refs": [],
+      "output_class": "requirement_finding",
+      "reason": "no_normative_expected",
+      "formal_eligibility": "no_normative_expected",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved",
+        "supporting_requirement_contract_not_approved",
+        "supporting_requirement_semantic_proof_missing"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-D981AF0E0BE3",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-AUTO-003#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-AUTO-003#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-AUTO-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-DEAFF84B98D2",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-002#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-002#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-730465D8BD6F",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-003#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-003#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-5341F416947D",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-004#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-004#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-004"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-F7A34CA74B0F",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-005#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-005#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-005"
+      ],
+      "oracle_refs": [
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-39F459584F9B",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-006#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-006#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-006"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-4F3CDC192877",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-007#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-007#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-007"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-TEMPERATURE"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-B44F4D29E36A",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-008#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-008#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-008"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-0E6C7829F917",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-009#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-009#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-009"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-7FAF731B9084",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-010#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-010#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-010"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-D9C134C61DF6",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DEFROST-011#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DEFROST-011#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-011"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-A14E7F3E9143",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DOCK-DEFROST-001#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DOCK-DEFROST-001#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DOCK-DEFROST-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-7126D46F733D",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-DOCK-DEFROST-002#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-DOCK-DEFROST-002#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DOCK-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-A8042CCCB1CC",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-ENV-001#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-ENV-001#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-ENV-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-67341C776DF3",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-GENERAL-001#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-GENERAL-001#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-cross_channel_consistency-cross_channel_consistency-8B7E5A0A0B0E",
+      "dimension": "cross_channel_consistency",
+      "support_ref": "REQ-HVAC-GENERAL-002#multi-channel",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.cross_channel_consistency",
+        "REQ-HVAC-GENERAL-002#multi-channel"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-GENERAL-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-persistence_recovery-persistence_restore-E5C741BFD197",
+      "dimension": "persistence_restore",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#defrost_button_off",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.persistence_recovery",
+        "SM-HVAC-FRONT-DEFROST#defrost_button_off"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-007",
+        "REQ-HVAC-DOCK-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "defrost_button_off",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-persistence_recovery-persistence_restore-4C977B75E0B6",
+      "dimension": "persistence_restore",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#blow_mode_to_non_window",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.persistence_recovery",
+        "SM-HVAC-FRONT-DEFROST#blow_mode_to_non_window"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-004",
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-008"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "blow_mode_to_non_window",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-persistence_recovery-persistence_restore-36BF284C2C85",
+      "dimension": "persistence_restore",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#ac_off",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.persistence_recovery",
+        "SM-HVAC-FRONT-DEFROST#ac_off"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-009"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "ac_off",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-persistence_recovery-persistence_restore-A7307AFC0EBE",
+      "dimension": "persistence_restore",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#hvac_off",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.persistence_recovery",
+        "SM-HVAC-FRONT-DEFROST#hvac_off"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-004",
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-010"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "hvac_off",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-persistence_recovery-interruption_restore-3E122A9A6210",
+      "dimension": "interruption_restore",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#vehicle_power_down",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.persistence_recovery",
+        "SM-HVAC-FRONT-DEFROST#vehicle_power_down"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-011"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "vehicle_power_down",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-no_unsourced_expected-expected_source_gate-10BF9044A72D",
+      "dimension": "expected_source_gate",
+      "support_ref": "CFP-HVAC-FRONT-DEFROST#expected_source_gate-unsupported",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.policy.no_unsourced_expected",
+        "CFP-HVAC-FRONT-DEFROST#expected_source_gate-unsupported"
+      ],
+      "expected_refs": [],
+      "oracle_refs": [],
+      "output_class": "finding",
+      "reason": "finding_only_contract",
+      "formal_eligibility": "not_formal_class",
+      "formal_blockers": []
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-80CF047DA5E3",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#valid_front_defrost_on_request",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-FRONT-DEFROST#valid_front_defrost_on_request"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-002",
+        "REQ-HVAC-DOCK-DEFROST-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "off",
+      "event": "valid_front_defrost_on_request",
+      "target_state": "on",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-969BAE403EBE",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#defrost_button_off",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-FRONT-DEFROST#defrost_button_off"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-007",
+        "REQ-HVAC-DOCK-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "defrost_button_off",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-BE7D6265BDD4",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#blow_mode_to_non_window",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-FRONT-DEFROST#blow_mode_to_non_window"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-004",
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-008"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "blow_mode_to_non_window",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-85B4EB9B62A1",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#ac_off",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-FRONT-DEFROST#ac_off"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-009"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "ac_off",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-92953A247712",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#hvac_off",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-FRONT-DEFROST#hvac_off"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-004",
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-010"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "hvac_off",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-26917FCC86CF",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#vehicle_power_down",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-FRONT-DEFROST#vehicle_power_down"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-011"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "vehicle_power_down",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-9FF3BD6C63E5",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#auto_or_max_mode_preempt",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-FRONT-DEFROST#auto_or_max_mode_preempt"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-004"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "auto_or_max_mode_preempt",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-89B8E6EC6F7A",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-MODE-ARBITRATION#front_defrost_on",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-MODE-ARBITRATION#front_defrost_on"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+      "source_state": "normal",
+      "event": "front_defrost_on",
+      "target_state": "front_defrost",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-0D126A7DCEB5",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-MODE-ARBITRATION#manual_blower_or_mode_or_intake_or_ac_off",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-MODE-ARBITRATION#manual_blower_or_mode_or_intake_or_ac_off"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-AUTO-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+      "source_state": "auto",
+      "event": "manual_blower_or_mode_or_intake_or_ac_off",
+      "target_state": "normal",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-A24204830D9B",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-MODE-ARBITRATION#front_defrost_on",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-MODE-ARBITRATION#front_defrost_on"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-AUTO-003",
+        "REQ-HVAC-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+      "source_state": "auto",
+      "event": "front_defrost_on",
+      "target_state": "front_defrost",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-7E8E2CB145F2",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-MODE-ARBITRATION#max_cool_on",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-MODE-ARBITRATION#max_cool_on"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-AUTO-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+      "source_state": "auto",
+      "event": "max_cool_on",
+      "target_state": "max_cool",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-12D4FF57A9C2",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-MODE-ARBITRATION#max_heat_on",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-MODE-ARBITRATION#max_heat_on"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-AUTO-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+      "source_state": "auto",
+      "event": "max_heat_on",
+      "target_state": "max_heat",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-state_transition-62BB5C980D40",
+      "dimension": "state_transition",
+      "support_ref": "SM-HVAC-MODE-ARBITRATION#exit_without_prior_auto",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-MODE-ARBITRATION#exit_without_prior_auto"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-006"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+      "source_state": "front_defrost",
+      "event": "exit_without_prior_auto",
+      "target_state": "normal",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-transition_invariant-6E9F50603F39",
+      "dimension": "transition_invariant",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#front_defrost_entry_condition_not_satisfied",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-FRONT-DEFROST#front_defrost_entry_condition_not_satisfied"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-005"
+      ],
+      "oracle_refs": [
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "off",
+      "event": "front_defrost_entry_condition_not_satisfied",
+      "target_state": "off",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-state_transition-transition_invariant-8C803CC48F1B",
+      "dimension": "transition_invariant",
+      "support_ref": "SM-HVAC-FRONT-DEFROST#blower_manual_adjust",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.method.state_transition",
+        "SM-HVAC-FRONT-DEFROST#blower_manual_adjust"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-UI-SELECTION"
+      ],
+      "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+      "source_state": "on",
+      "event": "blower_manual_adjust",
+      "target_state": "on",
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-control_surface_equivalence-control_surface_equivalence-E978685632BA",
+      "dimension": "control_surface_equivalence",
+      "support_ref": "REQ-HVAC-DEFROST-001#control_surface_equivalence",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.control_surface_equivalence",
+        "REQ-HVAC-DEFROST-001#control_surface_equivalence"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-control_surface_equivalence-control_surface_equivalence-6044F5CAC538",
+      "dimension": "control_surface_equivalence",
+      "support_ref": "REQ-HVAC-DOCK-DEFROST-001#control_surface_equivalence",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.control_surface_equivalence",
+        "REQ-HVAC-DOCK-DEFROST-001#control_surface_equivalence"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DOCK-DEFROST-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-system_context_lifecycle-system_context_lifecycle-590DCD2FD332",
+      "dimension": "system_context_lifecycle",
+      "support_ref": "REQ-HVAC-DEFROST-007#system_context_lifecycle",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.system_context_lifecycle",
+        "REQ-HVAC-DEFROST-007#system_context_lifecycle"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-007"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-BLOWER",
+        "ORACLE-TEMPERATURE"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-system_context_lifecycle-system_context_lifecycle-7D9737F626E6",
+      "dimension": "system_context_lifecycle",
+      "support_ref": "REQ-HVAC-DEFROST-008#system_context_lifecycle",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.system_context_lifecycle",
+        "REQ-HVAC-DEFROST-008#system_context_lifecycle"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-008"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-system_context_lifecycle-system_context_lifecycle-F244FEBF0D58",
+      "dimension": "system_context_lifecycle",
+      "support_ref": "REQ-HVAC-DEFROST-009#system_context_lifecycle",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.system_context_lifecycle",
+        "REQ-HVAC-DEFROST-009#system_context_lifecycle"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-009"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION",
+        "ORACLE-MODE-ARBITRATION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-system_context_lifecycle-system_context_lifecycle-9D8E7A2AE7DD",
+      "dimension": "system_context_lifecycle",
+      "support_ref": "REQ-HVAC-DEFROST-010#system_context_lifecycle",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.system_context_lifecycle",
+        "REQ-HVAC-DEFROST-010#system_context_lifecycle"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-010"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    },
+    {
+      "output_id": "OUT-CFP-HVAC-FRONT-DEFROST-system_context_lifecycle-system_context_lifecycle-007BCF2B4EFD",
+      "dimension": "system_context_lifecycle",
+      "support_ref": "REQ-HVAC-DEFROST-011#system_context_lifecycle",
+      "source_refs": [
+        "CFP-HVAC-FRONT-DEFROST",
+        "ckp.pattern.system_context_lifecycle",
+        "REQ-HVAC-DEFROST-011#system_context_lifecycle"
+      ],
+      "expected_refs": [
+        "REQ-HVAC-DEFROST-011"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "output_class": "formal_coverage_target",
+      "reason": "would_be_formal_after_recorded_blockers_close",
+      "formal_eligibility": "blocked_by_input_status",
+      "formal_blockers": [
+        "profile_approved",
+        "profile_has_approval_decision",
+        "project_policy_approved",
+        "registry_bundle_approved",
+        "registry_rules_applicable",
+        "registry_rules_approved"
+      ]
+    }
+  ],
+  "findings": [
+    "AUTO-FINDING:ckp.method.equivalence_partition:missing_contract_fields",
+    "AUTO-FINDING:ckp.pattern.request_feedback_loop:feedback_mismatch:no_normative_expected",
+    "FND-PROFILE-CAP-HVAC-FRONT-DEFROST-SAFETY"
+  ],
+  "status": "blocked_by_input_status",
+  "selection_digest_sha256": "fe2f3c1f188ce0ed5b21dc500103bc8c158b94140cb70a3abdabd1780f2723c2"
+}

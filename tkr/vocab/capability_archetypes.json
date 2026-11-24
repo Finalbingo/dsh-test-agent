@@ -1,0 +1,50 @@
+{
+  "schema_id": "capability-archetype-vocabulary/v1",
+  "revision": 1,
+  "items": [
+    {
+      "id": "boolean_state_control",
+      "description": "具有明确开/关或激活/未激活状态的控制能力。"
+    },
+    {
+      "id": "bounded_value_control",
+      "description": "值域有上下界、步长或饱和行为的控制能力。"
+    },
+    {
+      "id": "enum_selector",
+      "description": "从有限互斥或受约束枚举中选择状态。"
+    },
+    {
+      "id": "guarded_setting",
+      "description": "仅在车辆、权限、会话或安全条件满足时可操作。"
+    },
+    {
+      "id": "request_feedback_control",
+      "description": "操作产生请求并由反馈或状态确认闭环。"
+    },
+    {
+      "id": "mode_arbitration",
+      "description": "多个模式之间存在抢占、互斥、退出或恢复。"
+    },
+    {
+      "id": "persistent_profile",
+      "description": "状态需跨页面、会话、休眠或上下电保存/恢复。"
+    },
+    {
+      "id": "external_session",
+      "description": "行为依赖手机、蓝牙、USB或外部会话生命周期。"
+    },
+    {
+      "id": "navigation_workflow",
+      "description": "需要跨页面或层级完成的操作流程。"
+    },
+    {
+      "id": "passive_indicator_alert",
+      "description": "由外部状态驱动、主要被观察而非点击的显示或告警。"
+    },
+    {
+      "id": "stream_or_media_session",
+      "description": "具有播放、暂停、源切换和中断恢复的媒体流会话。"
+    }
+  ]
+}

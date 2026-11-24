@@ -1,0 +1,105 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.cockpit.test/schemas/knowledge_rule.schema.json",
+  "title": "TKR-Lite Test Knowledge Rule",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "knowledge_id", "kind", "revision", "title", "scope", "input_contract", "predicate", "output_contract", "parameter_source_policy", "dedup_key", "priority_policy", "composition", "evidence", "governance"],
+  "properties": {
+    "schema_id": {"const": "test-knowledge-rule/v1"},
+    "knowledge_id": {"type": "string", "pattern": "^ckp\\.(method|pattern|policy|risk)\\.[a-z0-9_]+$"},
+    "kind": {"enum": ["method_operator", "coverage_pattern", "policy_rule", "risk_modifier"]},
+    "revision": {"type": "integer", "minimum": 1},
+    "title": {"type": "string", "minLength": 2},
+    "description": {"type": "string"},
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["domains", "capability_archetypes", "module_profile_refs", "exclusions"],
+      "properties": {
+        "domains": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+        "capability_archetypes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "module_profile_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "exclusions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "input_contract": {
+      "type": "object", "additionalProperties": false,
+      "required": ["required_features", "required_ecsm_fields", "optional_ecsm_fields", "unknown_policy", "conflict_policy"],
+      "properties": {
+        "required_features": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "required_ecsm_fields": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "optional_ecsm_fields": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "unknown_policy": {"enum": ["create_finding", "not_applicable", "allow_exploratory_only"]},
+        "conflict_policy": {"enum": ["block_and_create_finding", "create_finding", "not_applicable"]}
+      }
+    },
+    "predicate": {"type": "object", "minProperties": 1},
+    "output_contract": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["dimension", "output_class", "expected_policy", "oracle_policy"],
+        "properties": {
+          "dimension": {"type": "string"},
+          "output_class": {"enum": ["formal_coverage_target", "formal_or_finding", "risk_candidate", "finding_only", "exploratory_candidate"]},
+          "condition": {"type": "string"},
+          "expected_policy": {"enum": ["require_ecsm_expected", "require_ecsm_expected_else_finding", "never_define_expected"]},
+          "oracle_policy": {"enum": ["require_ecsm_oracle", "require_ecsm_oracle_else_finding", "not_applicable"]}
+        }
+      }
+    },
+    "parameter_source_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["product_behavior_allowed", "coverage_policy_allowed", "forbidden"],
+      "properties": {
+        "product_behavior_allowed": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "coverage_policy_allowed": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "forbidden": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "dedup_key": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "priority_policy": {
+      "type": "object", "additionalProperties": false,
+      "required": ["default", "waiver_roles"],
+      "properties": {
+        "default": {"enum": ["mandatory", "recommended", "optional", "risk_based"]},
+        "waiver_roles": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "composition": {
+      "type": "object", "additionalProperties": false,
+      "required": ["merge_with", "conflicts_with", "supersedes"],
+      "properties": {
+        "merge_with": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "conflicts_with": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "supersedes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "evidence": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_class", "authority_scope", "normative_force", "applicability_status", "source_refs", "source_digest", "rationale"],
+      "properties": {
+        "source_class": {"enum": ["regulation", "standard", "customer_spec", "enterprise_policy", "expert_decision", "historical_defect", "historical_case", "external_reference", "model_candidate"]},
+        "authority_scope": {"enum": ["test_method", "regulatory_obligation", "risk_evidence", "regression_evidence", "example_only"]},
+        "normative_force": {"enum": ["mandatory", "recommended", "informative"]},
+        "applicability_status": {"enum": ["applicable", "not_applicable", "pending_review"]},
+        "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+        "source_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+        "rationale": {"type": "string", "minLength": 5}
+      }
+    },
+    "governance": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status", "owner_role", "approver_roles", "effective_from", "review_due_at", "decision_refs"],
+      "properties": {
+        "status": {"enum": ["draft", "candidate", "under_review", "approved", "approved_with_scope", "suspended", "deprecated", "superseded", "revoked"]},
+        "owner_role": {"type": "string"},
+        "approver_roles": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+        "effective_from": {"type": ["string", "null"]},
+        "review_due_at": {"type": ["string", "null"]},
+        "decision_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      }
+    },
+    "object_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

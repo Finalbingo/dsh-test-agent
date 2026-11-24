@@ -1,0 +1,27 @@
+{
+  "schema_id": "coverage-dimension-vocabulary/v1",
+  "revision": 1,
+  "items": [
+    "equivalence_partition",
+    "lower_boundary",
+    "upper_boundary",
+    "invalid_outside_domain",
+    "state_transition",
+    "transition_invariant",
+    "valid_condition_combination",
+    "invalid_condition_combination",
+    "request_feedback_normal",
+    "feedback_timeout",
+    "feedback_mismatch",
+    "cross_channel_consistency",
+    "persistence_restore",
+    "interruption_restore",
+    "external_session_entry",
+    "external_session_exit",
+    "indicator_appear",
+    "indicator_clear",
+    "visual_distractor_negative",
+    "historical_regression_candidate",
+    "functional_expected"
+  ]
+}

@@ -1,0 +1,2319 @@
+{
+  "schema_id": "capability-feature-profile/v1",
+  "profile_id": "CFP-HVAC-FRONT-DEFROST",
+  "revision": 8,
+  "capability_ref": "CAP-HVAC-FRONT-DEFROST",
+  "scope": "pilot_scoped",
+  "archetypes": [
+    "boolean_state_control",
+    "guarded_setting",
+    "request_feedback_control",
+    "mode_arbitration",
+    "persistent_profile"
+  ],
+  "features": {
+    "has_state_machine": {
+      "status": "known",
+      "value": true,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "CAP-HVAC-FRONT-DEFROST",
+        "SM-HVAC-FRONT-DEFROST",
+        "SM-HVAC-MODE-ARBITRATION"
+      ],
+      "decision_ref": null
+    },
+    "state_count": {
+      "status": "known",
+      "value": 2,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "SM-HVAC-FRONT-DEFROST"
+      ],
+      "decision_ref": null
+    },
+    "has_numeric_domain": {
+      "status": "known",
+      "value": false,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "CTRL-HVAC-DOCK-FRONT-DEFROST",
+        "SIG-CAN-CCM_AC_FrontDefrostMAXSt",
+        "SIG-CAN-IVI_FrontDefrostMAXReq"
+      ],
+      "decision_ref": null
+    },
+    "has_enum_domain": {
+      "status": "known",
+      "value": true,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "CTRL-HVAC-DOCK-FRONT-DEFROST",
+        "SIG-CAN-CCM_AC_FrontDefrostMAXSt",
+        "SIG-CAN-IVI_FrontDefrostMAXReq"
+      ],
+      "decision_ref": null
+    },
+    "has_guard_set": {
+      "status": "known",
+      "value": true,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "REQ-HVAC-DEFROST-005",
+        "REQ-HVAC-ENV-001"
+      ],
+      "decision_ref": null
+    },
+    "has_request_feedback": {
+      "status": "known",
+      "value": true,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "SIG-CAN-CCM_AC_FrontDefrostMAXSt",
+        "SIG-CAN-IVI_FrontDefrostMAXReq"
+      ],
+      "decision_ref": null
+    },
+    "has_temporal_requirement": {
+      "status": "known",
+      "value": true,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "REQ-HVAC-GENERAL-002",
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "decision_ref": null
+    },
+    "has_multiple_entry_points": {
+      "status": "known",
+      "value": false,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "CTRL-HVAC-DOCK-FRONT-DEFROST"
+      ],
+      "decision_ref": null
+    },
+    "has_persistence": {
+      "status": "known",
+      "value": true,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "REQ-HVAC-DEFROST-007",
+        "REQ-HVAC-DEFROST-010",
+        "REQ-HVAC-DEFROST-011"
+      ],
+      "decision_ref": null
+    },
+    "has_external_peer": {
+      "status": "known",
+      "value": false,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "CAP-HVAC-FRONT-DEFROST"
+      ],
+      "decision_ref": null
+    },
+    "has_arbitration": {
+      "status": "known",
+      "value": true,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "SM-HVAC-MODE-ARBITRATION"
+      ],
+      "decision_ref": null
+    },
+    "has_visual_oracle": {
+      "status": "known",
+      "value": true,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-MODE",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "decision_ref": null
+    },
+    "has_multi_channel_oracle": {
+      "status": "known",
+      "value": true,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "REQ-HVAC-DEFROST-002",
+        "REQ-HVAC-DEFROST-003",
+        "REQ-HVAC-DEFROST-004",
+        "REQ-HVAC-DEFROST-005",
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-007",
+        "REQ-HVAC-DEFROST-008",
+        "REQ-HVAC-DEFROST-009",
+        "REQ-HVAC-DEFROST-010",
+        "REQ-HVAC-DEFROST-011"
+      ],
+      "decision_ref": null
+    },
+    "safety_scope": {
+      "status": "unknown",
+      "value": null,
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "CAP-HVAC-FRONT-DEFROST"
+      ],
+      "decision_ref": null
+    },
+    "regulatory_scope": {
+      "status": "known",
+      "value": [],
+      "derivation_rule_id": "ecsm-feature-derivation/v1",
+      "source_refs": [
+        "CAP-HVAC-FRONT-DEFROST"
+      ],
+      "decision_ref": null
+    },
+    "has_control_surface_relation": {
+      "status": "known",
+      "value": true,
+      "source_refs": [
+        "BR-HVAC-MULTI-ENTRY-MAIN-DOCK"
+      ]
+    },
+    "has_context_lifecycle_relation": {
+      "status": "known",
+      "value": true,
+      "source_refs": [
+        "BR-HVAC-DEFROST-EXIT-RECOVERY",
+        "BR-HVAC-DEFROST-POWER-DOWN-PERSISTENCE"
+      ]
+    }
+  },
+  "available_contract_fields": [
+    "behavior_relation_refs",
+    "dock_state_ref",
+    "feedback_signal_ref",
+    "guard_set_ref",
+    "oracle_ref",
+    "persistence_rule_ref",
+    "request_signal_ref",
+    "signal_state_ref",
+    "state_machine_ref",
+    "temporal_requirement_ref",
+    "ui_state_ref",
+    "visual_oracle_ref"
+  ],
+  "ecsm_ref": "ECSM-EV18-HVAC-G100P-V5-REVIEWED-R1",
+  "ecsm_digest": "0d201b304e070f993f92b932ed8e59de7c661b9f3e159a4c51c8554bb7973561",
+  "status": "candidate",
+  "decision_refs": [],
+  "findings": [
+    "FND-PROFILE-CAP-HVAC-FRONT-DEFROST-SAFETY"
+  ],
+  "derivation": {
+    "rule_id": "ecsm-feature-derivation/v1",
+    "tool": "tools/tkr_lite/profile_from_ecsm.py",
+    "own_requirement_ids": [
+      "REQ-HVAC-DEFROST-001",
+      "REQ-HVAC-DEFROST-002",
+      "REQ-HVAC-DEFROST-003",
+      "REQ-HVAC-DEFROST-004",
+      "REQ-HVAC-DEFROST-005",
+      "REQ-HVAC-DEFROST-006",
+      "REQ-HVAC-DEFROST-007",
+      "REQ-HVAC-DEFROST-008",
+      "REQ-HVAC-DEFROST-009",
+      "REQ-HVAC-DEFROST-010",
+      "REQ-HVAC-DEFROST-011"
+    ],
+    "inherited_requirement_ids": [
+      "REQ-HVAC-GENERAL-001",
+      "REQ-HVAC-GENERAL-002",
+      "REQ-HVAC-GENERAL-003",
+      "REQ-HVAC-ENV-001",
+      "REQ-HVAC-DISPLAY-001"
+    ],
+    "coupled_requirement_ids": [
+      "REQ-HVAC-AUTO-003",
+      "REQ-HVAC-DOCK-DEFROST-001",
+      "REQ-HVAC-DOCK-DEFROST-002"
+    ],
+    "source_model_digest": "76d42e734858a3cbaa3d247ad64f953b0f8f26affc56a86a7f5ca3e29ffb1c23"
+  },
+  "formal_readiness": {
+    "ecsm_status": "reviewed",
+    "ecsm_release_stage": "reviewed",
+    "ecsm_scope_approved": true,
+    "contract_status_counts": {
+      "human_confirmed": 19
+    },
+    "unresolved_finding_refs": []
+  },
+  "requirement_support": [
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-001",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-002",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE",
+        "ORACLE-BLOWER",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION",
+        "ORACLE-MODE-ARBITRATION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [
+        "feedback_normal",
+        "request_normal"
+      ],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-003",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": true,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-004",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": true,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-005",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_absence",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": true,
+      "guard_polarity": "invalid",
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-006",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-007",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state",
+        "persistence"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-BLOWER",
+        "ORACLE-TEMPERATURE"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [
+        "interruption_restore"
+      ],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-008",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-009",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION",
+        "ORACLE-MODE-ARBITRATION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-010",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state",
+        "persistence"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [
+        "interruption_restore"
+      ],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DEFROST-011",
+      "inherited": false,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_feedback",
+        "ui_state",
+        "persistence"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [
+        "interruption_restore"
+      ],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-GENERAL-001",
+      "inherited": true,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_absence",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-GENERAL-002",
+      "inherited": true,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "ui_state",
+        "timing"
+      ],
+      "oracle_refs": [
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [
+        "request_normal"
+      ],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-GENERAL-003",
+      "inherited": true,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "timing",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S"
+      ],
+      "oracle_resolves": true,
+      "condition_present": false,
+      "guard_polarity": null,
+      "coverage_tags": [
+        "feedback_invalid",
+        "feedback_timeout"
+      ],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-ENV-001",
+      "inherited": true,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": true,
+      "guard_polarity": "valid",
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DISPLAY-001",
+      "inherited": true,
+      "coupled_via_state_machine": false,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": true,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-AUTO-003",
+      "inherited": false,
+      "coupled_via_state_machine": true,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": true,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DOCK-DEFROST-001",
+      "inherited": false,
+      "coupled_via_state_machine": true,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": true,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    },
+    {
+      "requirement_id": "REQ-HVAC-DOCK-DEFROST-002",
+      "inherited": false,
+      "coupled_via_state_machine": true,
+      "contract_status": "human_confirmed",
+      "has_expected": true,
+      "observable_kind": [
+        "can_request",
+        "can_feedback",
+        "ui_state"
+      ],
+      "oracle_refs": [
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-UI-SELECTION"
+      ],
+      "oracle_resolves": true,
+      "condition_present": true,
+      "guard_polarity": null,
+      "coverage_tags": [],
+      "contract_formal": true,
+      "semantic_proof_present": true,
+      "blocking_finding_refs": []
+    }
+  ],
+  "dimension_support": {
+    "state_transition": {
+      "requirement_ids": [
+        "REQ-HVAC-AUTO-003",
+        "REQ-HVAC-DEFROST-002",
+        "REQ-HVAC-DEFROST-004",
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-007",
+        "REQ-HVAC-DEFROST-008",
+        "REQ-HVAC-DEFROST-009",
+        "REQ-HVAC-DEFROST-010",
+        "REQ-HVAC-DEFROST-011",
+        "REQ-HVAC-DOCK-DEFROST-001",
+        "REQ-HVAC-DOCK-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#valid_front_defrost_on_request",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-002",
+            "REQ-HVAC-DOCK-DEFROST-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-DOCK-MAIN-CONSISTENCY",
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-TEMPERATURE",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "off",
+          "event": "valid_front_defrost_on_request",
+          "target_state": "on"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#defrost_button_off",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-007",
+            "REQ-HVAC-DOCK-DEFROST-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-DOCK-MAIN-CONSISTENCY",
+            "ORACLE-MEMORY",
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-TEMPERATURE",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "defrost_button_off",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#blow_mode_to_non_window",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-004",
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-008"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "blow_mode_to_non_window",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#ac_off",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-009"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "ac_off",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#hvac_off",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-004",
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-010"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "hvac_off",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#vehicle_power_down",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-011"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "vehicle_power_down",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#auto_or_max_mode_preempt",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-004"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "auto_or_max_mode_preempt",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-MODE-ARBITRATION#front_defrost_on",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-TEMPERATURE",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+          "source_state": "normal",
+          "event": "front_defrost_on",
+          "target_state": "front_defrost"
+        },
+        {
+          "support_id": "SM-HVAC-MODE-ARBITRATION#manual_blower_or_mode_or_intake_or_ac_off",
+          "requirement_ids": [
+            "REQ-HVAC-AUTO-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+          "source_state": "auto",
+          "event": "manual_blower_or_mode_or_intake_or_ac_off",
+          "target_state": "normal"
+        },
+        {
+          "support_id": "SM-HVAC-MODE-ARBITRATION#front_defrost_on",
+          "requirement_ids": [
+            "REQ-HVAC-AUTO-003",
+            "REQ-HVAC-DEFROST-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-TEMPERATURE",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+          "source_state": "auto",
+          "event": "front_defrost_on",
+          "target_state": "front_defrost"
+        },
+        {
+          "support_id": "SM-HVAC-MODE-ARBITRATION#max_cool_on",
+          "requirement_ids": [
+            "REQ-HVAC-AUTO-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+          "source_state": "auto",
+          "event": "max_cool_on",
+          "target_state": "max_cool"
+        },
+        {
+          "support_id": "SM-HVAC-MODE-ARBITRATION#max_heat_on",
+          "requirement_ids": [
+            "REQ-HVAC-AUTO-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+          "source_state": "auto",
+          "event": "max_heat_on",
+          "target_state": "max_heat"
+        },
+        {
+          "support_id": "SM-HVAC-MODE-ARBITRATION#exit_without_prior_auto",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-006"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-MODE-ARBITRATION",
+          "source_state": "front_defrost",
+          "event": "exit_without_prior_auto",
+          "target_state": "normal"
+        }
+      ]
+    },
+    "transition_invariant": {
+      "requirement_ids": [
+        "REQ-HVAC-DEFROST-003",
+        "REQ-HVAC-DEFROST-005"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#front_defrost_entry_condition_not_satisfied",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-005"
+          ],
+          "oracle_refs": [
+            "ORACLE-NO-SPURIOUS-CONTROL-TX",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "off",
+          "event": "front_defrost_entry_condition_not_satisfied",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#blower_manual_adjust",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "blower_manual_adjust",
+          "target_state": "on"
+        }
+      ]
+    },
+    "valid_condition_combination": {
+      "requirement_ids": [
+        "REQ-HVAC-ENV-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-ENV-001#valid-guard",
+          "requirement_ids": [
+            "REQ-HVAC-ENV-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "condition_signature": "valid"
+        }
+      ]
+    },
+    "invalid_condition_combination": {
+      "requirement_ids": [
+        "REQ-HVAC-DEFROST-005"
+      ],
+      "oracle_refs": [
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-DEFROST-005#invalid-guard",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-005"
+          ],
+          "oracle_refs": [
+            "ORACLE-NO-SPURIOUS-CONTROL-TX",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "condition_signature": "invalid"
+        }
+      ]
+    },
+    "request_feedback_normal": {
+      "requirement_ids": [
+        "REQ-HVAC-DEFROST-002",
+        "REQ-HVAC-GENERAL-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "CAP-HVAC-FRONT-DEFROST#request-feedback-normal",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-002",
+            "REQ-HVAC-GENERAL-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-TEMPERATURE",
+            "ORACLE-THREE-FRAME-REQUEST",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        }
+      ]
+    },
+    "feedback_timeout": {
+      "requirement_ids": [
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S"
+      ],
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-GENERAL-003#feedback_timeout",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-FEEDBACK-WITHIN-1S"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        }
+      ]
+    },
+    "feedback_mismatch": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "cross_channel_consistency": {
+      "requirement_ids": [
+        "REQ-HVAC-AUTO-003",
+        "REQ-HVAC-DEFROST-002",
+        "REQ-HVAC-DEFROST-003",
+        "REQ-HVAC-DEFROST-004",
+        "REQ-HVAC-DEFROST-005",
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-007",
+        "REQ-HVAC-DEFROST-008",
+        "REQ-HVAC-DEFROST-009",
+        "REQ-HVAC-DEFROST-010",
+        "REQ-HVAC-DEFROST-011",
+        "REQ-HVAC-DOCK-DEFROST-001",
+        "REQ-HVAC-DOCK-DEFROST-002",
+        "REQ-HVAC-ENV-001",
+        "REQ-HVAC-GENERAL-001",
+        "REQ-HVAC-GENERAL-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-AUTO-003#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-AUTO-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-002#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-TEMPERATURE",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-003#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-004#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-004"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-005#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-005"
+          ],
+          "oracle_refs": [
+            "ORACLE-NO-SPURIOUS-CONTROL-TX",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-006#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-006"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-007#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-007"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-MEMORY",
+            "ORACLE-MODE",
+            "ORACLE-TEMPERATURE"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-008#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-008"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-009#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-009"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-010#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-010"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-011#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-011"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DOCK-DEFROST-001#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DOCK-DEFROST-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-DOCK-MAIN-CONSISTENCY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DOCK-DEFROST-002#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-DOCK-DEFROST-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-DOCK-MAIN-CONSISTENCY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-ENV-001#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-ENV-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-GENERAL-001#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-NO-SPURIOUS-CONTROL-TX",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-GENERAL-002#multi-channel",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-THREE-FRAME-REQUEST",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        }
+      ]
+    },
+    "persistence_restore": {
+      "requirement_ids": [
+        "REQ-HVAC-DEFROST-004",
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-007",
+        "REQ-HVAC-DEFROST-008",
+        "REQ-HVAC-DEFROST-009",
+        "REQ-HVAC-DEFROST-010",
+        "REQ-HVAC-DOCK-DEFROST-002"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#defrost_button_off",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-007",
+            "REQ-HVAC-DOCK-DEFROST-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-DOCK-MAIN-CONSISTENCY",
+            "ORACLE-MEMORY",
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-TEMPERATURE",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "defrost_button_off",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#blow_mode_to_non_window",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-004",
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-008"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "blow_mode_to_non_window",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#ac_off",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-009"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "ac_off",
+          "target_state": "off"
+        },
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#hvac_off",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-004",
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-010"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "hvac_off",
+          "target_state": "off"
+        }
+      ]
+    },
+    "interruption_restore": {
+      "requirement_ids": [
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-011"
+      ],
+      "oracle_refs": [
+        "ORACLE-MEMORY",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "SM-HVAC-FRONT-DEFROST#vehicle_power_down",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-006",
+            "REQ-HVAC-DEFROST-011"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": [],
+          "state_machine_ref": "SM-HVAC-FRONT-DEFROST",
+          "source_state": "on",
+          "event": "vehicle_power_down",
+          "target_state": "off"
+        }
+      ]
+    },
+    "temporal_before_boundary": {
+      "requirement_ids": [
+        "REQ-HVAC-GENERAL-002",
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S",
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-GENERAL-002#temporal_before_boundary",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-THREE-FRAME-REQUEST",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-GENERAL-003#temporal_before_boundary",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-FEEDBACK-WITHIN-1S"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        }
+      ]
+    },
+    "temporal_at_boundary": {
+      "requirement_ids": [
+        "REQ-HVAC-GENERAL-002",
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S",
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-GENERAL-002#temporal_at_boundary",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-THREE-FRAME-REQUEST",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-GENERAL-003#temporal_at_boundary",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-FEEDBACK-WITHIN-1S"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        }
+      ]
+    },
+    "temporal_after_boundary": {
+      "requirement_ids": [
+        "REQ-HVAC-GENERAL-002",
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-FEEDBACK-WITHIN-1S",
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-GENERAL-002#temporal_after_boundary",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-THREE-FRAME-REQUEST",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-GENERAL-003#temporal_after_boundary",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-FEEDBACK-WITHIN-1S"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        }
+      ]
+    },
+    "equivalence_partition": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "lower_boundary": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "upper_boundary": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "invalid_outside_domain": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "external_session_entry": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "external_session_exit": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "indicator_appear": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "indicator_clear": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "visual_distractor_negative": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "functional_expected": {
+      "requirement_ids": [
+        "REQ-HVAC-AUTO-003",
+        "REQ-HVAC-DEFROST-001",
+        "REQ-HVAC-DEFROST-002",
+        "REQ-HVAC-DEFROST-003",
+        "REQ-HVAC-DEFROST-004",
+        "REQ-HVAC-DEFROST-005",
+        "REQ-HVAC-DEFROST-006",
+        "REQ-HVAC-DEFROST-007",
+        "REQ-HVAC-DEFROST-008",
+        "REQ-HVAC-DEFROST-009",
+        "REQ-HVAC-DEFROST-010",
+        "REQ-HVAC-DEFROST-011",
+        "REQ-HVAC-DISPLAY-001",
+        "REQ-HVAC-DOCK-DEFROST-001",
+        "REQ-HVAC-DOCK-DEFROST-002",
+        "REQ-HVAC-ENV-001",
+        "REQ-HVAC-GENERAL-001",
+        "REQ-HVAC-GENERAL-002",
+        "REQ-HVAC-GENERAL-003"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-FEEDBACK-WITHIN-1S",
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-NO-SPURIOUS-CONTROL-TX",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-THREE-FRAME-REQUEST",
+        "ORACLE-UI-SELECTION"
+      ],
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-AUTO-003#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-AUTO-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-001#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-002#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-TEMPERATURE",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-003#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-004#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-004"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-005#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-005"
+          ],
+          "oracle_refs": [
+            "ORACLE-NO-SPURIOUS-CONTROL-TX",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-006#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-006"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-007#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-007"
+          ],
+          "oracle_refs": [
+            "ORACLE-BLOWER",
+            "ORACLE-MEMORY",
+            "ORACLE-MODE",
+            "ORACLE-TEMPERATURE"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-008#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-008"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-009#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-009"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE-ARBITRATION",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-010#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-010"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-011#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-011"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DISPLAY-001#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DISPLAY-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DOCK-DEFROST-001#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DOCK-DEFROST-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-DOCK-MAIN-CONSISTENCY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DOCK-DEFROST-002#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-DOCK-DEFROST-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-DOCK-MAIN-CONSISTENCY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-ENV-001#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-ENV-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-GENERAL-001#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-NO-SPURIOUS-CONTROL-TX",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-GENERAL-002#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-002"
+          ],
+          "oracle_refs": [
+            "ORACLE-THREE-FRAME-REQUEST",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-GENERAL-003#functional-expected",
+          "requirement_ids": [
+            "REQ-HVAC-GENERAL-003"
+          ],
+          "oracle_refs": [
+            "ORACLE-FEEDBACK-WITHIN-1S"
+          ],
+          "contract_statuses": [
+            "human_confirmed"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        }
+      ]
+    },
+    "expected_source_gate": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "historical_regression_candidate": {
+      "requirement_ids": [],
+      "oracle_refs": [],
+      "support_items": []
+    },
+    "control_surface_equivalence": {
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-DEFROST-001#control_surface_equivalence",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DOCK-DEFROST-001#control_surface_equivalence",
+          "requirement_ids": [
+            "REQ-HVAC-DOCK-DEFROST-001"
+          ],
+          "oracle_refs": [
+            "ORACLE-DOCK-MAIN-CONSISTENCY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        }
+      ],
+      "requirement_ids": [
+        "REQ-HVAC-DEFROST-001",
+        "REQ-HVAC-DOCK-DEFROST-001"
+      ],
+      "oracle_refs": [
+        "ORACLE-DOCK-MAIN-CONSISTENCY",
+        "ORACLE-UI-SELECTION"
+      ]
+    },
+    "system_context_lifecycle": {
+      "support_items": [
+        {
+          "support_id": "REQ-HVAC-DEFROST-007#system_context_lifecycle",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-007"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-MODE",
+            "ORACLE-BLOWER",
+            "ORACLE-TEMPERATURE"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-008#system_context_lifecycle",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-008"
+          ],
+          "oracle_refs": [
+            "ORACLE-MODE",
+            "ORACLE-MODE-ARBITRATION"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-009#system_context_lifecycle",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-009"
+          ],
+          "oracle_refs": [
+            "ORACLE-UI-SELECTION",
+            "ORACLE-MODE-ARBITRATION"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-010#system_context_lifecycle",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-010"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        },
+        {
+          "support_id": "REQ-HVAC-DEFROST-011#system_context_lifecycle",
+          "requirement_ids": [
+            "REQ-HVAC-DEFROST-011"
+          ],
+          "oracle_refs": [
+            "ORACLE-MEMORY",
+            "ORACLE-UI-SELECTION"
+          ],
+          "contract_formal": true,
+          "semantic_proof_present": true,
+          "blocking_finding_refs": []
+        }
+      ],
+      "requirement_ids": [
+        "REQ-HVAC-DEFROST-007",
+        "REQ-HVAC-DEFROST-008",
+        "REQ-HVAC-DEFROST-009",
+        "REQ-HVAC-DEFROST-010",
+        "REQ-HVAC-DEFROST-011"
+      ],
+      "oracle_refs": [
+        "ORACLE-BLOWER",
+        "ORACLE-MEMORY",
+        "ORACLE-MODE",
+        "ORACLE-MODE-ARBITRATION",
+        "ORACLE-TEMPERATURE",
+        "ORACLE-UI-SELECTION"
+      ]
+    }
+  },
+  "capability_role": "business_capability",
+  "requirement_refs": [
+    "REQ-HVAC-AUTO-003",
+    "REQ-HVAC-DEFROST-001",
+    "REQ-HVAC-DEFROST-002",
+    "REQ-HVAC-DEFROST-003",
+    "REQ-HVAC-DEFROST-004",
+    "REQ-HVAC-DEFROST-005",
+    "REQ-HVAC-DEFROST-006",
+    "REQ-HVAC-DEFROST-007",
+    "REQ-HVAC-DEFROST-008",
+    "REQ-HVAC-DEFROST-009",
+    "REQ-HVAC-DEFROST-010",
+    "REQ-HVAC-DEFROST-011",
+    "REQ-HVAC-DISPLAY-001",
+    "REQ-HVAC-DOCK-DEFROST-001",
+    "REQ-HVAC-DOCK-DEFROST-002",
+    "REQ-HVAC-ENV-001",
+    "REQ-HVAC-GENERAL-001",
+    "REQ-HVAC-GENERAL-002",
+    "REQ-HVAC-GENERAL-003"
+  ],
+  "behavior_relation_refs": [
+    "TDR-0B5905EB3A56",
+    "TDR-20210C8C1E2F",
+    "TDR-4745599D05A2",
+    "TDR-87DB60EFFC38",
+    "TDR-B5B658755B67",
+    "TDR-C75D16C96168",
+    "TDR-E1146B0DFF6D",
+    "TDR-FF0C77A6045A"
+  ],
+  "object_digest_sha256": "bb242203ea581ce16328e987a7dd01e8167f06653e6c301176094843fdc52b28"
+}

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.cockpit.test/schemas/module_profile.schema.json",
+  "title": "TKR-Lite Module Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_id", "module_profile_id", "revision", "module", "scope", "default_archetypes", "default_rule_refs", "risk_tags", "exclusions", "source_refs", "status", "decision_refs"],
+  "properties": {
+    "schema_id": {"const": "module-profile/v1"},
+    "module_profile_id": {"type": "string", "pattern": "^MP-[A-Z0-9-]+$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "module": {"type": "string"},
+    "scope": {"enum": ["pilot_scoped", "module_candidate", "released"]},
+    "default_archetypes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "default_rule_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "risk_tags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "exclusions": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "status": {"enum": ["candidate", "under_review", "approved_with_scope", "approved"]},
+    "decision_refs": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "object_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

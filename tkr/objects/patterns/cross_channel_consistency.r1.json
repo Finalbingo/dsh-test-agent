@@ -1,0 +1,111 @@
+{
+  "schema_id": "test-knowledge-rule/v1",
+  "knowledge_id": "ckp.pattern.cross_channel_consistency",
+  "kind": "coverage_pattern",
+  "revision": 1,
+  "title": "多通道状态一致性",
+  "description": "验证同一业务状态在适用UI、Dock、仪表和信号通道间一致，不预设具体通道。",
+  "scope": {
+    "domains": [
+      "cockpit"
+    ],
+    "capability_archetypes": [
+      "request_feedback_control",
+      "passive_indicator_alert",
+      "boolean_state_control",
+      "enum_selector"
+    ],
+    "module_profile_refs": [],
+    "exclusions": []
+  },
+  "input_contract": {
+    "required_features": [
+      "has_multi_channel_oracle"
+    ],
+    "required_ecsm_fields": [
+      "oracle_ref"
+    ],
+    "optional_ecsm_fields": [
+      "ui_state_ref",
+      "dock_state_ref",
+      "signal_state_ref",
+      "cluster_state_ref"
+    ],
+    "unknown_policy": "create_finding",
+    "conflict_policy": "block_and_create_finding"
+  },
+  "predicate": {
+    "all": [
+      "feature.has_multi_channel_oracle == true"
+    ]
+  },
+  "output_contract": [
+    {
+      "dimension": "cross_channel_consistency",
+      "output_class": "formal_coverage_target",
+      "expected_policy": "require_ecsm_expected",
+      "oracle_policy": "require_ecsm_oracle"
+    }
+  ],
+  "parameter_source_policy": {
+    "product_behavior_allowed": [
+      "released_ecsm",
+      "human_product_decision"
+    ],
+    "coverage_policy_allowed": [
+      "approved_project_policy"
+    ],
+    "forbidden": [
+      "historical_case_literal",
+      "model_general_knowledge",
+      "execution_command"
+    ]
+  },
+  "dedup_key": [
+    "capability_id",
+    "coverage_dimension",
+    "condition_signature",
+    "source_state",
+    "event",
+    "expected_ref",
+    "oracle_intent"
+  ],
+  "priority_policy": {
+    "default": "recommended",
+    "waiver_roles": [
+      "project_test_owner"
+    ]
+  },
+  "composition": {
+    "merge_with": [],
+    "conflicts_with": [],
+    "supersedes": []
+  },
+  "evidence": {
+    "source_class": "expert_decision",
+    "authority_scope": "test_method",
+    "normative_force": "recommended",
+    "applicability_status": "pending_review",
+    "source_refs": [
+      "docs/COCKPIT_TEST_DESIGN_KNOWLEDGE_REGISTRY_LITE_BASELINE_v1.0_20260902.md",
+      "SMP-NORMAL-A-001",
+      "docs/telltale_lamp_catalog.md"
+    ],
+    "source_digest": "4718038cbac7d7f7bcc3aee77f2b40422ebd2bb71e388227e87e4c13b9e0113b",
+    "rationale": "验证同一业务状态在适用UI、Dock、仪表和信号通道间一致，不预设具体通道。"
+  },
+  "governance": {
+    "status": "candidate",
+    "owner_role": "cockpit_test_architecture_owner",
+    "approver_roles": [
+      "cockpit_test_architecture_owner"
+    ],
+    "effective_from": null,
+    "review_due_at": null,
+    "decision_refs": [
+      "DEC-TKR-0002",
+      "DEC-TKR-0004"
+    ]
+  },
+  "object_digest_sha256": "8456334b3123e4b3a05f6437dd4e70dc0c82da5325bdd0ddc405c9b7a1f06dbb"
+}

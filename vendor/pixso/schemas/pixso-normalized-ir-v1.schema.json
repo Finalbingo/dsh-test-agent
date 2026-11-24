@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pixso-normalized-ir/v1",
+  "title": "Pixso Normalized IR v1 record",
+  "oneOf": [
+    {"$ref": "#/$defs/page"},
+    {"$ref": "#/$defs/board"},
+    {"$ref": "#/$defs/node"},
+    {"$ref": "#/$defs/edge"},
+    {"$ref": "#/$defs/component"},
+    {"$ref": "#/$defs/instance"},
+    {"$ref": "#/$defs/override"},
+    {"$ref": "#/$defs/text"},
+    {"$ref": "#/$defs/asset"},
+    {"$ref": "#/$defs/blob"},
+    {"$ref": "#/$defs/style"}
+  ],
+  "$defs": {
+    "base": {
+      "type": "object",
+      "required": ["record_type", "source_id"],
+      "properties": {
+        "record_type": {"type": "string"},
+        "source_id": {"type": "string"},
+        "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+      }
+    },
+    "page": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["page_id", "name"], "properties": {"record_type": {"const": "page"}, "page_id": {"type": "string"}, "name": {"type": "string"}, "internal": {"type": "boolean"}}}
+      ]
+    },
+    "board": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["board_id", "page_id", "name", "classification"], "properties": {"record_type": {"const": "board"}, "board_id": {"type": "string"}, "page_id": {"type": "string"}, "name": {"type": "string"}, "classification": {"type": "object"}}}
+      ]
+    },
+    "node": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["node_id", "node_type"], "properties": {"record_type": {"const": "node"}, "node_id": {"type": "string"}, "node_type": {"type": "string"}, "parent_id": {"type": ["string", "null"]}, "page_id": {"type": ["string", "null"]}, "board_id": {"type": ["string", "null"]}}}
+      ]
+    },
+    "edge": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["edge_id", "from", "edge_type", "to"], "properties": {"record_type": {"const": "edge"}, "edge_id": {"type": "string"}, "from": {"type": "string"}, "edge_type": {"type": "string"}, "to": {"type": "string"}}}
+      ]
+    },
+    "component": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["component_id"], "properties": {"record_type": {"const": "component"}, "component_id": {"type": "string"}}}
+      ]
+    },
+    "instance": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["instance_id"], "properties": {"record_type": {"const": "instance"}, "instance_id": {"type": "string"}, "instance_of": {"type": ["string", "null"]}}}
+      ]
+    },
+    "override": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["override_id", "instance_id", "guid_path", "patch"], "properties": {"record_type": {"const": "override"}, "override_id": {"type": "string"}, "instance_id": {"type": "string"}, "guid_path": {"type": "array", "items": {"type": "string"}}, "patch": {"type": "object"}}}
+      ]
+    },
+    "text": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["text_id", "text", "origin"], "properties": {"record_type": {"const": "text"}, "text_id": {"type": "string"}, "text": {"type": "string"}, "origin": {"enum": ["primary_node", "instance_effective"]}}}
+      ]
+    },
+    "asset": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["asset_id", "object_sha256", "media_type"], "properties": {"record_type": {"const": "asset"}, "asset_id": {"type": "string"}, "object_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}, "media_type": {"type": "string"}}}
+      ]
+    },
+    "blob": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["blob_id", "blob_index", "object_sha256"], "properties": {"record_type": {"const": "blob"}, "blob_id": {"type": "string"}, "blob_index": {"type": "integer"}, "object_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}}
+      ]
+    },
+    "style": {
+      "allOf": [
+        {"$ref": "#/$defs/base"},
+        {"type": "object", "required": ["style_id", "name"], "properties": {"record_type": {"const": "style"}, "style_id": {"type": "string"}, "name": {"type": "string"}}}
+      ]
+    }
+  }
+}

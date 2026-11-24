@@ -1,0 +1,14 @@
+{
+  "schema_id": "registry-bundle-manifest/v1",
+  "bundle_id": "APPROVED-REGISTRY-v0.1",
+  "revision": 1,
+  "status": "withheld_pending_human_approval",
+  "objects": [],
+  "blocking_findings": [
+    "FND-TKR-005"
+  ],
+  "decision_refs": [
+    "DEC-TKR-0004"
+  ],
+  "bundle_digest_sha256": "b27a93352068b826b0e32026a6b2f5f6c016141d043e30222d2810e12bc119bc"
+}

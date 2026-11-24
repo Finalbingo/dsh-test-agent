@@ -1,0 +1,102 @@
+{
+  "schema_id": "test-knowledge-rule/v1",
+  "knowledge_id": "ckp.pattern.system_context_lifecycle",
+  "kind": "coverage_pattern",
+  "revision": 1,
+  "title": "系统事件与恢复生命周期",
+  "description": "从显式关系检查进入、期间、退出、恢复和不变量。缺阶段形成问题，不从历史组合推断互不影响。",
+  "scope": {
+    "domains": [
+      "cockpit"
+    ],
+    "capability_archetypes": [],
+    "module_profile_refs": [],
+    "exclusions": []
+  },
+  "input_contract": {
+    "required_features": [
+      "has_context_lifecycle_relation"
+    ],
+    "required_ecsm_fields": [
+      "behavior_relation_refs",
+      "oracle_ref"
+    ],
+    "optional_ecsm_fields": [
+      "state_machine_ref"
+    ],
+    "unknown_policy": "create_finding",
+    "conflict_policy": "block_and_create_finding"
+  },
+  "predicate": {
+    "all": [
+      "feature.has_context_lifecycle_relation == true"
+    ]
+  },
+  "output_contract": [
+    {
+      "dimension": "system_context_lifecycle",
+      "output_class": "formal_or_finding",
+      "expected_policy": "require_ecsm_expected_else_finding",
+      "oracle_policy": "require_ecsm_oracle_else_finding"
+    }
+  ],
+  "parameter_source_policy": {
+    "product_behavior_allowed": [
+      "released_ecsm",
+      "human_product_decision"
+    ],
+    "coverage_policy_allowed": [
+      "approved_project_policy"
+    ],
+    "forbidden": [
+      "historical_case_literal",
+      "model_general_knowledge",
+      "execution_command"
+    ]
+  },
+  "dedup_key": [
+    "primary_owner",
+    "normalized_given",
+    "normalized_when",
+    "expected_ref",
+    "oracle_intent"
+  ],
+  "priority_policy": {
+    "default": "recommended",
+    "waiver_roles": [
+      "project_test_owner"
+    ]
+  },
+  "composition": {
+    "merge_with": [],
+    "conflicts_with": [],
+    "supersedes": []
+  },
+  "evidence": {
+    "source_class": "expert_decision",
+    "authority_scope": "test_method",
+    "normative_force": "recommended",
+    "applicability_status": "pending_review",
+    "source_refs": [
+      "docs/TEST_DESIGN_COMPILER_CONVERGED_IMPLEMENTATION_PLAN_v1.1_20260904.md",
+      "SMP-SQ-SYSTEM-CONTEXT-LIFECYCLE-A-001",
+      "SMP-SQ-SYSTEM-CONTEXT-LIFECYCLE-A-002"
+    ],
+    "source_digest": "867aff4f42c626692f49a6e55b632657b6d0079dbfb425ae38448b0b548d5dd5",
+    "rationale": "从显式关系检查进入、期间、退出、恢复和不变量。缺阶段形成问题，不从历史组合推断互不影响。"
+  },
+  "governance": {
+    "status": "candidate",
+    "owner_role": "cockpit_test_architecture_owner",
+    "approver_roles": [
+      "cockpit_test_architecture_owner"
+    ],
+    "effective_from": null,
+    "review_due_at": null,
+    "decision_refs": [
+      "DEC-TKR-0002",
+      "DEC-TKR-0004"
+    ]
+  },
+  "object_digest_sha256": "a882041063ed5db9b02c6773cf0800df0f58f7de92a665d274b8423be64da8d6"
+}

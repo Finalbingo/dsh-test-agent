@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.cockpit.test/schemas/bench_verification_profile.schema.json",
+  "title": "TKR Bench Verification Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "profile_id",
+    "revision",
+    "title",
+    "scope",
+    "status",
+    "applicability",
+    "system_boundary",
+    "observable_capabilities",
+    "oracle_type_capabilities",
+    "claim_policy",
+    "planner_policy",
+    "decision_refs",
+    "source_refs",
+    "object_digest_sha256"
+  ],
+  "properties": {
+    "schema_id": {"const": "bench-verification-profile/v1"},
+    "profile_id": {"type": "string", "pattern": "^BVP-[A-Z0-9-]+$"},
+    "revision": {"type": "integer", "minimum": 1},
+    "title": {"type": "string", "minLength": 2},
+    "scope": {"enum": ["enterprise_current_default", "project", "workcell"]},
+    "status": {"enum": ["candidate", "under_review", "approved_with_scope", "approved"]},
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default_for_current_projects", "project_selector", "override_rule"],
+      "properties": {
+        "default_for_current_projects": {"type": "boolean"},
+        "project_selector": {"type": "string"},
+        "override_rule": {"type": "string", "minLength": 5}
+      }
+    },
+    "system_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sut", "counterpart_ecu_present", "primary_oracle", "supporting_observations", "notes"],
+      "properties": {
+        "sut": {"type": "string"},
+        "counterpart_ecu_present": {"type": "boolean"},
+        "primary_oracle": {"type": "string"},
+        "supporting_observations": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "array",
+          "items": {"type": "string"},
+          "uniqueItems": true
+        }
+      }
+    },
+    "observable_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/capability"}
+    },
+    "oracle_type_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "allOf": [
+          {"$ref": "#/$defs/capability"},
+          {
+            "type": "object",
+            "required": ["oracle_type"],
+            "properties": {"oracle_type": {"type": "string"}}
+          }
+        ]
+      }
+    },
+    "claim_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pass_means",
+        "pass_does_not_mean",
+        "full_requirement_pass_requires_all_normative_oracles",
+        "partial_evidence_cannot_be_promoted_to_requirement_pass"
+      ],
+      "properties": {
+        "pass_means": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+        "pass_does_not_mean": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+        "full_requirement_pass_requires_all_normative_oracles": {"const": true},
+        "partial_evidence_cannot_be_promoted_to_requirement_pass": {"const": true}
+      }
+    },
+    "planner_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preserve_full_test_design",
+        "project_execution_testability",
+        "unsupported_oracle_action",
+        "mixed_oracle_action",
+        "unmapped_oracle_support"
+      ],
+      "properties": {
+        "preserve_full_test_design": {"const": true},
+        "project_execution_testability": {"const": true},
+        "unsupported_oracle_action": {"const": "retain_and_mark_deferred"},
+        "mixed_oracle_action": {"const": "split_direct_subclaim_and_defer_remainder"},
+        "unmapped_oracle_support": {"enum": ["conditional", "unsupported"]}
+      }
+    },
+    "decision_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "source_refs": {"type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true},
+    "object_digest_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  },
+  "$defs": {
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["support", "reason", "allowed_claims", "unverified_claims"],
+      "properties": {
+        "observable_kind": {"type": "string"},
+        "oracle_type": {"type": "string"},
+        "support": {"enum": ["direct", "supporting_only", "conditional", "unsupported"]},
+        "reason": {"type": "string", "minLength": 2},
+        "allowed_claims": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "unverified_claims": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "oneOf": [
+        {"required": ["observable_kind"], "not": {"required": ["oracle_type"]}},
+        {"required": ["oracle_type"], "not": {"required": ["observable_kind"]}}
+      ]
+    }
+  }
+}
