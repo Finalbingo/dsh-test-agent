@@ -279,7 +279,10 @@ export function parseJson(textValue) {
 }
 
 export function mergeFacts(existing, raw, evidenceIds, options = {}) {
-	const key = (value) => String(value || '').replace(/\s/g, '').slice(0, 28);
+	const key = (value) => String(value || '')
+		.normalize('NFKC')
+		.replace(/[\s，。；：、,.!?！？;:"'“”()（）【】\[\]]/g, '')
+		.toLowerCase();
 	const seen = new Set(existing.map((fact) => key(fact.statement)));
 	const designEvidenceIds = options?.designEvidenceIds instanceof Set ? options.designEvidenceIds : null;
 	const added = [];
@@ -960,22 +963,29 @@ export function featurePrompt(facts, projectName) {
 		'{"features":[{"name":"功能点名称","summary":"一句话说明","fact_refs":["F-0001","F-0002"]}]}',
 		'规则：',
 		'- 每个事实最多归属一个功能点；无法归属的不要硬塞。',
-		'- 功能点 3~12 个，粒度以「测试时能单独验收」为准。',
-		'- fact_refs 必须来自下面编号。',
+		'- 表格中具有独立信号名、独立监控实体或独立触发规则的不同行，保持各自可独立验收的功能点粒度，严禁把数十个不同实体笼统塞进同一个大口袋。',
+		'- 功能点每批 3~15 个，粒度以「测试时能单独验收」为准。',
+		'- fact_refs 必须来自下面编号，不得遗漏本批核心规则事实。',
 		'',
 		block
 	].join('\n');
 }
 
 export function mergeFeatures(existing, raw, factIds) {
-	const seen = new Set(existing.map((item) => item.name));
+	const byName = new Map(existing.map((item) => [item.name, item]));
 	const added = [];
 	for (const item of list(raw?.features)) {
 		const name = text(item.name);
-		const refs = strings(item.fact_refs).map(text).filter((ref) => factIds.has(ref));
-		if (name === '' || refs.length === 0 || seen.has(name)) continue;
-		seen.add(name);
-		added.push({ name, summary: text(item.summary), fact_refs: [...new Set(refs)], status: 'candidate' });
+		const refs = [...new Set(strings(item.fact_refs).map(text).filter((ref) => factIds.has(ref)))];
+		if (name === '' || refs.length === 0) continue;
+		const prior = byName.get(name);
+		if (prior) {
+			prior.fact_refs = [...new Set([...(prior.fact_refs || []), ...refs])];
+			continue;
+		}
+		const entry = { name, summary: text(item.summary), fact_refs: refs, status: 'candidate' };
+		byName.set(name, entry);
+		added.push(entry);
 	}
 	return added;
 }

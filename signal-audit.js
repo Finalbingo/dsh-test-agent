@@ -39,6 +39,7 @@ export function parseDbc(file) {
 	const messages = new Map();
 	const byName = new Map();
 	const values = new Map();
+	const comments = new Map();
 	let current = null;
 	const lines = text.replace(/\r\n?/g, '\n').split('\n');
 	for (let index = 0; index < lines.length; index += 1) {
@@ -67,10 +68,18 @@ export function parseDbc(file) {
 			const table = {};
 			for (const match of val[3].matchAll(/(-?\d+)\s+"([^"]*)"/g)) table[match[1]] = match[2];
 			values.set(`${val[1]}.${val[2]}`, table);
+			continue;
+		}
+		const cmSg = /^CM_\s+SG_\s+(\d+)\s+([A-Za-z0-9_]+)\s+"((?:[^"\\]|\\.)*)"\s*;$/.exec(line);
+		if (cmSg) {
+			comments.set(`${cmSg[1]}.${cmSg[2]}`, cmSg[3].replace(/\\"/g, '"'));
 		}
 	}
 	for (const message of messages.values()) {
-		for (const signal of message.signals) signal.valueTable = values.get(`${message.rawId}.${signal.name}`) || null;
+		for (const signal of message.signals) {
+			signal.valueTable = values.get(`${message.rawId}.${signal.name}`) || null;
+			signal.comment = comments.get(`${message.rawId}.${signal.name}`) || '';
+		}
 	}
 	return {
 		file: path.basename(file), sha256: crypto.createHash('sha256').update(buffer).digest('hex'),

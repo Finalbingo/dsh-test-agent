@@ -144,9 +144,11 @@ window.__ModuleLoader__.load({
 .cts-btn.danger { color:var(--dsw-alias-state-error-primary); border-color:#f2c6c2; background:#fdf3f2; }
 .cts-btn.danger:hover:not(:disabled) { background:#fae4e2; border-color:#e5a5a0; }
 .cts-btn:disabled { opacity:.45; cursor:default; }
-.cts-input { font:inherit; font-size:13px; resize:vertical; min-height:64px; max-height:200px; padding:8px 10px; border-radius:7px; border:1px solid var(--dsw-alias-border-l2); background:var(--dsw-alias-bg-layer-1); color:var(--dsw-alias-label-primary); transition:border-color .12s; }
-.cts-input:focus { border-color:var(--dsw-alias-brand-primary); }
-.cts-input-sm { padding:5px 9px; font-size:12.5px; min-height:32px; }
+.cts-input { font:inherit; font-size:13px; padding:7px 10px; border-radius:7px; border:1px solid var(--dsw-alias-border-l2); background:var(--dsw-alias-bg-layer-1); color:var(--dsw-alias-label-primary); transition:border-color .12s; }
+input.cts-input, select.cts-input { min-height:36px; height:36px; padding:6px 10px; resize:none; }
+textarea.cts-input { resize:vertical; min-height:64px; max-height:200px; line-height:1.55; }
+.cts-input:focus { border-color:var(--dsw-alias-brand-primary); outline:none; box-shadow:0 0 0 2px var(--dsw-alias-brand-soft); }
+.cts-input-sm { padding:5px 9px; font-size:12.5px; min-height:32px; height:32px; }
 .cts-row { display:flex; align-items:center; gap:8px; }
 .cts-hint { font-size:11.5px; color:var(--dsw-alias-label-secondary); }
 .cts-err { margin:0 20px; padding:9px 12px; border-radius:7px; background:#fdf3f2; border:1px solid #f2c6c2; color:var(--dsw-alias-state-error-primary); font-size:12.5px; }
@@ -221,6 +223,30 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 /* 对话框 */
 .cts-page dialog { border:1px solid var(--dsw-alias-border-l2); border-radius:10px; color:inherit; background:var(--dsw-alias-bg-layer-1); box-shadow:0 20px 48px rgba(20,26,24,.18); }
 .cts-page dialog::backdrop { background:rgba(20,26,24,.42); }
+.cts-page dialog.cts-modal { padding:0; overflow:hidden; }
+.cts-modal-wrap { display:flex; flex-direction:column; max-height:84vh; }
+.cts-modal-head { flex:none; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 20px; border-bottom:1px solid var(--dsw-alias-border-l1); background:var(--dsw-alias-bg-layer-1); }
+.cts-modal-head h3 { margin:0; font-size:15.5px; font-weight:600; color:var(--dsw-alias-label-primary); }
+.cts-modal-sub { margin:2px 0 0; font-size:12px; color:var(--dsw-alias-label-secondary); }
+.cts-modal-x { width:28px; height:28px; padding:0; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; border:1px solid transparent; background:transparent; color:var(--dsw-alias-label-secondary); font-size:17px; cursor:pointer; }
+.cts-modal-x:hover { background:var(--dsw-alias-bg-layer-2); color:var(--dsw-alias-label-primary); }
+.cts-modal-body { flex:1 1 auto; min-height:0; overflow:auto; padding:18px 20px; display:flex; flex-direction:column; gap:14px; background:var(--dsw-alias-bg-base); }
+.cts-modal-foot { flex:none; display:flex; align-items:center; justify-content:flex-end; gap:8px; padding:12px 20px; border-top:1px solid var(--dsw-alias-border-l1); background:var(--dsw-alias-bg-layer-1); }
+.cts-modal-card { padding:14px 16px; border:1px solid var(--dsw-alias-border-l1); border-radius:8px; background:var(--dsw-alias-bg-layer-1); display:flex; flex-direction:column; gap:10px; }
+.cts-modal-grid2 { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; }
+@media (max-width: 640px) { .cts-modal-grid2 { grid-template-columns:1fr; } }
+.cts-kv-card { padding:13px 15px; border:1px solid var(--dsw-alias-border-l1); border-radius:8px; background:var(--dsw-alias-bg-layer-1); display:flex; flex-direction:column; gap:6px; }
+.cts-kv-label { font-size:11.5px; font-weight:600; color:var(--dsw-alias-label-secondary); }
+.cts-kv-val { font-size:13px; font-weight:600; color:var(--dsw-alias-label-primary); font-family:var(--cts-font-mono); overflow-wrap:anywhere; }
+.cts-kv-desc { font-size:11.5px; color:var(--dsw-alias-label-secondary); line-height:1.5; }
+.cts-mod-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border:1px solid var(--dsw-alias-border-l1); border-radius:8px; background:var(--dsw-alias-bg-layer-1); }
+.cts-mod-info { min-width:0; display:flex; flex-direction:column; gap:2px; }
+.cts-mod-name { font-size:13px; font-weight:600; color:var(--dsw-alias-label-primary); display:flex; align-items:center; gap:6px; }
+.cts-cap-group { display:flex; flex-wrap:wrap; gap:8px; }
+.cts-cap-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:6px; border:1px solid var(--dsw-alias-border-l2); background:var(--dsw-alias-bg-layer-1); font-size:12px; cursor:pointer; user-select:none; }
+.cts-cap-chip.on { border-color:var(--dsw-alias-brand-primary); background:var(--dsw-alias-brand-soft); color:var(--dsw-alias-brand-primary); font-weight:500; }
+.cts-danger-zone { padding:12px 14px; border:1px solid #f2c6c2; border-radius:8px; background:#fdf3f2; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.cts-danger-zone span { font-size:12px; color:var(--dsw-alias-state-error-primary); }
 .cts-confirm-dialog { width:min(520px, 92vw); padding:20px 22px; }
 .cts-confirm-dialog h3 { margin:0 0 8px; font-size:15.5px; font-weight:600; }
 .cts-confirm-dialog p { margin:0 0 10px; font-size:12.5px; color:var(--dsw-alias-label-secondary); line-height:1.65; white-space:pre-wrap; }
@@ -319,10 +345,14 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 .cts-md .cts-inline-code { font-family:var(--cts-font-mono); font-size:11.5px; background:var(--dsw-alias-bg-layer-1); border:1px solid var(--dsw-alias-border-l1); border-radius:4px; padding:0 4px; }
 .cts-md .cts-code { margin:8px 0; padding:10px 12px; border-radius:7px; background:var(--dsw-alias-bg-layer-1); border:1px solid var(--dsw-alias-border-l1); overflow:auto; }
 .cts-md .cts-code code { font-family:var(--cts-font-mono); font-size:11.5px; line-height:1.6; }
-.cts-md .cts-table-wrap { overflow-x:auto; margin:8px 0; }
-.cts-md .cts-table { border-collapse:collapse; font-size:12px; min-width:100%; }
-.cts-md .cts-table th, .cts-md .cts-table td { border:1px solid var(--dsw-alias-border-l1); padding:6px 9px; text-align:left; vertical-align:top; line-height:1.6; }
-.cts-md .cts-table th { background:var(--dsw-alias-bg-base); font-weight:600; white-space:nowrap; }
+.cts-md .cts-table-wrap { overflow-x:auto; margin:10px 0; border:1px solid var(--dsw-alias-border-l1); border-radius:7px; }
+.cts-md .cts-table { border-collapse:collapse; font-size:12.5px; width:100%; min-width:max-content; }
+.cts-md .cts-table th, .cts-md .cts-table td { border:1px solid var(--dsw-alias-border-l1); padding:7px 10px; text-align:left; vertical-align:top; line-height:1.6; min-width:72px; max-width:420px; overflow-wrap:anywhere; }
+.cts-md .cts-table th { background:var(--dsw-alias-bg-base); font-weight:600; color:var(--dsw-alias-label-primary); }
+.cts-md .cts-table tr:first-child th { border-top:0; }
+.cts-md .cts-img { display:block; max-width:100%; max-height:460px; margin:8px 0; border-radius:6px; border:1px solid var(--dsw-alias-border-l1); object-fit:contain; background:var(--dsw-alias-bg-base); }
+.cts-md .cts-img-tag { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:5px; background:var(--dsw-alias-bg-layer-2); color:var(--dsw-alias-label-secondary); font-size:11.5px; }
+.cts-md del { color:var(--dsw-alias-label-secondary); }
 .cts-md .cts-quote { margin:8px 0; padding:4px 10px; border-left:3px solid var(--dsw-alias-brand-primary); color:var(--dsw-alias-label-secondary); }
 .cts-md .cts-hr { border:0; border-top:1px solid var(--dsw-alias-border-l1); margin:10px 0; }
 .cts-md a { color:var(--dsw-alias-brand-primary); text-decoration:none; }
@@ -583,6 +613,72 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 .cts-mcp-page:hover { background:var(--dsw-alias-bg-layer-2); }
 .cts-mcp-page-meta { font-size:11px; color:var(--dsw-alias-label-secondary); margin-top:2px; }
 .cts-mcp-progress { font-size:11.5px; color:var(--dsw-alias-brand-primary); padding:6px 9px; border-radius:6px; background:var(--dsw-alias-brand-soft); border:1px solid #bcd7d8; }
+
+/* 全局流程副驾抽屉 + ⌘K 快捷指令条 + 富交互卡片 */
+.cts-copilot-shell { flex:1 1 auto; min-height:0; display:flex; position:relative; overflow:hidden; }
+.cts-copilot-main { flex:1 1 auto; min-width:0; min-height:0; display:flex; flex-direction:column; }
+.cts-copilot-drawer { flex:0 0 auto; width:clamp(360px, 34vw, 480px); display:flex; flex-direction:column; min-height:0; border-left:1px solid var(--dsw-alias-border-l2); background:var(--dsw-alias-bg-layer-1); z-index:6; }
+.cts-copilot-head { flex:none; display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 14px; border-bottom:1px solid var(--dsw-alias-border-l1); background:var(--dsw-alias-bg-layer-1); }
+.cts-copilot-head-left { display:flex; align-items:center; gap:7px; min-width:0; }
+.cts-copilot-head-left strong { font-size:13.5px; font-weight:600; white-space:nowrap; }
+.cts-copilot-head-actions { display:flex; align-items:center; gap:5px; }
+.cts-copilot-ctx { flex:none; display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:7px 14px; border-bottom:1px solid var(--dsw-alias-border-l1); background:var(--dsw-alias-bg-base); font-size:11px; color:var(--dsw-alias-label-secondary); }
+.cts-ctx-chip { display:inline-flex; align-items:center; gap:5px; padding:2px 8px; border-radius:5px; border:1px solid #bcd7d8; background:var(--dsw-alias-brand-soft); color:var(--dsw-alias-brand-primary); font-size:11px; font-weight:500; }
+.cts-ctx-chip button { border:0; background:transparent; color:inherit; cursor:pointer; padding:0 2px; font-size:12px; line-height:1; opacity:.75; }
+.cts-ctx-chip button:hover { opacity:1; }
+.cts-copilot-suggest { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+.cts-suggest-btn { font:inherit; font-size:11.5px; text-align:left; padding:5px 10px; border-radius:6px; border:1px solid var(--dsw-alias-border-l2); background:var(--dsw-alias-bg-layer-1); color:var(--dsw-alias-label-primary); cursor:pointer; transition:border-color .12s, background .12s; }
+.cts-suggest-btn:hover { border-color:var(--dsw-alias-brand-primary); background:var(--dsw-alias-brand-soft); color:var(--dsw-alias-brand-primary); }
+.cts-copilot-empty { padding:16px 14px; border:1px solid var(--dsw-alias-border-l1); border-left:3px solid var(--dsw-alias-brand-primary); border-radius:8px; background:var(--dsw-alias-bg-base); display:flex; flex-direction:column; gap:8px; }
+.cts-copilot-empty strong { font-size:13px; color:var(--dsw-alias-label-primary); }
+.cts-copilot-empty p { margin:0; font-size:12px; color:var(--dsw-alias-label-secondary); line-height:1.55; }
+.cts-tool-prog { padding:0 10px 8px; display:flex; align-items:center; gap:8px; }
+.cts-gate-plan { border-color:var(--dsw-alias-brand-primary); background:var(--dsw-alias-brand-soft); }
+.cts-gate-summary { font-family:var(--cts-font-mono); font-size:11px; color:var(--dsw-alias-brand-primary); padding:5px 8px; border-radius:5px; background:var(--dsw-alias-bg-layer-1); border:1px solid #bcd7d8; }
+.cts-msg-actions { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:4px; }
+.cts-msg-actions .cts-btn { padding:3px 9px; font-size:11.5px; }
+.cts-copilot-btn-head { display:inline-flex; align-items:center; gap:5px; font-weight:500; }
+.cts-copilot-btn-head.active { border-color:var(--dsw-alias-brand-primary); background:var(--dsw-alias-brand-soft); color:var(--dsw-alias-brand-primary); }
+.cts-kbd { font-family:var(--cts-font-mono); font-size:10px; padding:1px 4px; border-radius:4px; border:1px solid var(--dsw-alias-border-l2); background:var(--dsw-alias-bg-base); color:var(--dsw-alias-label-secondary); }
+.cts-cmdk-mask { position:fixed; inset:0; z-index:40; background:rgba(20,26,24,.34); display:flex; align-items:flex-start; justify-content:center; padding-top:14vh; }
+.cts-cmdk { width:min(560px, 92vw); border:1px solid var(--dsw-alias-border-l2); border-radius:10px; background:var(--dsw-alias-bg-layer-1); box-shadow:0 20px 54px rgba(20,26,24,.22); overflow:hidden; display:flex; flex-direction:column; }
+.cts-cmdk-input-wrap { display:flex; align-items:center; gap:8px; padding:12px 14px; border-bottom:1px solid var(--dsw-alias-border-l1); }
+.cts-cmdk-input { flex:1 1 auto; border:0; outline:0; font:inherit; font-size:14px; background:transparent; color:var(--dsw-alias-label-primary); }
+.cts-cmdk-list { padding:8px; display:flex; flex-direction:column; gap:4px; max-height:46vh; overflow:auto; }
+.cts-cmdk-item { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 10px; border:0; border-radius:7px; background:transparent; color:var(--dsw-alias-label-primary); font:inherit; font-size:12.5px; text-align:left; cursor:pointer; }
+.cts-cmdk-item:hover { background:var(--dsw-alias-brand-soft); color:var(--dsw-alias-brand-primary); }
+.cts-cmdk-foot { display:flex; align-items:center; justify-content:space-between; padding:7px 14px; border-top:1px solid var(--dsw-alias-border-l1); background:var(--dsw-alias-bg-base); font-size:11px; color:var(--dsw-alias-label-secondary); }
+
+/* PRD 与信号矩阵双栏预览器 */
+.cts-pv-shell { flex:1 1 auto; min-height:0; display:flex; background:var(--dsw-alias-bg-base); overflow:hidden; }
+.cts-pv-side { width:272px; flex:0 0 auto; border-right:1px solid var(--dsw-alias-border-l1); background:var(--dsw-alias-bg-layer-1); display:flex; flex-direction:column; min-height:0; }
+.cts-pv-side-head { flex:none; padding:12px 14px 10px; border-bottom:1px solid var(--dsw-alias-border-l1); display:flex; flex-direction:column; gap:8px; }
+.cts-pv-side-head strong { font-size:13.5px; font-weight:600; color:var(--dsw-alias-label-primary); }
+.cts-pv-list { flex:1 1 auto; min-height:0; overflow:auto; padding:8px; display:flex; flex-direction:column; gap:4px; }
+.cts-pv-item { display:flex; align-items:center; gap:9px; padding:8px 9px; border:1px solid transparent; border-radius:7px; background:transparent; text-align:left; cursor:pointer; width:100%; color:inherit; transition:background .12s, border-color .12s; }
+.cts-pv-item:hover { background:var(--dsw-alias-bg-base); }
+.cts-pv-item.on { background:var(--dsw-alias-brand-soft); border-color:#bcd7d8; }
+.cts-pv-item-main { min-width:0; flex:1 1 auto; }
+.cts-pv-item-name { font-size:12.5px; font-weight:500; color:var(--dsw-alias-label-primary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.cts-pv-item.on .cts-pv-item-name { color:var(--dsw-alias-brand-primary); font-weight:600; }
+.cts-pv-item-meta { font-size:11px; color:var(--dsw-alias-label-secondary); font-family:var(--cts-font-mono); margin-top:1px; }
+.cts-pv-main { flex:1 1 auto; min-width:0; min-height:0; display:flex; flex-direction:column; }
+.cts-pv-bar { flex:none; display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 16px; border-bottom:1px solid var(--dsw-alias-border-l1); background:var(--dsw-alias-bg-layer-1); }
+.cts-pv-title { font-size:14px; font-weight:600; color:var(--dsw-alias-label-primary); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:42ch; }
+.cts-pv-bar-right { margin-left:auto; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.cts-pv-body { flex:1 1 auto; min-height:0; overflow:auto; padding:16px 20px; display:flex; flex-direction:column; gap:12px; }
+.cts-pv-pdf-wrap { flex:1 1 auto; min-height:0; display:flex; background:#e5e8e6; }
+.cts-pv-pdf-frame { width:100%; height:100%; border:0; flex:1 1 auto; background:#fff; }
+.cts-pv-doc { max-width:1040px; width:100%; margin:0 auto; padding:24px 30px; border:1px solid var(--dsw-alias-border-l1); border-radius:9px; background:var(--dsw-alias-bg-layer-1); display:flex; flex-direction:column; gap:8px; }
+.cts-pv-doc h2 { margin:14px 0 4px; font-size:16px; font-weight:600; color:var(--dsw-alias-label-primary); padding-top:8px; border-top:1px solid var(--dsw-alias-border-l1); }
+.cts-pv-doc h2:first-child { border-top:0; padding-top:0; margin-top:0; }
+.cts-pv-doc h3 { margin:10px 0 2px; font-size:14px; font-weight:600; color:var(--dsw-alias-brand-primary); }
+.cts-pv-doc p { margin:0; font-size:13px; line-height:1.72; color:var(--dsw-alias-label-primary); white-space:pre-wrap; overflow-wrap:anywhere; }
+.cts-pv-sig-enum { font-family:var(--cts-font-mono); font-size:11px; line-height:1.5; white-space:pre-wrap; color:var(--dsw-alias-label-secondary); max-width:300px; }
+@media (max-width: 820px) { .cts-pv-side { width:210px; } }
+@media (max-width: 920px) {
+  .cts-copilot-drawer { position:absolute; top:0; right:0; bottom:0; width:min(420px, 100%); box-shadow:-12px 0 32px rgba(20,26,24,.15); }
+}
 `;
 
 
@@ -982,36 +1078,131 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			return messages;
 		}
 
-		const INLINE = /(\*\*[^*]+\*\*|\*[^*\n]+\*|`[^`\n]+`|\[[^\]\n]+\]\([^)\s]+\))/g;
+		const INLINE = /(<br\s*\/?>|!\[[^\]\n]*\]\([^)\n]+\)|\*\*[^*]+\*\*|~~[^~\n]+~~|\*[^*\n]+\*|`[^`\n]+`|\[[^\]\n]+\]\([^)\s]+\))/gi;
+
+		function cleanInlineHtml(raw) {
+			return String(raw || '')
+				.replace(/<!--[\s\S]*?-->/g, '')
+				.replace(/<\s*(?:strong|b)\b[^>]*>([\s\S]*?)<\/\s*(?:strong|b)\s*>/gi, '**$1**')
+				.replace(/<\s*(?:em|i)\b[^>]*>([\s\S]*?)<\/\s*(?:em|i)\s*>/gi, '*$1*')
+				.replace(/<\s*code\b[^>]*>([\s\S]*?)<\/\s*code\s*>/gi, '`$1`')
+				.replace(/<\s*(?:del|s)\b[^>]*>([\s\S]*?)<\/\s*(?:del|s)\s*>/gi, '~~$1~~')
+				.replace(/<\s*\/?\s*(?:span|font|div|p|u|sup|sub|center|section|article|a)\b[^>]*>/gi, '')
+				.replace(/&nbsp;/gi, ' ')
+				.replace(/&lt;/gi, '<')
+				.replace(/&gt;/gi, '>')
+				.replace(/&amp;/gi, '&')
+				.replace(/&quot;/gi, '"');
+		}
+
+		function resolveRelativeAssetUrl(src, baseAsset) {
+			if (!src || !baseAsset || src.includes('..') || src.startsWith('/')) return '';
+			const clean = src.replace(/^(?:\.\/)+/, '').trim();
+			if (!clean || clean.includes('..')) return '';
+			const relJoined = [baseAsset.dir || '', clean].filter(Boolean).join('/');
+			if (baseAsset.scope === 'pool') return `/cts/file?scope=pool&path=${encodeURIComponent(relJoined)}`;
+			if (baseAsset.project) return `/cts/file?project=${encodeURIComponent(baseAsset.project)}&path=${encodeURIComponent(relJoined)}`;
+			return '';
+		}
 
 		/** Inline markdown → React nodes. Everything is built as elements, never innerHTML. */
-		function inline(text, keyPrefix) {
+		function inline(text, keyPrefix, baseAsset = null) {
 			const nodes = [];
 			let last = 0;
 			let index = 0;
-			const source = String(text || '');
+			const source = cleanInlineHtml(text);
 			for (const match of source.matchAll(INLINE)) {
 				if (match.index > last) nodes.push(source.slice(last, match.index));
 				const token = match[0];
 				const key = `${keyPrefix}-i${index++}`;
-				if (token.startsWith('**')) nodes.push(h('strong', { key }, token.slice(2, -2)));
-				else if (token.startsWith('`')) nodes.push(h('code', { key, className: 'cts-inline-code' }, token.slice(1, -1)));
-				else if (token.startsWith('[')) {
+				if (/^<br\s*\/?>$/i.test(token)) {
+					nodes.push(h('br', { key }));
+				} else if (token.startsWith('![')) {
+					const img = /^!\[([^\]]*)\]\(([^)]+)\)$/.exec(token);
+					const alt = img ? img[1].trim() : '';
+					const rawSrc = img ? img[2].trim().split(/\s+/)[0] : '';
+					const resolvedSrc = /^(https?:\/\/|\/cts\/file|data:image\/)/i.test(rawSrc)
+						? rawSrc
+						: resolveRelativeAssetUrl(rawSrc, baseAsset);
+					if (resolvedSrc) {
+						nodes.push(h('img', { key, className: 'cts-img', src: resolvedSrc, alt: alt || '文档配图', loading: 'lazy' }));
+					} else {
+						nodes.push(h('span', { key, className: 'cts-img-tag', title: rawSrc }, `🖼 ${alt || rawSrc.split('/').pop() || '图片'}`));
+					}
+				} else if (token.startsWith('**')) {
+					nodes.push(h('strong', { key }, token.slice(2, -2)));
+				} else if (token.startsWith('~~')) {
+					nodes.push(h('del', { key }, token.slice(2, -2)));
+				} else if (token.startsWith('`')) {
+					nodes.push(h('code', { key, className: 'cts-inline-code' }, token.slice(1, -1)));
+				} else if (token.startsWith('[')) {
 					const link = /^\[([^\]]+)\]\(([^)]+)\)$/.exec(token);
-					nodes.push(h('a', { key, href: link ? link[2] : '#', target: '_blank', rel: 'noreferrer' }, link ? link[1] : token));
-				} else nodes.push(h('em', { key }, token.slice(1, -1)));
+					const href = link ? link[2] : '#';
+					const safeHref = /^(https?:\/\/|mailto:|#|\/)/i.test(href) ? href : '#';
+					nodes.push(h('a', { key, href: safeHref, target: '_blank', rel: 'noreferrer' }, link ? link[1] : token));
+				} else {
+					nodes.push(h('em', { key }, token.slice(1, -1)));
+				}
 				last = match.index + token.length;
 			}
 			if (last < source.length) nodes.push(source.slice(last));
-			// Defensive: an unmatched marker must never reach the screen as literal syntax.
-			return nodes.map((node) => (typeof node === 'string' ? node.replace(/\*\*/g, '').replace(/(^|[^`])`([^`]|$)/g, '$1$2') : node));
+			return nodes.map((node) => (typeof node === 'string' ? node.replace(/\*\*/g, '') : node));
 		}
 
-		const START = /^\s*(#{1,6}\s|---+|```|>\s?|[-*+]\s|\d+[.)]\s|\|)/;
+		function splitMdTableRow(line) {
+			const trimmed = String(line || '').trim().replace(/^\|/, '').replace(/(?<!\\)\|$/, '');
+			const cells = [];
+			let cur = '';
+			for (let idx = 0; idx < trimmed.length; idx += 1) {
+				if (trimmed[idx] === '\\' && trimmed[idx + 1] === '|') {
+					cur += '|';
+					idx += 1;
+				} else if (trimmed[idx] === '|') {
+					cells.push(cur.trim());
+					cur = '';
+				} else {
+					cur += trimmed[idx];
+				}
+			}
+			cells.push(cur.trim());
+			return cells;
+		}
 
-		/** Block-level markdown: headings, lists, tables, fences, quotes, paragraphs. */
-		function markdown(text) {
-			const lines = String(text || '').replace(/\r\n?/g, '\n').split('\n');
+		const isMdTableSep = (line) => {
+			if (!line || !line.includes('|')) return false;
+			const cells = splitMdTableRow(line);
+			return cells.length >= 2 && cells.every((cell) => /^:?\s*-{1,}\s*:?$/.test(cell));
+		};
+
+		function parseHtmlTableBlock(html, tableKey, baseAsset = null) {
+			const rows = [];
+			for (const trMatch of html.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)) {
+				const cells = [];
+				for (const cellMatch of trMatch[1].matchAll(/<(th|td)\b([^>]*)>([\s\S]*?)<\/\1>/gi)) {
+					const tag = cellMatch[1].toLowerCase();
+					const attrs = cellMatch[2] || '';
+					const colSpan = Number(/colspan\s*=\s*["']?(\d+)/i.exec(attrs)?.[1] || 1);
+					const rowSpan = Number(/rowspan\s*=\s*["']?(\d+)/i.exec(attrs)?.[1] || 1);
+					const content = cellMatch[3].replace(/<\/?p\b[^>]*>/gi, '<br>').replace(/^(?:<br>\s*)+|(?:<br>\s*)+$/gi, '').trim();
+					cells.push({ tag, colSpan: colSpan > 1 ? colSpan : undefined, rowSpan: rowSpan > 1 ? rowSpan : undefined, content });
+				}
+				if (cells.length) rows.push(cells);
+			}
+			if (rows.length === 0) return null;
+			return h('div', { key: tableKey, className: 'cts-table-wrap' },
+				h('table', { className: 'cts-table' },
+					h('tbody', null, rows.map((row, rIdx) => h('tr', { key: rIdx }, row.map((cell, cIdx) =>
+						h(cell.tag, { key: cIdx, colSpan: cell.colSpan, rowSpan: cell.rowSpan }, inline(cell.content, `${tableKey}-${rIdx}-${cIdx}`, baseAsset))))))));
+		}
+
+		const START = /^\s*(#{1,6}\s|---+|```|~~~|>\s?|[-*+]\s|\d+[.)]\s|\||<table\b)/i;
+
+		/** Block-level markdown: frontmatter, HTML tables, GFM tables, headings, lists, fences, quotes, paragraphs. */
+		function markdown(text, baseAsset = null) {
+			let normalized = String(text || '').replace(/\r\n?/g, '\n');
+			// 剥离文档开头 YAML Frontmatter（--- ... ---）与块级 HTML 注释
+			normalized = normalized.replace(/^---\n[\s\S]*?\n---\n?/, '').replace(/<!--[\s\S]*?-->/g, '');
+			const lines = normalized.split('\n');
 			const blocks = [];
 			let i = 0;
 			let seq = 0;
@@ -1021,59 +1212,82 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				const line = lines[i];
 				if (line.trim() === '') { i += 1; continue; }
 
-				const fence = /^\s*```/.exec(line);
+				const fence = /^\s*(```|~~~)/.exec(line);
 				if (fence) {
+					const marker = fence[1];
 					const body = [];
 					i += 1;
-					while (i < lines.length && !/^\s*```/.test(lines[i])) { body.push(lines[i]); i += 1; }
+					while (i < lines.length && !new RegExp(`^\\s*${marker}`).test(lines[i])) { body.push(lines[i]); i += 1; }
 					i += 1;
 					blocks.push(h('pre', { key: key(), className: 'cts-code' }, h('code', null, body.join('\n'))));
 					continue;
 				}
 
-				const heading = /^(#{1,6})\s+(.*)$/.exec(line);
+				if (/^\s*<table\b/i.test(line)) {
+					const htmlLines = [line];
+					i += 1;
+					while (i < lines.length && !/<\/table>/i.test(htmlLines[htmlLines.length - 1])) {
+						htmlLines.push(lines[i]);
+						i += 1;
+					}
+					const tbl = parseHtmlTableBlock(htmlLines.join('\n'), key(), baseAsset);
+					if (tbl) blocks.push(tbl);
+					continue;
+				}
+
+				const heading = /^\s*(#{1,6})\s+(.*?)(?:\s+#+)?\s*$/.exec(line);
 				if (heading) {
 					const level = Math.min(4, heading[1].length);
-					blocks.push(h(`h${level}`, { key: key(), className: `cts-h${level}` }, inline(heading[2], `h${seq}`)));
+					blocks.push(h(`h${level}`, { key: key(), className: `cts-h${level}` }, inline(heading[2], `h${seq}`, baseAsset)));
 					i += 1;
 					continue;
 				}
 
-				if (/^\s*\|/.test(line) && line.split('|').length >= 3) {
-					const rows = [];
-					while (i < lines.length && /^\s*\|/.test(lines[i]) && lines[i].split('|').length >= 3) {
-						const cells = lines[i].trim().replace(/^\|/, '').replace(/\|\s*$/, '').split('|').map((cell) => cell.trim());
-						if (cells.length >= 2) rows.push(cells);
+				// GFM 表格：支持带或不带首尾 |，以及单短横线分隔行
+				if ((line.includes('|') && i + 1 < lines.length && isMdTableSep(lines[i + 1])) || (/^\s*\|/.test(line) && splitMdTableRow(line).length >= 2)) {
+					const rawRows = [];
+					while (i < lines.length && lines[i].trim() !== '' && lines[i].includes('|')) {
+						const cells = splitMdTableRow(lines[i]);
+						if (cells.length >= 2) rawRows.push({ raw: lines[i], cells });
+						else break;
 						i += 1;
 					}
-					if (rows.length === 0) continue;
-					const isSeparator = (row) => row.every((cell) => /^:?-{2,}:?$/.test(cell));
-					const header = rows.length > 1 && isSeparator(rows[1]) ? rows[0] : null;
-					const body = header ? rows.slice(2) : rows;
-					blocks.push(h('div', { key: key(), className: 'cts-table-wrap' },
-						h('table', { className: 'cts-table' },
-							header ? h('thead', null, h('tr', null, header.map((cell, index) => h('th', { key: index }, inline(cell, `th${seq}-${index}`))))) : null,
-							h('tbody', null, body.map((row, rowIndex) => h('tr', { key: rowIndex }, row.map((cell, cellIndex) => h('td', { key: cellIndex }, inline(cell, `td${seq}-${rowIndex}-${cellIndex}`)))))))));
-					continue;
+					if (rawRows.length > 0) {
+						const hasHeader = rawRows.length > 1 && isMdTableSep(rawRows[1].raw);
+						const header = hasHeader ? rawRows[0].cells : null;
+						const body = (hasHeader ? rawRows.slice(2) : rawRows).map((r) => r.cells);
+						blocks.push(h('div', { key: key(), className: 'cts-table-wrap' },
+							h('table', { className: 'cts-table' },
+								header ? h('thead', null, h('tr', null, header.map((cell, index) => h('th', { key: index }, inline(cell, `th${seq}-${index}`, baseAsset))))) : null,
+								h('tbody', null, body.map((row, rowIndex) => h('tr', { key: rowIndex }, row.map((cell, cellIndex) => h('td', { key: cellIndex }, inline(cell, `td${seq}-${rowIndex}-${cellIndex}`, baseAsset)))))))));
+						continue;
+					}
 				}
 
 				if (/^\s*[-*+]\s+/.test(line)) {
 					const items = [];
 					while (i < lines.length && /^\s*[-*+]\s+/.test(lines[i])) {
-						items.push(lines[i].replace(/^\s*[-*+]\s+/, ''));
+						const indent = (lines[i].match(/^(\s*)/)?.[1] || '').length;
+						let content = lines[i].replace(/^\s*[-*+]\s+/, '');
+						const task = /^\[([ xX])\]\s+(.*)$/.exec(content);
+						if (task) content = `${task[1].toLowerCase() === 'x' ? '☑' : '☐'} ${task[2]}`;
+						items.push({ indent, content });
 						i += 1;
 					}
-					blocks.push(h('ul', { key: key(), className: 'cts-ul' }, items.map((item, index) => h('li', { key: index }, inline(item, `li${seq}-${index}`)))));
+					blocks.push(h('ul', { key: key(), className: 'cts-ul' }, items.map((item, index) =>
+						h('li', { key: index, style: item.indent >= 2 ? { marginLeft: Math.min(36, Math.floor(item.indent / 2) * 14) } : undefined }, inline(item.content, `li${seq}-${index}`, baseAsset)))));
 					continue;
 				}
 
 				if (/^\s*\d+[.)]\s+/.test(line)) {
 					const items = [];
 					while (i < lines.length && /^\s*\d+[.)]\s+/.test(lines[i])) {
-						items.push(lines[i].replace(/^\s*\d+[.)]\s+/, ''));
+						const indent = (lines[i].match(/^(\s*)/)?.[1] || '').length;
+						items.push({ indent, content: lines[i].replace(/^\s*\d+[.)]\s+/, '') });
 						i += 1;
 					}
-					blocks.push(h('ol', { key: key(), className: 'cts-ol' }, items.map((item, index) => h('li', { key: index }, inline(item, `ol${seq}-${index}`)))));
+					blocks.push(h('ol', { key: key(), className: 'cts-ol' }, items.map((item, index) =>
+						h('li', { key: index, style: item.indent >= 2 ? { marginLeft: Math.min(36, Math.floor(item.indent / 2) * 14) } : undefined }, inline(item.content, `ol${seq}-${index}`, baseAsset)))));
 					continue;
 				}
 
@@ -1083,7 +1297,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 						quote.push(lines[i].replace(/^\s*>\s?/, ''));
 						i += 1;
 					}
-					blocks.push(h('blockquote', { key: key(), className: 'cts-quote' }, inline(quote.join(' '), `q${seq}`)));
+					blocks.push(h('blockquote', { key: key(), className: 'cts-quote' }, inline(quote.join('<br>'), `q${seq}`, baseAsset)));
 					continue;
 				}
 
@@ -1094,18 +1308,99 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				}
 
 				const paragraph = [];
-				while (i < lines.length && lines[i].trim() !== '' && !START.test(lines[i])) {
+				while (i < lines.length && lines[i].trim() !== '' && !START.test(lines[i]) && !(lines[i].includes('|') && i + 1 < lines.length && isMdTableSep(lines[i + 1]))) {
 					paragraph.push(lines[i]);
 					i += 1;
 				}
 				if (paragraph.length === 0) { paragraph.push(lines[i]); i += 1; }
-				blocks.push(h('p', { key: key(), className: 'cts-p' }, inline(paragraph.join(' '), `p${seq}`)));
+				blocks.push(h('p', { key: key(), className: 'cts-p' }, inline(paragraph.join('<br>'), `p${seq}`, baseAsset)));
 			}
 			return blocks;
 		}
 
-		function Markdown({ text }) {
-			return h('div', { className: 'cts-md' }, markdown(text));
+		/** 按完整语法块过滤 Markdown 搜索词，保持 GFM 表格表头与围栏块完整不碎裂 */
+		function filterMarkdownByQuery(rawText, query) {
+			const q = String(query || '').trim().toLowerCase();
+			if (!q) return String(rawText || '');
+			const normalized = String(rawText || '').replace(/\r\n?/g, '\n').replace(/^---\n[\s\S]*?\n---\n?/, '');
+			const lines = normalized.split('\n');
+			const out = [];
+			let lastHeading = '';
+			let headingUsed = false;
+			let i = 0;
+			const emitWithHeading = (chunkText) => {
+				if (lastHeading && !headingUsed) {
+					out.push(lastHeading);
+					headingUsed = true;
+				}
+				out.push(chunkText);
+			};
+			while (i < lines.length) {
+				const line = lines[i];
+				if (line.trim() === '') { i += 1; continue; }
+				if (/^\s*#{1,6}\s+/.test(line)) {
+					lastHeading = line;
+					headingUsed = false;
+					if (line.toLowerCase().includes(q)) {
+						out.push(line);
+						headingUsed = true;
+					}
+					i += 1;
+					continue;
+				}
+				const fence = /^\s*(```|~~~)/.exec(line);
+				if (fence) {
+					const marker = fence[1];
+					const chunk = [line];
+					i += 1;
+					while (i < lines.length && !new RegExp(`^\\s*${marker}`).test(lines[i])) { chunk.push(lines[i]); i += 1; }
+					if (i < lines.length) { chunk.push(lines[i]); i += 1; }
+					const blockStr = chunk.join('\n');
+					if (blockStr.toLowerCase().includes(q)) emitWithHeading(blockStr);
+					continue;
+				}
+				if (/^\s*<table\b/i.test(line)) {
+					const chunk = [line];
+					i += 1;
+					while (i < lines.length && !/<\/table>/i.test(chunk[chunk.length - 1])) { chunk.push(lines[i]); i += 1; }
+					const blockStr = chunk.join('\n');
+					if (blockStr.toLowerCase().includes(q)) emitWithHeading(blockStr);
+					continue;
+				}
+				if ((line.includes('|') && i + 1 < lines.length && isMdTableSep(lines[i + 1])) || (/^\s*\|/.test(line) && splitMdTableRow(line).length >= 2)) {
+					const tblLines = [];
+					while (i < lines.length && lines[i].trim() !== '' && lines[i].includes('|') && splitMdTableRow(lines[i]).length >= 2) {
+						tblLines.push(lines[i]);
+						i += 1;
+					}
+					const hasHeader = tblLines.length > 1 && isMdTableSep(tblLines[1]);
+					if (hasHeader) {
+						const headerHit = tblLines[0].toLowerCase().includes(q);
+						const dataRows = tblLines.slice(2);
+						const matchedRows = headerHit ? dataRows : dataRows.filter((r) => r.toLowerCase().includes(q));
+						if (matchedRows.length > 0 || headerHit) {
+							emitWithHeading([tblLines[0], tblLines[1], ...matchedRows].join('\n'));
+						}
+					} else {
+						const matchedRows = tblLines.filter((r) => r.toLowerCase().includes(q));
+						if (matchedRows.length > 0) emitWithHeading(matchedRows.join('\n'));
+					}
+					continue;
+				}
+				const para = [line];
+				i += 1;
+				while (i < lines.length && lines[i].trim() !== '' && !START.test(lines[i]) && !(lines[i].includes('|') && i + 1 < lines.length && isMdTableSep(lines[i + 1]))) {
+					para.push(lines[i]);
+					i += 1;
+				}
+				const paraStr = para.join('\n');
+				if (paraStr.toLowerCase().includes(q)) emitWithHeading(paraStr);
+			}
+			return out.join('\n\n');
+		}
+
+		function Markdown({ text, baseAsset = null }) {
+			return h('div', { className: 'cts-md' }, markdown(text, baseAsset));
 		}
 
 
@@ -1150,7 +1445,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					setBusy('');
 				}
 			};
-			return h('div', { className: 'cts-right cts-skill-panel', role: 'region', 'aria-label': 'Skill 内容', tabIndex: 0 },
+			return h('div', { className: 'cts-skill-panel', style: { width: '100%' }, role: 'region', 'aria-label': 'Skill 内容', tabIndex: 0 },
 				h('div', { className: 'cts-h' }, h('b', null, 'Skill 管理')),
 				h('p', { className: 'cts-hint' }, '这里的 Skill 供所有项目共用。选择 .md 或 .markdown 文件即可替换对应规则。'),
 				h('input', { type: 'file', accept: '.md,.markdown', ref: picker, hidden: true, onChange: (event) => {
@@ -1173,17 +1468,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 							h('pre', { className: 'cts-evidence-text' }, item.content))))));
 		}
 
-		function AssetsView({ projectId, assets, modules, moduleId, onBuild, building, onUpload, moduleEvidence, onPreviewEvidence, onProbeMcp, onRenderAll, onImportLibrary, onRenderNode, onAuthorizePixso, onCopyAuthorizeUrl, authorizeUrl, authorizeNote, mcpNote, onDesignState, designBusy, sourceScope, onOpenCenter, designActivity }) {
-			const [newName, setNewName] = React.useState('');
-			const [newProject, setNewProject] = React.useState('');
-			const [addPath, setAddPath] = React.useState('');
-			const [tab, setTab] = React.useState(assets?.length ? 'design' : 'prd');
-			React.useEffect(() => { if (designActivity) setTab('design'); }, [designActivity?.id]);
-			const [scopeOpen, setScopeOpen] = React.useState(false);
-			const scopeDialog = React.useRef(null);
-			React.useEffect(() => {
-				if (scopeOpen) scopeDialog.current?.showModal();
-			}, [scopeOpen]);
+		function AssetsView({ projectId, modules, moduleId, onProbeMcp, onRenderAll, onImportLibrary, onRenderNode, onAuthorizePixso, onCopyAuthorizeUrl, authorizeUrl, authorizeNote, mcpNote, onDesignState, designBusy, onOpenCenter, designActivity }) {
 			const [page, setPage] = React.useState('');
 			const [query, setQuery] = React.useState('');
 			const [expanded, setExpanded] = React.useState({ design: true, lib: true });
@@ -1202,27 +1487,12 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const [previewJob, setPreviewJob] = React.useState(null);
 			const [previewError, setPreviewError] = React.useState('');
 			const [previewRefresh, setPreviewRefresh] = React.useState(0);
-			const [uploading, setUploading] = React.useState(false);
 			const compiledJob = previewJob?.indexChanged ? previewJob.id : '';
 			const previewId = sel?.layer?.id || sel?.id;
 			const selectedSource = sources.find((source) => source.id === sel?.source);
 			const sourceRevision = selectedSource?.revision || '';
 			const previewKey = [sel?.source, sourceRevision, previewId].join('::');
 			const imagePath = previewId ? images[previewKey] || '' : '';
-			const uploadMany = async (dir, files) => {
-				const list = [...(files || [])].filter(Boolean);
-				if (list.length === 0) return;
-				setUploading(true);
-				setNotice('');
-				try {
-					for (const file of list) await onUpload(dir, file);
-				} catch (error) {
-					setNotice(error.message);
-				} finally {
-					setUploading(false);
-					if (dir === 'design' && list.some((file) => /\.pix$/i.test(file.name))) setPreviewRefresh((value) => value + 1);
-				}
-			};
 			const layer = sel?.layer;
 			const unit = sel?.node;
 			const hasLayerBounds = layer?.width > 0 && layer.height > 0;
@@ -1291,9 +1561,6 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					setSourceBusy(false);
 				}
 			};
-
-			const TABS = [['prd', 'PRD'], ['design', 'UI 设计'], ['signals', '信号矩阵'], ['other', '其他'], ['skills', 'Skill 管理']];
-			const fileAssets = assets.filter((item) => item.dir === tab);
 
 			const loadChildren = (source, id) => {
 				const key = source + '::' + id;
@@ -1490,36 +1757,20 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			].filter((row) => row[1] !== '') : [];
 
 			const right = h('div', { className: 'pk-main' },
-				h('div', { className: 'pk-toolbar', onDragOver: (event) => event.preventDefault(), onDrop: (event) => { event.preventDefault(); void uploadMany(tab, event.dataTransfer?.files); } },
-					h('div', { className: 'cts-modes' }, TABS.map(([value, label]) => h('button', {
-						key: value,
-						className: `cts-mode${tab === value ? ' on' : ''}`,
-						onClick: () => { setTab(value); setSel(null); setInfo(null); }
-					}, label))),
-					tab !== 'skills' ? h('span', { className: 'pk-stat' }, sel ? (sel.name || sel.id) : '未选择') : null,
+				h('div', { className: 'pk-toolbar' },
+					h('span', { className: 'pk-crumb' }, 'UI 设计稿检查器'),
+					h('span', { className: 'pk-stat' }, sel ? (sel.name || sel.id) : '请在左侧选择画板或图层'),
 					notice ? h('span', { className: 'pk-notice' }, notice) : null,
-					tab !== 'skills' ? h('div', { className: 'pk-actions' },
-						h('label', { className: 'cts-btn', style: { cursor: 'pointer', margin: 0 } }, uploading ? '上传中…' : '上传（可多选/拖入）',
-							h('input', {
-								type: 'file', multiple: true, style: { display: 'none' },
-								disabled: uploading || (tab === 'design' && previewJob?.running),
-								onChange: async (event) => {
-									const files = [...(event.target.files || [])];
-									event.target.value = '';
-									await uploadMany(tab, files);
-								}
-							})),
-						h('button', { className: 'cts-btn', onClick: onBuild, disabled: building }, building ? '构建中…' : '重建证据')) : null,
-					h('button', { className: 'cts-btn', 'aria-haspopup': 'dialog', onClick: () => setScopeOpen(true) }, '资料范围'),
-					onOpenCenter ? h('button', { className: 'cts-btn', onClick: onOpenCenter }, '资产中心') : null),
-				tab === 'design' && previewJob ? h('div', { className: 'cts-pkg', role: 'status' },
+					h('div', { className: 'pk-actions' },
+						onOpenCenter ? h('button', { className: 'cts-btn', onClick: onOpenCenter }, '← 返回资产中心') : null)),
+				previewJob ? h('div', { className: 'cts-pkg', role: 'status' },
 					previewJob.running
 						? (previewJob.phase === 'compile' ? '正在解析设计稿…' : previewJob.phase === 'connect' ? '正在核对 Pixso 设计稿…' :
 							previewJob.phase === 'import' ? `正在读取 ${previewJob.source} · 页面 ${previewJob.pagesDone}/${previewJob.pagesTotal}` :
 							`正在缓存截图 ${previewJob.done}/${previewJob.total}，失败 ${previewJob.failed} · ${previewJob.layer || ''}`) + ' 请保持 Pixso 客户端、MCP 和对应设计稿打开。'
 						: previewJob.error ? `${previewJob.compiled ? '设计稿已解析。' : '解析失败。'}已缓存 ${previewJob.done} 张。 ${previewJob.error}`
 							: `已缓存 ${previewJob.done}/${previewJob.total} 张${previewJob.failed ? `，${previewJob.failed} 张可重试（${previewJob.lastFailure}）` : '，可离线查看'}`) : null,
-				tab === 'skills' ? h(SkillManager) : info || sel
+				info || sel
 					? h('div', { className: 'pk-inspector' },
 						h('div', { className: 'pk-preview' },
 							preview || h('div', { className: 'cts-hint' }, previewJob?.running ? '该图层的截图正在准备…' : busy ? '加载中…' : previewError || '没有截图，请在 Pixso 打开对应设计稿后补图')),
@@ -1527,12 +1778,9 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 							h('div', { className: 'pk-sec' }, '属性'),
 							h('div', { className: 'pk-attrs' }, fields.map(([label, value]) => h('div', { className: 'pk-attr', key: label },
 								h('span', { className: 'pk-attr-k' }, label), h('span', { className: 'pk-attr-v' }, String(value)))))))
-					: h('div', { className: 'cts-hint' }, '左侧选一个组件或图层'));
+					: h('div', { className: 'cts-empty' }, '在左侧选择一个画板、组件或图层即可预览与查看属性'));
 
-			return h('div', { className: 'pk-body' }, left, right, scopeOpen ? h('dialog', {
-				ref: scopeDialog, className: 'cts-source-scope', onClose: () => setScopeOpen(false), 'aria-label': '模块资料范围与来源版本'
-			}, h('button', { className: 'cts-btn', onClick: () => scopeDialog.current?.close() }, '关闭'),
-				h(SourceScope, { projectId, moduleId, ...sourceScope })) : null);
+			return h('div', { className: 'pk-body' }, left, right);
 		}
 
 		function ComponentDetail({ detail, busy, selected, onSelect, imagePath, projectId }) {
@@ -2012,24 +2260,51 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					h('button', { className: 'cts-btn', onClick: () => onDismiss(question.id) }, '忽略')));
 		}
 
+		const COPILOT_TOOL_NAMES = {
+			'workbench.inspect': '诊断模块态势',
+			'project.summary': '读取项目清单',
+			'evidence.search': '检索证据',
+			'evidence.read': '读取证据',
+			'signal.lookup': '查询信号定义',
+			'design.search': '查找设计节点',
+			'design.node': '读取设计节点',
+			'history.search': '查找历史用例',
+			'artifact.query': '筛选模块产物',
+			'impact.analyze': '分析变更影响',
+			'materials.configure': '配置模块资料',
+			'evidence.build_and_bind': '构建证据与绑定',
+			'artifact.patch': '修订模块条目',
+			'artifact.batch_status': '批量审批条目',
+			'review.batch_repair': '批量修复打回用例',
+			'questions.resolve': '裁决待决问题',
+			'delivery.export': '导出用例 Excel',
+			'copilot.undo': '撤销上次修改',
+			'pipeline.generate': '运行生成阶段',
+			'pipeline.review': '独立质量审查',
+			'pipeline.autopilot': '端到端自动流水线'
+		};
+
 		function GateCard({ gate, onAnswer }) {
 			const [draft, setDraft] = React.useState('');
+			const isPlan = gate.kind === 'confirm_plan';
 			if (gate.answered) {
 				return h('div', { className: 'cts-gate done' },
+					gate.title ? h('div', { className: 'cts-gate-tag' }, gate.title) : null,
 					h('div', { className: 'cts-gate-q' }, gate.question),
-					h('div', { className: 'cts-gate-a' }, `已回答：${gate.answer || ''}`));
+					h('div', { className: 'cts-gate-a' }, `已确认：${gate.answer || ''}`));
 			}
-			return h('div', { className: 'cts-gate' },
-				h('div', { className: 'cts-gate-tag' }, '需要你确认'),
+			return h('div', { className: `cts-gate${isPlan ? ' cts-gate-plan' : ''}` },
+				h('div', { className: 'cts-gate-tag' }, gate.title || (isPlan ? '执行计划确认（高影响操作）' : '需要你确认')),
+				gate.summary ? h('div', { className: 'cts-gate-summary' }, gate.summary) : null,
 				h('div', { className: 'cts-gate-q' }, gate.question),
 				(gate.options || []).length > 0
-					? h('div', { className: 'cts-actions' }, gate.options.map((option) => h('button', {
+					? h('div', { className: 'cts-actions', style: { flexWrap: 'wrap' } }, gate.options.map((option, idx) => h('button', {
 						key: option,
-						className: 'cts-btn',
+						className: `cts-btn${idx === 0 ? ' primary' : ''}`,
 						onClick: () => onAnswer(gate.gateId, option)
 					}, option)))
 					: null,
-				h('div', { style: { display: 'flex', gap: 6, marginTop: 4 } },
+				!isPlan ? h('div', { style: { display: 'flex', gap: 6, marginTop: 4 } },
 					h('input', {
 						className: 'cts-input cts-input-sm',
 						style: { flex: '1 1 auto', minWidth: 0 },
@@ -2044,17 +2319,26 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 						className: 'cts-btn primary',
 						disabled: draft.trim() === '',
 						onClick: () => onAnswer(gate.gateId, draft.trim())
-					}, '发送')));
+					}, '发送')) : null);
 		}
 
 		function ToolCard({ card }) {
 			const [open, setOpen] = React.useState(false);
+			const label = COPILOT_TOOL_NAMES[card.tool] || card.tool;
+			const prog = !card.done && card.progress ? parseActivityProgress({ stage: 'progress', detail: card.progress }) : null;
 			return h('div', { className: 'cts-tool' },
 				h('div', { className: 'cts-tool-head', onClick: () => setOpen(!open) },
-					h('span', null, card.done ? '⚙' : '◌'),
-					h('span', { className: 'cts-tool-name' }, card.tool),
-					h('span', { className: 'cts-tool-sum' }, card.done ? card.summary : '运行中…')
+					h('span', { className: `cts-act-indicator${card.done ? '' : ' live'}`, style: card.done ? { background: card.ok === false ? 'var(--dsw-alias-state-error-primary)' : 'var(--dsw-alias-state-success-primary)', opacity: 1 } : undefined }),
+					h('span', { className: 'cts-tool-name' }, label),
+					h('span', { className: 'cts-tool-sum' }, card.done ? card.summary : (card.progress || '运行中…'))
 				),
+				!card.done ? h('div', { className: 'cts-tool-prog' },
+					h('div', { className: 'cts-act-track' },
+						h('div', {
+							className: `cts-act-fill${!prog || prog.pct === null ? ' indeterminate' : ''}`,
+							style: prog && prog.pct !== null ? { width: `${prog.pct}%` } : undefined
+						})),
+					prog?.label ? h('span', { className: 'cts-act-pct' }, prog.label) : null) : null,
 				open ? h('div', { className: 'cts-tool-body' },
 					JSON.stringify(card.data ?? card.input ?? {}, null, 2)) : null
 			);
@@ -2954,7 +3238,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				props.tab === 'outline' ? h(OutlinePanel, props) : props.tab === 'conflicts' ? h(ConflictPanel, { ...props, contracts: props.ecsmModel?.model?.inputs?.contracts?.items || [], onSaved: props.refreshAll }) : h(ArtifactPanel, props));
 		}
 
-		function ArtifactPanel({ artifacts, tab, setTab, onOpen, moduleId, refreshAll, generate, genBusy, phase, lintState, onClear, selected, setSelected, reviewState, onSave, onRegenerate, onDelete, onApprove, onBatchReview, itemBusy, bindings, bindingBusy, onSuggestBindings, onConfirmBinding, onManualBinding, issuesState, questions, onAnswerQuestion, onDismissQuestion, onDismissAll, agentsDoc, agentBusy, onRunAgent, mode, onExportEcsm, onReloadEcsm, onLoadVersion, ecsmModel, modelSection, setModelSection, contractTarget, projectId, onImages, onImpact, onJump, onRepair, onSaveContract, onApproveContracts, locked, projectQuality, onQuickQualityChange, onOpenIncrementalImpact }) {
+		function ArtifactPanel({ artifacts, tab, setTab, onOpen, moduleId, refreshAll, generate, genBusy, phase, lintState, onClear, selected, setSelected, onCheckedChange, reviewState, onSave, onRegenerate, onDelete, onApprove, onBatchReview, itemBusy, bindings, bindingBusy, onSuggestBindings, onConfirmBinding, onManualBinding, issuesState, questions, onAnswerQuestion, onDismissQuestion, onDismissAll, agentsDoc, agentBusy, onRunAgent, mode, onExportEcsm, onReloadEcsm, onLoadVersion, ecsmModel, modelSection, setModelSection, contractTarget, projectId, onImages, onImpact, onJump, onRepair, onSaveContract, onApproveContracts, locked, projectQuality, onQuickQualityChange, onOpenIncrementalImpact }) {
 			const [query, setQuery] = React.useState('');
 			const [filter, setFilter] = React.useState('');
 			const [page, setPage] = React.useState(0);
@@ -2964,6 +3248,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const panelRef = React.useRef(null);
 			React.useEffect(() => { if (panelRef.current) panelRef.current.scrollTop = scroll; }, [selected]);
 			React.useEffect(() => { setQuery(''); setFilter(''); setPage(0); setScroll(0); setChecked([]); }, [tab]);
+			React.useEffect(() => { onCheckedChange?.(checked); }, [checked]);
 			const batchable = tab === 'points' || tab === 'cases';
 			const toggleChecked = (id) => setChecked((current) => current.includes(id) ? current.filter((entry) => entry !== id) : [...current, id]);
 			const gaps = artifacts.delivery?.gaps || {};
@@ -3387,7 +3672,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 						: h('p', { className: 'cts-hint' }, '完成评审后，可冻结并保留首个交付包。')));
 		}
 
-		function Workflow({ counts, ecsm, artifacts, mode, tab, busy, locked, onRun, onOpen, hasAssets, hideNext }) {
+		function Workflow({ counts, ecsm, artifacts, mode, tab, busy, locked, onRun, onOpen, hasAssets, hideNext, onAskCopilot }) {
 			const [tipCollapsed, setTipCollapsed] = React.useState(false);
 			const contracts = ecsm?.model?.inputs?.contracts?.items || [];
 			const approved = contracts.filter((item) => item.status === 'approved').length;
@@ -3419,7 +3704,13 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			} else if (locked) {
 				next = ['交付包已冻结', '如需继续编辑，可在交付页派生新版本。', '查看交付', () => onOpen('delivery')];
 			} else if (stage !== 'model' && !counts.facts && !approved) {
-				next = ['先提取产品事实', '先在 ECSM 构建证据并生成事实，之后可直接快速生成测试点或走合同大纲受控流程。', '去 ECSM', () => onOpen('model')];
+				if (!hasAssets && !counts.evidence) {
+					next = ['先添加模块资料', '上传或绑定 PRD、信号矩阵与 UI 设计稿即可开始快速设计。', '添加资料', () => onOpen('assets')];
+				} else if (!counts.evidence) {
+					next = ['第 1 步：构建证据（快速轨）', '将本模块资料解析成可追溯证据块，无需进入 ECSM 冻结模型。', '构建证据', onRun.evidence];
+				} else {
+					next = ['第 2 步：提取产品事实（快速轨）', `已解析 ${counts.evidence} 条证据块；提取事实后即可直接生成测试点与用例。`, '提取产品事实', () => onRun.generate('facts')];
+				}
 			} else if (stage === 'model') {
 				if (!hasAssets && !counts.evidence && !contracts.length) {
 					next = ['先添加项目资料', '上传 PRD / 信号矩阵 / 设计稿即可开始。', '添加资料', () => onOpen('assets')];
@@ -3469,13 +3760,23 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					!hideNext ? h('button', { className: 'cts-btn', style: { padding: '2px 8px', fontSize: 11 }, onClick: () => setTipCollapsed((v) => !v) }, tipCollapsed ? '展开引导' : '收起引导') : null),
 				hideNext || tipCollapsed ? null : h('div', { className: 'cts-flow-next' },
 					h('div', { className: 'cts-flow-next-text' }, h('strong', null, next[0]), next[1] ? h('p', null, next[1]) : null),
-					next[2] ? h('button', { className: 'cts-btn primary', style: { padding: '4px 10px', fontSize: 12 }, disabled: busy, onClick: next[3] }, next[2]) : null),
+					h('div', { className: 'cts-row', style: { gap: 6 } },
+						onAskCopilot ? h('button', {
+							className: 'cts-btn',
+							style: { padding: '4px 10px', fontSize: 12 },
+							disabled: busy,
+							onClick: () => onAskCopilot(`当前阶段建议「${next[0]}」（${next[1] || ''}），请帮我诊断并直接推进下一步。`)
+						}, '✦ 让助手处理') : null,
+						next[2] ? h('button', { className: 'cts-btn primary', style: { padding: '4px 10px', fontSize: 12 }, disabled: busy, onClick: next[3] }, next[2]) : null)),
 				!locked && !tipCollapsed ? h('details', { className: 'cts-flow-tools' },
-					h('summary', null, mode === 'ecsm' ? '模型准备与高级操作' : '高级操作'),
+					h('summary', null, mode === 'ecsm' ? '模型准备与高级操作' : '快速轨上游与重跑操作'),
 					h('div', { className: 'cts-filter' },
 						mode === 'ecsm' ? preparation.map(([key, label, count, ready, run]) => h('button', {
 							key, className: 'cts-btn', disabled: busy || !ready, onClick: run
-						}, `${label} · ${count}`)) : null,
+						}, `${label} · ${count}`)) : [
+							h('button', { key: 'ft-ev', className: 'cts-btn', disabled: busy, onClick: onRun.evidence }, `重建证据 · ${counts.evidence}`),
+							h('button', { key: 'ft-facts', className: 'cts-btn', disabled: busy || !counts.evidence, onClick: () => onRun.generate('facts') }, `提取事实 · ${counts.facts}`)
+						],
 						mode === 'design' && counts.facts > 0 ? h('button', { className: 'cts-btn', disabled: busy, onClick: () => onRun.generate('points', true, undefined, undefined, 'facts') }, '从事实重生成测试点（快速轨）') : null,
 						mode === 'design' && currentPoints && outlineApproved ? h('button', { className: 'cts-btn', disabled: busy, onClick: () => onRun.generate('points', true) }, '按大纲重生成测试点（受控轨）') : null,
 						mode === 'design' && counts.cases > 0 ? h('button', { className: 'cts-btn', disabled: busy || Boolean(delivery.pointsPending), onClick: () => onRun.generate('cases', true, undefined, undefined, fastTrackPoints ? 'facts' : undefined) }, '重新生成本轮用例') : null,
@@ -3669,6 +3970,187 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				importedList.length ? h('div', { className: 'cts-hint' }, `${isModuleTarget ? '当前项目已导入' : '资产池已导入'}：${importedList.map((s) => s.name).join('、')}`) : null);
 		}
 
+		function AssetPreviewView({ kind, assets, initialAsset, projectId, moduleId, onBack }) {
+			const [activeId, setActiveId] = React.useState(initialAsset?.id || assets[0]?.id || '');
+			const [sideQuery, setSideQuery] = React.useState('');
+			const [contentQuery, setContentQuery] = React.useState('');
+			const [pdfView, setPdfView] = React.useState('native'); // 'native' | 'text'
+			const [matrixMode, setMatrixMode] = React.useState('matrix'); // 'matrix' | 'sheets'
+			const [activeSheet, setActiveSheet] = React.useState('');
+			const [sheetPage, setSheetPage] = React.useState(1);
+			const [loading, setLoading] = React.useState(false);
+			const [err, setErr] = React.useState('');
+			const [data, setData] = React.useState(null);
+
+			const activeAsset = assets.find((a) => a.id === activeId) || assets[0] || null;
+			const resolvePreviewPayload = (asset) => {
+				if (!asset) return null;
+				const copies = asset.copies || [];
+				const projCopy = (projectId ? copies.find((c) => (c.project_id || c.project) === projectId) : null)
+					|| copies.find((c) => (c.project_id || c.project) && c.storage !== 'inbox');
+				if (projCopy) {
+					return { scope: 'project', project: projCopy.project_id || projCopy.project, path: projCopy.path || asset.path || `${asset.dir || kind}/${asset.name}` };
+				}
+				const inboxCopy = copies.find((c) => c.storage === 'inbox');
+				return { scope: 'pool', path: inboxCopy?.path || asset.path || `${asset.dir || kind}/${asset.name}` };
+			};
+
+			React.useEffect(() => {
+				setContentQuery('');
+				setPdfView('native');
+				setMatrixMode('matrix');
+				setActiveSheet('');
+				setSheetPage(1);
+			}, [activeId]);
+
+			React.useEffect(() => {
+				if (!activeAsset) { setData(null); return; }
+				const payload = resolvePreviewPayload(activeAsset);
+				if (!payload) return;
+				let alive = true;
+				setLoading(true);
+				setErr('');
+				request('assets.preview', {
+					...payload,
+					mode: kind === 'signals' && matrixMode === 'sheets' ? 'sheets' : 'auto',
+					sheet: activeSheet || undefined,
+					page: sheetPage
+				})
+					.then((res) => { if (alive) setData(res); })
+					.catch((e) => { if (alive) { setErr(e.message || '预览加载失败'); setData(null); } })
+					.finally(() => { if (alive) setLoading(false); });
+				return () => { alive = false; };
+			}, [activeId, matrixMode, activeSheet, sheetPage]);
+
+			const fmtSize = (bytes) => bytes ? (bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`) : '';
+			const extCode = (name) => {
+				const ext = String(name || '').split('.').pop()?.toUpperCase() || '';
+				return ext.slice(0, 4) || (kind === 'prd' ? 'DOC' : 'SIG');
+			};
+			const filteredSide = assets.filter((a) => !sideQuery.trim() || String(a.name || '').toLowerCase().includes(sideQuery.trim().toLowerCase()));
+			const q = contentQuery.trim().toLowerCase();
+
+			const renderContent = () => {
+				if (loading) return h('div', { className: 'cts-empty' }, '正在解析并加载预览…');
+				if (err) return h('div', { className: 'cts-empty', style: { color: 'var(--dsw-alias-state-error-primary)' } }, err);
+				if (!data) return h('div', { className: 'cts-empty' }, '请在左侧选择一个文件');
+
+				if (data.kind === 'pdf' && pdfView === 'native' && data.fileUrl) {
+					return h('div', { className: 'cts-pv-pdf-wrap' },
+						h('iframe', { className: 'cts-pv-pdf-frame', src: data.fileUrl, title: data.name || 'PDF 预览' }));
+				}
+				if (data.kind === 'markdown') {
+					const text = q ? filterMarkdownByQuery(data.text || '', q) : String(data.text || '');
+					return h('div', { className: 'cts-pv-body' },
+						h('div', { className: 'cts-pv-doc' },
+							text ? h(Markdown, { text, baseAsset: data.assetBase || null }) : h('p', { className: 'cts-hint' }, '未匹配到包含该关键词的内容')));
+				}
+				if (data.kind === 'blocks' || (data.kind === 'pdf' && pdfView === 'text')) {
+					const allBlocks = data.blocks || [];
+					const shownBlocks = q ? allBlocks.filter((b) => String(b.text || '').toLowerCase().includes(q)) : allBlocks;
+					return h('div', { className: 'cts-pv-body' },
+						h('div', { className: 'cts-pv-doc' },
+							shownBlocks.length === 0
+								? h('p', { className: 'cts-hint' }, q ? '未找到包含该关键词的段落' : '该文档未提取到可阅读文本（若为扫描版 PDF，请切回「原版 PDF」查看）')
+								: shownBlocks.slice(0, 800).map((b, idx) => b.kind === 'heading'
+									? h((b.level || 1) <= 2 ? 'h2' : 'h3', { key: idx }, b.text)
+									: h('p', { key: idx }, b.text)),
+							shownBlocks.length > 800 ? h('p', { className: 'cts-hint' }, `已展示前 800 段，共 ${shownBlocks.length} 段，可输入关键词精准筛选。`) : null));
+				}
+				if (data.kind === 'matrix') {
+					const allSigs = data.signals || [];
+					const filtered = q
+						? allSigs.filter((s) => [s.message, s.message_id, s.transmitter, s.name, s.description, s.valueDesc].some((v) => String(v || '').toLowerCase().includes(q)))
+						: allSigs;
+					const visible = filtered.slice(0, 250);
+					return h('div', { className: 'cts-pv-body' },
+						h('div', { className: 'cts-summary-strip', style: { margin: 0 } },
+							h('span', { className: 'cts-pill info' }, `报文 ${data.messagesCount || 0}`),
+							h('span', { className: 'cts-pill' }, `信号 ${data.totalSignals || allSigs.length}`),
+							q ? h('span', { className: 'cts-pill ok' }, `命中 ${filtered.length} 条`) : null,
+							filtered.length > 250 ? h('span', { className: 'cts-hint', style: { marginLeft: 'auto' } }, `仅展示前 250 条，输入信号名或 0xID 精准定位`) : null),
+						h('div', { className: 'ac-table-wrap' },
+							h('table', { className: 'ac-table' },
+								h('thead', null, h('tr', null,
+									h('th', null, '报文 / ID'),
+									h('th', null, '发送方'),
+									h('th', null, '信号名'),
+									h('th', null, '中文描述'),
+									h('th', null, '范围 / 初始值'),
+									h('th', null, '枚举值表'))),
+								h('tbody', null, visible.map((s, idx) => h('tr', { key: `${s.message_id}-${s.name}-${idx}` },
+									h('td', null,
+										h('div', { style: { fontWeight: 600, fontSize: 12 } }, s.message || '—'),
+										h('div', { style: { fontFamily: 'var(--cts-font-mono)', fontSize: 11, color: 'var(--dsw-alias-brand-primary)' } },
+											[s.message_id, s.cycle ? `${s.cycle}ms` : ''].filter(Boolean).join(' · '))),
+									h('td', { style: { fontSize: 12, whiteSpace: 'nowrap' } }, s.transmitter || '—'),
+									h('td', { style: { fontFamily: 'var(--cts-font-mono)', fontSize: 12, fontWeight: 600 } }, s.name || '—'),
+									h('td', { style: { fontSize: 12, maxWidth: 220 } }, s.description || '—'),
+									h('td', { style: { fontFamily: 'var(--cts-font-mono)', fontSize: 11, whiteSpace: 'nowrap' } },
+										[s.min !== '' || s.max !== '' ? `${s.min}~${s.max}${s.unit ? ' ' + s.unit : ''}` : '', s.initial !== '' ? `初值:${s.initial}` : ''].filter(Boolean).join('\n') || '—'),
+									h('td', null, h('div', { className: 'cts-pv-sig-enum' }, s.valueDesc || '—'))))))));
+				}
+				if (data.kind === 'sheets') {
+					const rows = data.rows || [];
+					const totalPages = Math.max(1, Math.ceil((data.totalRows || 0) / (data.pageSize || 200)));
+					const filteredRows = q ? rows.filter((r) => (r || []).some((c) => String(c || '').toLowerCase().includes(q))) : rows;
+					return h('div', { className: 'cts-pv-body' },
+						h('div', { className: 'cts-row', style: { flexWrap: 'wrap', justifyContent: 'space-between' } },
+							h('div', { className: 'ac-pill-group' }, (data.sheetNames || []).map((sn) =>
+								h('button', {
+									key: sn, type: 'button',
+									className: `cts-pill${data.activeSheet === sn ? ' active' : ''}`,
+									onClick: () => { setActiveSheet(sn); setSheetPage(1); }
+								}, sn))),
+							h('div', { className: 'cts-row', style: { gap: 6 } },
+								h('span', { className: 'cts-hint' }, `第 ${data.page}/${totalPages} 页 · 共 ${data.totalRows} 行`),
+								h('button', { type: 'button', className: 'cts-btn', disabled: sheetPage <= 1, onClick: () => setSheetPage((p) => Math.max(1, p - 1)) }, '上一页'),
+								h('button', { type: 'button', className: 'cts-btn', disabled: sheetPage >= totalPages, onClick: () => setSheetPage((p) => Math.min(totalPages, p + 1)) }, '下一页'))),
+						h('div', { className: 'ac-table-wrap' },
+							h('table', { className: 'ac-table' },
+								h('tbody', null, filteredRows.map((row, rIdx) => h('tr', { key: rIdx },
+									(row || []).slice(0, 18).map((cell, cIdx) => h(rIdx === 0 && sheetPage === 1 ? 'th' : 'td', { key: cIdx, style: { maxWidth: 260, overflowWrap: 'anywhere', fontSize: 12 } }, String(cell ?? '')))))))));
+				}
+				return h('div', { className: 'cts-empty' }, data.message || '暂不支持在线预览该格式');
+			};
+
+			return h('div', { className: 'cts-pv-shell' },
+				h('aside', { className: 'cts-pv-side' },
+					h('div', { className: 'cts-pv-side-head' },
+						h('strong', null, kind === 'prd' ? `全部 PRD (${assets.length})` : `全部信号矩阵 (${assets.length})`),
+						h('input', { className: 'cts-input cts-input-sm', type: 'search', value: sideQuery, placeholder: '筛选文件…', onChange: (e) => setSideQuery(e.target.value) })),
+					h('div', { className: 'cts-pv-list' }, filteredSide.map((a) => h('button', {
+						key: a.id, type: 'button',
+						className: `cts-pv-item${activeAsset?.id === a.id ? ' on' : ''}`,
+						onClick: () => setActiveId(a.id)
+					},
+						h('span', { className: 'ac-type-icon', 'data-kind': kind === 'prd' ? 'prd' : 'signals', style: { width: 30, height: 30, fontSize: 9.5 } }, extCode(a.name)),
+						h('div', { className: 'cts-pv-item-main' },
+							h('div', { className: 'cts-pv-item-name', title: a.name }, a.name),
+							h('div', { className: 'cts-pv-item-meta' }, fmtSize(a.bytes) || a.kind || '')))))),
+				h('section', { className: 'cts-pv-main' },
+					h('div', { className: 'cts-pv-bar' },
+						h('span', { className: 'cts-pv-title', title: activeAsset?.name || '' }, activeAsset?.name || '预览'),
+						data?.bytes ? h('span', { className: 'cts-pill' }, fmtSize(data.bytes)) : null,
+						data?.kind === 'pdf' ? h('div', { className: 'cts-modes' },
+							h('button', { type: 'button', className: `cts-mode${pdfView === 'native' ? ' on' : ''}`, onClick: () => setPdfView('native') }, '原版 PDF'),
+							h('button', { type: 'button', className: `cts-mode${pdfView === 'text' ? ' on' : ''}`, onClick: () => setPdfView('text') }, '结构化阅读')) : null,
+						kind === 'signals' && data?.ext === '.xlsx' && (data?.sheetNames?.length || 0) > 0 && (data?.kind === 'matrix' || data?.hasMatrix) ? h('div', { className: 'cts-modes' },
+							h('button', { type: 'button', className: `cts-mode${data?.kind === 'matrix' ? ' on' : ''}`, onClick: () => setMatrixMode('matrix') }, '结构化信号'),
+							h('button', { type: 'button', className: `cts-mode${data?.kind === 'sheets' ? ' on' : ''}`, onClick: () => setMatrixMode('sheets') }, '原始 Sheet')) : null,
+						h('div', { className: 'cts-pv-bar-right' },
+							!(data?.kind === 'pdf' && pdfView === 'native') ? h('input', {
+								className: 'cts-input cts-input-sm',
+								type: 'search',
+								style: { width: 220 },
+								value: contentQuery,
+								placeholder: kind === 'signals' ? '搜信号名 / 0xID / 描述…' : '搜文档关键词…',
+								onChange: (e) => setContentQuery(e.target.value)
+							}) : null,
+							h('button', { type: 'button', className: 'cts-btn', onClick: onBack }, '← 返回资产中心'))),
+					renderContent()));
+		}
+
 		function AssetCenter({ projects, initialProjectId, initialModuleId, initialScope = 'pool', moduleContext = false, onOpenProject, onBackToModule, onProjectChange, onOpenTools, onOpenSettings, onAssetsChanged }) {
 			const [scope, setScope] = React.useState(initialScope === 'trash' ? 'trash' : 'pool');
 			const [projectId, setProjectId] = React.useState(initialProjectId || '');
@@ -3685,6 +4167,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const [query, setQuery] = React.useState('');
 			const [kind, setKind] = React.useState('');
 			const [viewMode, setViewMode] = React.useState('table');
+			const [previewState, setPreviewState] = React.useState(null); // { kind: 'prd' | 'signals', asset }
 			const [confirmModal, setConfirmModal] = React.useState(null);
 			const uploadDialog = React.useRef(null);
 			const refsDialog = React.useRef(null);
@@ -3853,11 +4336,65 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			};
 			const size = (bytes) => bytes ? (bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`) : '';
 			const stamp = (value) => value ? String(value).slice(0, 10) : '';
+			const isDesignAsset = (asset) => Boolean(
+				asset && (
+					asset.dir === 'design' ||
+					asset.mcp ||
+					asset.storage === 'mcp-project' ||
+					/design|设计|pixso|原型|画板/i.test(String(asset.kind || '')) ||
+					/\.(pix|fig|sketch|png|jpe?g|webp|svg)$/i.test(String(asset.name || ''))
+				)
+			);
+			const isPrdAsset = (asset) => Boolean(
+				asset && !isDesignAsset(asset) && (
+					asset.dir === 'prd' ||
+					/prd|需求|文档/i.test(String(asset.kind || '')) ||
+					/\.(pdf|docx?|md|markdown|txt)$/i.test(String(asset.name || ''))
+				)
+			);
+			const isSignalAsset = (asset) => Boolean(
+				asset && !isDesignAsset(asset) && (
+					asset.dir === 'signals' ||
+					/信号|矩阵|dbc|协议/i.test(String(asset.kind || '')) ||
+					/\.(xlsx|dbc|arxml|ldf)$/i.test(String(asset.name || ''))
+				)
+			);
+			const openPreviewAsset = (asset) => {
+				if (isDesignAsset(asset)) { openDesignAsset(asset); return; }
+				if (isSignalAsset(asset)) { setPreviewState({ kind: 'signals', asset }); return; }
+				if (isPrdAsset(asset)) { setPreviewState({ kind: 'prd', asset }); return; }
+			};
+			const canPreviewAsset = (asset) => Boolean(
+				asset && asset.scope !== 'global' && !asset.virtual && (
+					(isDesignAsset(asset) && Boolean(onOpenTools)) || isPrdAsset(asset) || isSignalAsset(asset)
+				)
+			);
+			const resolveDesignTarget = (asset) => {
+				const copy = currentCopy(asset);
+				const targetProjId = copy?.project_id || copy?.project || projectId || asset.projects?.[0]?.id || '';
+				if (!targetProjId) return null;
+				const projObj = (pool?.projects || projects).find((p) => p.id === targetProjId);
+				const targetModId = (targetProjId === projectId && moduleId) ? moduleId : (projObj?.modules?.[0]?.id || '');
+				return { projectId: targetProjId, moduleId: targetModId };
+			};
+			const openDesignAsset = (asset) => {
+				const target = resolveDesignTarget(asset);
+				if (!target) {
+					setFeedback('该设计稿尚未分配到任何项目，请先进入某个模块导入后再查看画板与图层。', 'info');
+					return;
+				}
+				onProjectChange?.(target.projectId, target.moduleId);
+				onOpenTools?.();
+			};
 			const renderActions = (asset) => {
 				const copy = currentCopy(asset);
 				const isGlobal = asset.scope === 'global' || asset.virtual;
 				if (isGlobal) return h('span', { className: 'cts-hint' }, '全局规则');
+				const canViewDesign = isDesignAsset(asset) && Boolean(onOpenTools);
+				const canViewDoc = !canViewDesign && (isPrdAsset(asset) || isSignalAsset(asset));
 				return h(React.Fragment, null,
+					canViewDesign ? h('button', { className: 'cts-btn', disabled: busy, onClick: () => openDesignAsset(asset) }, '查看设计') : null,
+					canViewDoc ? h('button', { className: 'cts-btn', disabled: busy, onClick: () => openPreviewAsset(asset) }, '预览') : null,
 					moduleContext && moduleId
 						? h('button', { className: `cts-btn${tagged(asset) && copy ? '' : ' primary'}`, disabled: busy, onClick: () => tag(asset) },
 							(tagged(asset) && copy) ? '移出模块' : copy ? '用于本轮' : '导入模块')
@@ -3885,7 +4422,9 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					h('td', null, h('div', { className: 'ac-name-cell' },
 						h('span', { className: 'ac-type-icon', 'data-kind': icon.tone }, icon.code),
 						h('div', { className: 'ac-name-main' },
-							h('div', { className: 'ac-name-title' }, asset.name),
+							canPreviewAsset(asset)
+								? h('button', { type: 'button', className: 'ac-name-title', style: { border: 0, background: 'transparent', padding: 0, textAlign: 'left', cursor: 'pointer', color: 'var(--dsw-alias-brand-primary)' }, onClick: () => openPreviewAsset(asset) }, asset.name)
+								: h('div', { className: 'ac-name-title' }, asset.name),
 							h('div', { className: 'ac-name-sub' },
 								h('span', null, asset.kind || '资产'),
 								size(asset.bytes) ? h('span', null, size(asset.bytes)) : null,
@@ -3906,7 +4445,9 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 							h('span', { className: 'asset-type' }, asset.kind || '资产')),
 						h('span', { className: `asset-badge ${isInbox ? 'warn' : isGlobal ? 'readonly' : 'project'}` },
 							isInbox ? '未分配' : isGlobal ? '全局' : (moduleContext && tagged(asset) ? '本模块已用' : '已绑定'))),
-					h('div', { className: 'asset-name' }, asset.name),
+					canPreviewAsset(asset)
+						? h('button', { type: 'button', className: 'asset-name', style: { border: 0, background: 'transparent', padding: 0, textAlign: 'left', cursor: 'pointer', color: 'var(--dsw-alias-brand-primary)' }, onClick: () => openPreviewAsset(asset) }, asset.name)
+						: h('div', { className: 'asset-name' }, asset.name),
 					renderOwnership(asset),
 					h('div', { className: 'asset-meta' },
 						size(asset.bytes) ? h('span', null, size(asset.bytes)) : null,
@@ -3922,6 +4463,18 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				h('td', null, h('span', { className: 'asset-badge readonly' }, '回收站')),
 				h('td', null, h('div', { className: 'ac-row-actions' },
 					h('button', { className: 'cts-btn primary', disabled: busy, onClick: () => restore(item) }, '恢复'))));
+
+			if (previewState) {
+				const sameKindAssets = scoped.filter((a) => (previewState.kind === 'signals' ? isSignalAsset(a) : isPrdAsset(a)));
+				return h(AssetPreviewView, {
+					kind: previewState.kind,
+					assets: sameKindAssets.length ? sameKindAssets : [previewState.asset],
+					initialAsset: previewState.asset,
+					projectId,
+					moduleId,
+					onBack: () => setPreviewState(null)
+				});
+			}
 
 			return h('div', { className: 'asset-center' },
 				h('header', { className: 'ac-header' },
@@ -3954,8 +4507,6 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					h('input', { className: 'cts-input', type: 'search', value: query, placeholder: '搜索文件名、类型或项目…', onChange: (event) => setQuery(event.target.value) }),
 					h('div', { className: 'ac-toolbar-right' },
 						activeProject ? h('button', { className: 'cts-btn', disabled: busy, onClick: buildEvidence }, '构建证据') : null,
-						activeProject && onOpenTools ? h('button', { className: 'cts-btn', onClick: onOpenTools }, '资料工具') : null,
-						activeProject && onOpenSettings ? h('button', { className: 'cts-btn', onClick: onOpenSettings }, '项目设置') : null,
 						activeProject ? h('button', { className: 'cts-btn', onClick: () => onOpenProject?.(activeProject) }, '打开项目') : null)),
 				shown.length === 0
 					? h('div', { className: 'asset-empty' }, scope === 'trash' ? '回收站为空。' : '当前筛选下没有资产，可切换分类或点击右上角「+ 上传到资产池」。')
@@ -4109,9 +4660,10 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					!frozen ? h('button', { className: 'cts-btn', onClick: onAssets }, '查看项目资产') : null));
 		}
 
-		function ModuleAssets({ project, module, moduleId, assets, pool, materials, busy, onUpload, onImport, onBatch, onAdopt, onNext, onOpenCenter, onRefreshAssets, onError }) {
+		function ModuleAssets({ project, module, moduleId, assets, pool, materials, busy, onUpload, onTag, onImport, onBatch, onAdopt, onFastTrack, onNext, onOpenCenter, onOpenDesignTools, onRefreshAssets, evidenceBuiltAt, onOpenFact, onError }) {
 			const [bucket, setBucket] = React.useState('prd');
 			const [uploading, setUploading] = React.useState(false);
+			const [previewState, setPreviewState] = React.useState(null);
 			const projectId = project?.id || '';
 			const pickerKey = `cts.picker.${projectId}.${moduleId}`;
 			const savedPicker = (() => { try { return JSON.parse(sessionStorage.getItem(pickerKey) || '{}'); } catch { return {}; } })();
@@ -4206,25 +4758,58 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 						batchIds.length ? h('button', { className: 'cts-btn primary', disabled: busy, onClick: () => onBatch(shown.filter((asset) => batchIds.includes(asset.id))) }, `批量用于本轮（${batchIds.length}）`) : null)),
 				!shown.length ? h('div', { className: 'cts-empty' }, '资产池为空，先上传新资产。')
 					: h('div', { className: 'cts-picker' }, pickerList, previewPane));
+			const canPreviewPrd = (a) => /\.(pdf|docx?|md|markdown|txt)$/i.test(a.name || '') || String(a.kind || '').includes('PRD');
+			const canPreviewSig = (a) => /\.(xlsx|dbc)$/i.test(a.name || '') || String(a.kind || '').includes('信号') || String(a.kind || '').includes('DBC');
+			if (previewState) {
+				const peerList = candidates.filter((a) => previewState.kind === 'prd' ? (canPreviewPrd(a) && !canPreviewSig(a)) : canPreviewSig(a));
+				return h(AssetPreviewView, {
+					kind: previewState.kind,
+					assets: peerList.length ? peerList : [previewState.asset],
+					initialAsset: previewState.asset,
+					projectId,
+					moduleId,
+					onBack: () => setPreviewState(null)
+				});
+			}
 			const taggedSection = taggedCount ? h('section', { className: 'cts-workbench-section' },
 				h('div', { className: 'cts-workbench-section-head' }, h('h2', null, '本模块已添加'), h('span', { className: 'cts-hint' }, `${taggedCount} 份`)),
 				h('div', { className: 'cts-list' },
-					tagged.map((asset) => h('div', { className: 'cts-item', key: asset.id },
-						h('div', { className: 'cts-item-t' }, asset.name),
-						h('div', { className: 'cts-item-m' }, `${asset.kind || '资产'} · 项目：${(asset.projects || []).map((item) => item.name).join('、') || '未分配'}`))),
-					mcpDesigns.map((row) => h('div', { className: 'cts-item', key: row.path },
-						h('div', { className: 'cts-item-t' }, row.name || row.path),
-						h('div', { className: 'cts-item-m' }, `UI 设计（Pixso MCP）· 版本 ${String(row.content_version || '').slice(0, 12)} · ${row.used ? '本轮生效' : row.exclusion || '已绑定'}`)))))
+					tagged.map((asset) => {
+						const copy = currentCopy(asset);
+						const isSig = canPreviewSig(asset);
+						const isPrd = !isSig && canPreviewPrd(asset);
+						const isUi = String(asset.kind || '').includes('设计') || String(asset.kind || '').includes('UI') || Boolean(asset.mcp);
+						return h('div', { className: 'cts-item', key: asset.id, style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' } },
+							h('div', null,
+								h('div', { className: 'cts-item-t' }, asset.name),
+								h('div', { className: 'cts-item-m' }, `${asset.kind || '资产'} · ${copy?.path || ''}`)),
+							h('div', { className: 'cts-row', style: { gap: 6 } },
+								(isPrd || isSig) ? h('button', { type: 'button', className: 'cts-btn', onClick: () => setPreviewState({ kind: isSig ? 'signals' : 'prd', asset }) }, '预览') : null,
+								isUi && onOpenDesignTools ? h('button', { type: 'button', className: 'cts-btn', onClick: onOpenDesignTools }, '查看画板') : null,
+								copy && onTag ? h('button', { type: 'button', className: 'cts-btn', disabled: busy, onClick: () => onTag(copy.path, false) }, '移出模块') : null));
+					}),
+					mcpDesigns.map((row) => h('div', { className: 'cts-item', key: row.path, style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 } },
+						h('div', null,
+							h('div', { className: 'cts-item-t' }, row.name || row.path),
+							h('div', { className: 'cts-item-m' }, `UI 设计（Pixso MCP）· 版本 ${String(row.content_version || '').slice(0, 12)} · ${row.used ? '本轮生效' : row.exclusion || '已绑定'}`)),
+						onOpenDesignTools ? h('button', { type: 'button', className: 'cts-btn', onClick: onOpenDesignTools }, '查看画板') : null))),
+				h('details', { className: 'cts-model-tools', style: { marginTop: 10 } },
+					h('summary', null, '模块资料用途角色配置（指定产品规则 / 接口定义 / 界面设计 / 历史参考）'),
+					h(SourceScope, { projectId, moduleId, onSaved: onRefreshAssets || (() => {}), refresh: evidenceBuiltAt, onFact: onOpenFact || (() => {}) })))
 				: null;
 			return h('div', { className: 'cts-module-start' },
 				h('section', { className: 'cts-hero' },
-					h('div', { className: 'cts-hero-kicker' }, '模块入口'),
-					h('h1', null, `${module?.name || moduleId} · 第一步：添加资产`),
-					h('p', null, '在下面直接预览资产池并选择导入，也可以上传新文件或从 Pixso MCP 导入当前设计稿；导入时自动绑定当前项目和模块。'),
+					h('div', { className: 'cts-hero-kicker' }, '模块资料准备'),
+					h('h1', null, `${module?.name || moduleId} · 选择本轮资料并选择工作轨`),
+					h('p', null, '导入 PRD、信号矩阵与设计稿后，日常迭代推荐直接进入「快速测试设计」（证据 → 事实 → 测试点 → 用例）；需严格逐条审批合同并冻结基线时可进入「ECSM 建模」。'),
 					h('div', { className: 'cts-hero-actions' },
-						h('button', { className: 'cts-btn primary', disabled: busy, onClick: taggedCount ? onNext : () => searchRef.current?.focus() }, taggedCount ? '下一步：进入 ECSM' : '选择本轮需求资料'),
+						taggedCount
+							? h(React.Fragment, null,
+								h('button', { className: 'cts-btn primary', disabled: busy, onClick: onFastTrack || onNext }, '⚡ 进入快速测试设计（推荐）'),
+								h('button', { className: 'cts-btn', disabled: busy, onClick: onNext }, '🛡 进入 ECSM 合同建模'))
+							: h('button', { className: 'cts-btn primary', disabled: busy, onClick: () => searchRef.current?.focus() }, '选择本轮需求资料'),
 						onOpenCenter ? h('button', { className: 'cts-btn', onClick: onOpenCenter }, '打开完整资产中心') : null,
-						h('span', { className: 'cts-hint' }, `本模块已用 ${taggedCount} 份资产`))),
+						h('span', { className: 'cts-hint' }, `本模块已绑定 ${taggedCount} 份资产`))),
 				h('div', { className: 'cts-option-grid' },
 					h('section', { className: 'cts-option-card' },
 						h('h3', null, '上传新资产 / 从 MCP 导入设计稿'),
@@ -4265,6 +4850,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const [phase, setPhase] = React.useState('');
 			const [lintState, setLintState] = React.useState(null);
 			const [selected, setSelected] = React.useState(null);
+			const [checkedIds, setCheckedIds] = React.useState([]);
 			const [coverageState, setCoverageState] = React.useState(null);
 			const [reviewState, setReviewState] = React.useState(null);
 			const [bindings, setBindings] = React.useState({ items: [] });
@@ -4275,6 +4861,25 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const impactDialog = React.useRef(null);
 			React.useEffect(() => { if (impact) impactDialog.current?.showModal(); }, [impact]);
 			const [chatOpen, setChatOpen] = React.useState(false);
+			const [cmdkOpen, setCmdkOpen] = React.useState(false);
+			const [cmdkQuery, setCmdkQuery] = React.useState('');
+			const [attachContext, setAttachContext] = React.useState(true);
+			React.useEffect(() => {
+				const onKeyDown = (event) => {
+					const mod = event.metaKey || event.ctrlKey;
+					if (mod && event.key.toLowerCase() === 'j' && projectId) {
+						event.preventDefault();
+						setChatOpen((v) => !v);
+					} else if (mod && event.key.toLowerCase() === 'k' && projectId) {
+						event.preventDefault();
+						setCmdkOpen((v) => !v);
+					} else if (event.key === 'Escape' && cmdkOpen) {
+						setCmdkOpen(false);
+					}
+				};
+				window.addEventListener('keydown', onKeyDown);
+				return () => window.removeEventListener('keydown', onKeyDown);
+			}, [projectId, cmdkOpen]);
 			const [newProjectOpen, setNewProjectOpen] = React.useState(false);
 			const [newProjectName, setNewProjectName] = React.useState('');
 			const [newModuleName, setNewModuleName] = React.useState('默认模块');
@@ -4286,6 +4891,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const [settingsBusy, setSettingsBusy] = React.useState(false);
 			const [assetEntry, setAssetEntry] = React.useState({ project: '', module: '', scope: 'global' });
 			const [centerOpen, setCenterOpen] = React.useState(false);
+			const [centerTab, setCenterTab] = React.useState('env');
 			const [centerStatus, setCenterStatus] = React.useState(null);
 			const newProjectDialog = React.useRef(null);
 			const settingsDialog = React.useRef(null);
@@ -4347,9 +4953,14 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				setError('');
 				setView(next);
 				setSelected(null);
+				setCheckedIds([]);
 				if (next === 'home' || next === 'center') setChatOpen(false);
 				if (next === 'ecsm') { setTab('model'); setModelSection('contracts'); setContractTarget(''); }
-				if (next === 'design') setTab('outline');
+				if (next === 'design') {
+					const hasFrozen = Boolean(ecsmModel?.current);
+					const hasCases = (artifacts.cases?.items || []).length > 0;
+					setTab(hasFrozen ? 'outline' : hasCases ? 'cases' : 'points');
+				}
 			};
 			const applyNav = (target) => {
 				setError('');
@@ -4390,16 +5001,34 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const enterModule = async (id) => {
 				if (!id) return;
 				pushHistory();
+				setError('');
 				setModuleId(id);
 				setSelected(null);
+				setCheckedIds([]);
 				try {
-					const state = await post('assets.tags.view', { project: projectId, module: id });
+					const [state, modEcsm, modArt] = await Promise.all([
+						post('assets.tags.view', { project: projectId, module: id }),
+						post('ecsm.view', { project: projectId, module: id }).catch(() => null),
+						post('artifacts.load', { project: projectId, module: id }).catch(() => null)
+					]);
 					const assets = state.assets || [];
 					setTaggedAssets(assets);
 					const visible = assets.filter((asset) => (asset.tags || []).includes(id) || (asset.tags || []).includes(''));
 					setChatOpen(false);
-					if (visible.length) openView('ecsm');
-					else setView('module-assets');
+					if (visible.length) {
+						const useControlledEcsm = Boolean(modEcsm?.current) || ((modEcsm?.model?.inputs?.contracts?.items || []).length > 0 && !(modArt?.points?.items || []).length);
+						if (useControlledEcsm) {
+							setView('ecsm');
+							setTab('model');
+							setModelSection('contracts');
+							setContractTarget('');
+						} else {
+							setView('design');
+							setTab((modArt?.cases?.items || []).length > 0 ? 'cases' : 'points');
+						}
+					} else {
+						setView('module-assets');
+					}
 				} catch {
 					setView('module-assets');
 				}
@@ -4512,7 +5141,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			moduleRef.current = scope;
 			React.useEffect(() => {
 				const saved = workPosition.current.get(scope);
-				if (saved) { setView(saved.view); changeTab(saved.tab); setModelSection(saved.modelSection); setContractTarget(''); }
+				if (saved && view !== 'home' && view !== 'center') { setView(saved.view); changeTab(saved.tab); setModelSection(saved.modelSection); setContractTarget(''); }
 			}, [scope]);
 			const [loadedScope, setLoadedScope] = React.useState('');
 			React.useEffect(() => {
@@ -4723,12 +5352,20 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				post('evidence.index', { project: projectId })
 					.then((state) => { if (alive) setEvidence(state.index || null); })
 					.catch(() => {});
-				post('replay', { project: projectId })
+				post('chat.history', { project: projectId, module: moduleId })
 					.then((state) => {
 						if (!alive) return;
-						setMessages(fromEvents(state.events || []));
+						if (Array.isArray(state?.messages) && state.messages.length > 0) {
+							setMessages(state.messages);
+							return;
+						}
+						post('replay', { project: projectId })
+							.then((rep) => { if (alive) setMessages(fromEvents(rep.events || [])); })
+							.catch(() => { if (alive) setMessages([]); });
 					})
-					.catch(() => {});
+					.catch(() => {
+						if (alive) setMessages([]);
+					});
 				return () => { alive = false; };
 			}, [projectId, moduleId]);
 
@@ -4748,27 +5385,51 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				});
 			};
 
-			const send = async () => {
-				const message = draft.trim();
+			const latestMessagesRef = React.useRef([]);
+			React.useEffect(() => { latestMessagesRef.current = messages; }, [messages]);
+
+			const send = async (overrideText) => {
+				const message = String(typeof overrideText === 'string' ? overrideText : draft).trim();
 				if (message === '' || projectId === '' || status === 'running') return;
 				followChat.current = true;
-				setDraft('');
+				if (typeof overrideText !== 'string') setDraft('');
 				setError('');
 				setStatus('running');
 				setMessages((prev) => [
 					...prev,
-					{ id: `u-${Date.now()}`, role: 'user', text: message },
-					{ id: `a-${Date.now()}`, role: 'agent', text: '', tools: [] }
+					{ id: `u-${Date.now()}`, role: 'user', text: message, at: new Date().toISOString() },
+					{ id: `a-${Date.now()}`, role: 'agent', text: '', tools: [], thinking: '正在连接并分析上下文…', at: new Date().toISOString() }
 				]);
 				const controller = new AbortController();
 				abortRef.current = controller;
+				const uiContext = attachContext ? {
+					view,
+					tab,
+					selected: selected ? { kind: selected.kind, id: selected.id } : null,
+					checkedIds: checkedIds.length ? checkedIds : undefined
+				} : {};
 				try {
-					await streamSse('cts/api/chat', { project: projectId, module: moduleId, message }, (event, data) => {
-						if (event === 'tool.start') {
+					await streamSse('cts/api/chat', { project: projectId, module: moduleId, message, ui_context: uiContext }, (event, data) => {
+						if (event === 'agent.status') {
+							setMessages((prev) => {
+								const next = prev.slice();
+								const last = { ...next[next.length - 1], thinking: data.label || '正在规划操作…' };
+								next[next.length - 1] = last;
+								return next;
+							});
+						} else if (event === 'tool.start') {
+							setMessages((prev) => {
+								const next = prev.slice();
+								const last = { ...next[next.length - 1], thinking: '' };
+								last.tools = [...(last.tools || []), { callId: data.callId, tool: data.tool, input: data.input, summary: '', progress: '', done: false }];
+								next[next.length - 1] = last;
+								return next;
+							});
+						} else if (event === 'tool.progress') {
 							setMessages((prev) => {
 								const next = prev.slice();
 								const last = { ...next[next.length - 1] };
-								last.tools = [...(last.tools || []), { callId: data.callId, tool: data.tool, input: data.input, summary: '', done: false }];
+								last.tools = (last.tools || []).map((card) => card.callId === data.callId ? { ...card, progress: data.label || '' } : card);
 								next[next.length - 1] = last;
 								return next;
 							});
@@ -4776,33 +5437,94 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 							setMessages((prev) => {
 								const next = prev.slice();
 								const last = { ...next[next.length - 1] };
-								last.tools = (last.tools || []).map((card) => card.callId === data.callId ? { ...card, done: true, summary: data.summary, data: data.data } : card);
+								last.tools = (last.tools || []).map((card) => card.callId === data.callId ? { ...card, done: true, ok: data.ok, summary: data.summary, data: data.data, meta: data.meta || null } : card);
 								next[next.length - 1] = last;
 								return next;
 							});
+						} else if (event === 'gate.request') {
+							setMessages((prev) => {
+								const next = prev.slice();
+								const last = { ...next[next.length - 1] };
+								last.gate = { ...data, answered: false };
+								next[next.length - 1] = last;
+								return next;
+							});
+						} else if (event === 'gate.answered') {
+							setMessages((prev) => {
+								const next = prev.slice();
+								const last = { ...next[next.length - 1] };
+								if (last.gate?.gateId === data.gateId) last.gate = { ...last.gate, answered: true, answer: data.answer };
+								next[next.length - 1] = last;
+								return next;
+							});
+						} else if (event === 'state.changed') {
+							setMessages((prev) => {
+								const next = prev.slice();
+								const last = { ...next[next.length - 1] };
+								if (data.undo) last.undo = data.undo;
+								if (data.download) last.download = data.download;
+								next[next.length - 1] = last;
+								return next;
+							});
+							refreshAll().catch(() => {});
 						} else if (event === 'text.delta') {
-							pushDelta(data.text || '');
+							setMessages((prev) => {
+								if (prev.length === 0) return prev;
+								const next = prev.slice();
+								const last = { ...next[next.length - 1], thinking: '' };
+								last.text = (last.text || '') + (data.text || '');
+								next[next.length - 1] = last;
+								return next;
+							});
 						} else if (event === 'error') {
 							setError(`${data.code || 'ERROR'}：${data.message || ''}`);
 						}
 					}, controller.signal);
 					setStatus('idle');
+					setTimeout(() => {
+						if (projectId) post('chat.save', { project: projectId, module: moduleId, messages: latestMessagesRef.current }).catch(() => {});
+					}, 50);
 				} catch (err) {
 					if (err.name !== 'AbortError') {
 						setError(err.message);
-						// The stream died mid-run: rebuild from the durable log rather than
-						// leaving a half-rendered answer on screen.
-						try {
-							const state = await post('replay', { project: projectId });
-							setMessages(fromEvents(state.events || []));
-						} catch {
-							// keep whatever is on screen
-						}
 					}
 					setStatus('idle');
 				} finally {
 					abortRef.current = null;
 				}
+			};
+
+			const askCopilot = (promptText) => {
+				if (!projectId) return;
+				followChat.current = true;
+				setChatOpen(true);
+				setCmdkOpen(false);
+				if (promptText && status !== 'running') {
+					void send(promptText);
+				} else if (promptText) {
+					setDraft(promptText);
+				}
+			};
+
+			const undoCopilot = async () => {
+				if (!projectId || status === 'running') return;
+				try {
+					const res = await post('copilot.undo', { project: projectId, module: moduleId });
+					if (res?.undone) {
+						await refreshAll();
+						setNotice({ tone: 'success', text: `已撤销：${res.label || '上次助手修改'}` });
+					} else {
+						setNotice({ tone: 'info', text: '当前模块暂无可撤销的助手修改' });
+					}
+				} catch (err) {
+					setError(err.message);
+				}
+			};
+
+			const clearCopilot = async () => {
+				if (!projectId) return;
+				setMessages([]);
+				await post('chat.clear', { project: projectId, module: moduleId }).catch(() => {});
 			};
 
 			const refreshAll = async () => {
@@ -5561,6 +6283,13 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					h('div', { className: 'cts-status' },
 						h('span', { className: `cts-dot${status === 'running' || genBusy ? ' on' : ''}${notice?.tone === 'error' ? ' err' : ''}` }),
 						h('span', null, view === 'home' ? `${projects.length} 个项目` : view === 'center' ? '资产中心' : currentProject?.name || '项目')),
+					projectId ? h('button', {
+						type: 'button',
+						className: `cts-btn cts-copilot-btn-head${chatOpen ? ' active' : ''}`,
+						'aria-expanded': chatOpen,
+						title: '打开或收起流程助手（⌘J / ⌘K 快捷指令）',
+						onClick: () => { if (!chatOpen) followChat.current = true; setChatOpen(!chatOpen); }
+					}, '✦ 流程助手', h('span', { className: 'cts-kbd' }, '⌘J')) : null,
 					h(ActivityPanel, { projects, projectId: view === 'home' ? '' : projectId, moduleId: view === 'home' ? '' : moduleId, onOpenDesign: (item) => {
 						pushHistory();
 					setProjectId(item.project);
@@ -5572,151 +6301,196 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					} })
 				),
 				projectId && view !== 'home' && view !== 'center' ? h('div', { className: 'cts-projectbar' },
-					h('button', { className: 'cts-crumb', onClick: () => openProject(currentProject) }, `工作台 / ${currentProject?.name || ''}`),
+					h('button', { type: 'button', className: 'cts-crumb', onClick: () => openView('home') }, '工作台'),
+					h('span', { style: { color: 'var(--dsw-alias-label-secondary)', fontSize: 12 } }, '/'),
+					h('button', { type: 'button', className: 'cts-crumb', onClick: () => openProject(currentProject) }, currentProject?.name || ''),
 					h('select', { className: 'cts-select', value: moduleId, disabled: busyScope, 'aria-label': '模块',
 						onChange: async (event) => { const next = event.target.value; if (next) await enterModule(next); } },
 						h('option', { value: '' }, '选择模块'),
 						modules.map((item) => h('option', { key: item.id, value: item.id }, item.name || item.id))),
 					h('div', { className: 'cts-modes' },
-						h('button', { className: `cts-mode${view === 'ecsm' ? ' on' : ''}`, disabled: !moduleId || (!taggedAssets.some((asset) => (asset.tags || []).includes(moduleId) || (asset.tags || []).includes('')) && !materialRows.some((row) => row.selected && row.kind === 'pixso-mcp')), onClick: () => openView('ecsm') }, 'ECSM'),
-						h('button', { className: `cts-mode${view === 'design' ? ' on' : ''}`, disabled: !moduleId || (!taggedAssets.some((asset) => (asset.tags || []).includes(moduleId) || (asset.tags || []).includes('')) && !materialRows.some((row) => row.selected && row.kind === 'pixso-mcp')), onClick: () => openView('design') }, '测试设计'),
+						h('button', { className: `cts-mode${view === 'design' ? ' on' : ''}`, title: '快速测试设计（证据 → 事实 → 测试点 → 用例）', disabled: !moduleId || (!taggedAssets.some((asset) => (asset.tags || []).includes(moduleId) || (asset.tags || []).includes('')) && !materialRows.some((row) => row.selected && row.kind === 'pixso-mcp')), onClick: () => openView('design') }, '⚡ 快速设计'),
+						h('button', { className: `cts-mode${view === 'ecsm' ? ' on' : ''}`, title: 'ECSM 受控产品建模（事实 → 合同审批 → 冻结 → 大纲）', disabled: !moduleId || (!taggedAssets.some((asset) => (asset.tags || []).includes(moduleId) || (asset.tags || []).includes('')) && !materialRows.some((row) => row.selected && row.kind === 'pixso-mcp')), onClick: () => openView('ecsm') }, '🛡 ECSM 建模'),
 						h('button', { className: `cts-mode${view === 'delivery' ? ' on' : ''}`, disabled: !moduleId || (!taggedAssets.some((asset) => (asset.tags || []).includes(moduleId) || (asset.tags || []).includes('')) && !materialRows.some((row) => row.selected && row.kind === 'pixso-mcp')), onClick: () => openView('delivery') }, '交付')),
-					h('button', { className: 'cts-btn', disabled: !moduleId, onClick: () => { setAssetEntry({ project: projectId, module: moduleId, scope: 'module' }); openView('center'); } }, '资产'),
+					h('button', { className: 'cts-btn', disabled: !moduleId, onClick: () => openView('module-assets') }, '模块资料'),
 					h('button', { className: 'cts-btn', onClick: () => openSettings('project') }, '项目设置'),
-					h('button', { className: 'cts-btn', 'aria-expanded': chatOpen, disabled: !moduleId || view === 'assets', onClick: () => { if (!chatOpen) followChat.current = true; setChatOpen(!chatOpen); } }, chatOpen ? '收起 Agent' : '打开 Agent'),
 					h('div', { className: 'cts-status' },
 						h('span', { className: `cts-dot${status === 'running' || genBusy ? ' on' : ''}${notice?.tone === 'error' ? ' err' : ''}` }),
 						h('span', null, !moduleId ? '先选择模块' : view === 'module-assets' ? '先添加资产' : busyScope ? '处理中' : packages.current ? `交付 v${packages.current.version}` : ecsmModel?.current ? `模型 v${ecsmModel.current.version}` : '工作草稿'))) : null,
-				newProjectOpen ? h('dialog', { ref: newProjectDialog, onClose: () => setNewProjectOpen(false), style: { width: 'min(520px, 92vw)' } },
-					h('h3', null, '新建项目'),
-					h('p', { className: 'cts-hint' }, `项目会创建在当前数据目录：${dataDir || '插件数据目录'}。创建后直接进入项目页，选择模块即可导入或上传需求资料。`),
-					h('div', { className: 'cts-field' }, h('span', { className: 'cts-field-l' }, '项目名称'),
-						h('input', { className: 'cts-input', autoFocus: true, value: newProjectName, placeholder: '例如：项目名称',
-							onChange: (event) => setNewProjectName(event.target.value),
-							onKeyDown: (event) => { if (event.key === 'Enter' && newProjectName.trim()) createProject(newProjectName.trim(), newModuleName.trim() || '默认模块'); } })),
-					h('div', { className: 'cts-field' }, h('span', { className: 'cts-field-l' }, '首个模块名称'),
-						h('input', { className: 'cts-input', value: newModuleName,
-							onChange: (event) => setNewModuleName(event.target.value) })),
-					h('p', { className: 'cts-hint' }, '创建后直接上传资料；构建证据或生成 ECSM 时，系统会按资料自动识别生成配置。需要例外时再到「项目设置 → 生成配置」手动调整。'),
-					h('div', { className: 'cts-filter', style: { marginTop: 12 } },
-						h('button', { className: 'cts-btn primary', disabled: !newProjectName.trim() || busyScope, onClick: () => createProject(newProjectName.trim(), newModuleName.trim() || '默认模块') }, '创建项目'),
-						h('button', { className: 'cts-btn', onClick: () => setNewProjectOpen(false) }, '取消'))) : null,
-				settingsOpen ? h('dialog', { ref: settingsDialog, onClose: () => setSettingsOpen(false), style: { width: 'min(860px, 94vw)', maxHeight: '85vh', overflow: 'auto' } },
-					h('div', { className: 'cts-filter', style: { justifyContent: 'space-between' } },
-						h('h3', { style: { margin: 0 } }, '项目设置'),
-						h('button', { className: 'cts-btn', onClick: () => setSettingsOpen(false) }, '关闭')),
-					!currentProject ? h('p', { className: 'cts-hint' }, '请先选择一个项目。') : h(React.Fragment, null,
-						currentProject.readonly ? h('div', { className: 'cts-notice' }, '只读项目：可以查看，不能修改、删除或修改生成配置。') : null,
-						h('div', { className: 'cts-modes', style: { margin: '10px 0' } },
-							[['project', '项目'], ['modules', '模块'], ['quality', '生成配置']].map(([key, label]) => h('button', {
-								key, className: `cts-mode${settingsTab === key ? ' on' : ''}`,
-								onClick: () => setSettingsTab(key)
-							}, label))),
-						settingsTab === 'project' ? h(React.Fragment, null,
-							h('div', { className: 'cts-field' }, h('span', { className: 'cts-field-l' }, '项目名称'),
-								h('input', { className: 'cts-input', disabled: currentProject.readonly || settingsBusy, value: settingsName,
-									onChange: (event) => setSettingsName(event.target.value) })),
-							h('p', { className: 'cts-hint' }, `项目 ID：${currentProject.id}`),
-							h('p', { className: 'cts-hint' }, `数据目录：${dataDir || '—'}（新建项目都在此目录下）`),
-							h('div', { className: 'cts-filter', style: { marginTop: 10 } },
-								h('button', { className: 'cts-btn', disabled: currentProject.readonly || settingsBusy || settingsName.trim() === currentProject.name, onClick: saveProjectName }, '保存项目名'),
-								!currentProject.readonly ? h('button', { className: 'cts-btn', disabled: settingsBusy, onClick: deleteCurrentProject, style: { color: 'var(--dsw-alias-state-error-primary)' } }, '删除项目（不可恢复）') : null)
-						) : null,
-						settingsTab === 'modules' ? h(React.Fragment, null,
-							h('p', { className: 'cts-hint' }, '一个项目可以拆多个模块；当前模块决定生成/查看的产物范围。'),
-							h('div', { className: 'cts-list' }, modules.map((module) => h('div', { className: 'cts-filter', key: module.id, style: { justifyContent: 'space-between' } },
-								h('span', null, `${module.name || module.id}${module.id === moduleId ? ' · 当前' : ''}`),
-								h('span', { className: 'cts-hint' }, (module.keywords || []).join('、')),
-								h('div', { className: 'cts-filter' },
-									h('button', { className: 'cts-btn', disabled: currentProject.readonly || settingsBusy, onClick: () => renameModule(module) }, '重命名'),
-									h('button', { className: 'cts-btn', disabled: currentProject.readonly || settingsBusy || modules.length <= 1, onClick: () => deleteModule(module.id) }, '删除'))))),
-							h('div', { className: 'cts-filter', style: { marginTop: 10 } },
-								h('input', { className: 'cts-input', disabled: currentProject.readonly || settingsBusy, placeholder: '新模块名称', value: newSettingsModule,
-									onChange: (event) => setNewSettingsModule(event.target.value) }),
-								h('button', { className: 'cts-btn primary', disabled: currentProject.readonly || settingsBusy || !newSettingsModule.trim(), onClick: async () => {
-									await createModule(newSettingsModule.trim(), [newSettingsModule.trim()]);
-									setNewSettingsModule('');
-								} }, '新增模块'))
-						) : null,
-						settingsTab === 'quality' ? h(React.Fragment, null,
-							!qualityDraft ? h(React.Fragment, null,
-								h('p', { className: 'cts-hint' }, '先选一个生成配置模板，或按项目里已有的 PRD/DBC/设计稿自动识别；模板只决定能力、界面词表和来源占位，不会上传文件。'),
-								h('div', { className: 'cts-filter' },
-									Object.entries(QUALITY_TEMPLATES).map(([key, template]) => h('button', { key, className: 'cts-btn', disabled: currentProject.readonly,
-										onClick: () => setQualityDraft(qualityTemplate(key)) }, `使用「${template.label}」模板`)),
-									h('button', { className: 'cts-btn', disabled: currentProject.readonly || settingsBusy, onClick: detectQuality }, '从项目资料识别'))) : h(React.Fragment, null,
-								h('p', { className: 'cts-hint' }, '这不是账号或项目分类，而是给生成器的说明书：项目是纯文档还是带 DBC/设计稿、需求文件在哪、界面叫什么。它会影响来源解析、信号校验和用例步骤里的页面名。来源路径相对项目目录。'),
-								h('div', { className: 'cts-field' }, h('span', { className: 'cts-field-l' }, '能力'),
-									h('div', { className: 'cts-filter' }, ['text', 'protocol', 'design', 'bench'].map((capability) => h('label', { key: capability },
-										h('input', { type: 'checkbox', disabled: currentProject.readonly, checked: (qualityDraft.capabilities || []).includes(capability),
-											onChange: () => toggleQualityCapability(capability) }), ` ${capability}`)))),
-								h('div', { className: 'cts-field' }, h('span', { className: 'cts-field-l' }, '界面词表（每行一个页面/界面名）'),
-									h('textarea', { className: 'cts-input', rows: 5, disabled: currentProject.readonly, value: (qualityDraft.surfaces || []).join('\n'),
-										onChange: (event) => setQualityDraft({ ...qualityDraft, surfaces: event.target.value.split('\n').map((item) => item.trim()).filter(Boolean) }) })),
-								h('div', { className: 'cts-field' }, h('span', { className: 'cts-field-l' }, '默认界面'),
-									h('input', { className: 'cts-input', disabled: currentProject.readonly, value: qualityDraft.default_surface || '',
-										onChange: (event) => setQualityDraft({ ...qualityDraft, default_surface: event.target.value }) })),
-								h('div', { className: 'cts-field' }, h('span', { className: 'cts-field-l' }, '测试点展开粒度'),
-									h('select', { className: 'cts-input', disabled: currentProject.readonly, value: qualityDraft.coverage_mode === 'exhaustive' ? 'exhaustive' : 'standard',
-										onChange: (event) => setQualityDraft({ ...qualityDraft, coverage_mode: event.target.value }) },
-										h('option', { value: 'standard' }, '标准（等价类与边界）'),
-										h('option', { value: 'exhaustive' }, '全量展开（逐枚举/逐档位/受限矩阵）'))),
-								h('div', { className: 'cts-field' },
-									h('label', null,
-										h('input', { type: 'checkbox', disabled: currentProject.readonly,
-											checked: qualityDraft.include_single_entries === true || qualityDraft.coverage_mode === 'exhaustive',
-											onChange: (event) => setQualityDraft({ ...qualityDraft, include_single_entries: event.target.checked }) }),
-										' 闭环规则同时覆盖单入口对象（全量展开时自动启用）')),
-								['prd', 'dbc', 'design', 'standard'].map((role) => {
-									const dirFilter = role === 'prd' ? 'prd' : role === 'dbc' ? 'signals' : role === 'design' ? 'design' : 'other';
-									const options = (assets || []).filter((a) => !a.dir || a.dir === dirFilter || role === 'standard').map((a) => a.relative || a.path).filter(Boolean);
-									const listId = `cts-src-list-${role}`;
-									return h('div', { className: 'cts-field', key: role },
-										h('span', { className: 'cts-field-l' }, role === 'prd' ? 'PRD 路径' : role === 'dbc' ? 'DBC 路径' : role === 'design' ? '设计稿路径' : '通用测试规范路径（可选）'),
-										h('input', { className: 'cts-input', list: listId, disabled: currentProject.readonly,
-											placeholder: role === 'prd' ? 'prd/需求.md（可下拉选择项目文件）' : role === 'dbc' ? 'signals/xxx.dbc（可下拉选择）' : role === 'design' ? 'design/xxx.pix（可下拉选择）' : 'other/通用测试规范.md',
-											value: (qualityDraft.sources || {})[role] || '',
-											onChange: (event) => updateQualitySource(role, event.target.value) }),
-										h('datalist', { id: listId }, options.map((rel) => h('option', { key: rel, value: rel }))));
-								}),
-								h('div', { className: 'cts-filter', style: { marginTop: 10 } },
-									h('button', { className: 'cts-btn primary', disabled: currentProject.readonly || settingsBusy || !(qualityDraft.surfaces || []).length, onClick: saveQuality }, '保存生成配置'),
-									h('button', { className: 'cts-btn', disabled: currentProject.readonly || settingsBusy, onClick: detectQuality }, '从项目资料识别'),
-									h('button', { className: 'cts-btn', disabled: settingsBusy, onClick: () => setQualityDraft(null) }, '重新选择模板')))
-						) : null)) : null,
-				centerOpen ? h('dialog', { ref: centerDialog, onClose: () => setCenterOpen(false), style: { width: 'min(720px, 92vw)', maxHeight: '82vh', overflow: 'auto' } },
-					h('div', { className: 'cts-filter', style: { justifyContent: 'space-between' } },
-						h('h3', { style: { margin: 0 } }, '设置与运行环境'),
-						h('button', { className: 'cts-btn', onClick: () => setCenterOpen(false) }, '关闭')),
-					!centerStatus ? h('p', { className: 'cts-hint' }, '正在读取…') : h(React.Fragment, null,
-						h('div', { className: 'cts-workbench-section' },
-							h('h3', null, '数据目录'),
-							h('p', { className: 'cts-hint' }, centerStatus.dataDir || '—'),
-							h('p', { className: 'cts-hint' }, `当前 ${centerStatus.projects || 0} 个项目；新建项目会建在此目录的 projects/<id>/ 下。`),
-							h('button', { className: 'cts-btn', onClick: () => {
-								try {
-									const copy = navigator.clipboard?.writeText(centerStatus.dataDir || '');
-									if (copy) copy.then(() => setError('数据目录路径已复制')).catch(() => setError('无法访问剪贴板，请手动复制'));
-									else setError('当前环境不支持剪贴板，请手动复制');
-								} catch { setError('复制失败，请手动复制'); }
-							} }, '复制路径')),
-						h('div', { className: 'cts-workbench-section' },
-							h('h3', null, '模型'),
-							h('p', { className: 'cts-hint' }, `${centerStatus.provider || '跟随 DSH 默认'} / ${centerStatus.model || '默认模型'}`),
-							h('p', { className: 'cts-hint' }, '模型来自 DSH 全局配置；测试 Agent 不单独保存密钥。')),
-						h('div', { className: 'cts-workbench-section' },
-							h('h3', null, '资料根'),
-							(centerStatus.sourceRoots || []).map((root) => h('div', { className: 'cts-item', key: root.dir },
-								h('div', { className: 'cts-item-t' }, root.dir),
-								h('div', { className: 'cts-item-m' }, root.readonly ? '只读' : '可写')))),
-						h('div', { className: 'cts-workbench-section' },
-							h('h3', null, 'Pixso 设计稿'),
-							h('p', { className: 'cts-hint' }, centerStatus.pixso?.mcpUrl || '未配置 MCP 地址'),
-							h('p', { className: 'cts-hint' }, `令牌：${centerStatus.pixso?.hasToken ? '已配置' : '未配置'} · OAuth：${centerStatus.pixso?.oauthStored ? '已保存授权' : '未授权'}`),
-							h('p', { className: 'cts-hint' }, '设计稿的检测连接、OAuth 授权与缓存截图请在项目「资料 → 设计稿」页操作。')),
-						h('div', { className: 'cts-filter' },
-							h('button', { className: 'cts-btn', onClick: refreshCenter }, '刷新状态'),
-							h('button', { className: 'cts-btn', onClick: () => setCenterOpen(false) }, '关闭')))) : null,
+				newProjectOpen ? h('dialog', { ref: newProjectDialog, className: 'cts-modal', onClose: () => setNewProjectOpen(false), style: { width: 'min(480px, 92vw)' } },
+					h('div', { className: 'cts-modal-wrap' },
+						h('div', { className: 'cts-modal-head' },
+							h('div', null,
+								h('h3', null, '新建项目'),
+								h('p', { className: 'cts-modal-sub' }, '创建后将直接进入项目主页，上传资料即可自动识别配置')),
+							h('button', { type: 'button', className: 'cts-modal-x', 'aria-label': '关闭', onClick: () => setNewProjectOpen(false) }, '×')),
+						h('div', { className: 'cts-modal-body' },
+							h('div', { className: 'cts-modal-card' },
+								h('label', { className: 'cts-field' },
+									h('span', { className: 'cts-field-l' }, '项目名称'),
+									h('input', { className: 'cts-input', autoFocus: true, value: newProjectName, placeholder: '例如：G207 座舱测试',
+										onChange: (event) => setNewProjectName(event.target.value),
+										onKeyDown: (event) => { if (event.key === 'Enter' && newProjectName.trim()) createProject(newProjectName.trim(), newModuleName.trim() || '默认模块'); } })),
+								h('label', { className: 'cts-field' },
+									h('span', { className: 'cts-field-l' }, '首个模块名称'),
+									h('input', { className: 'cts-input', value: newModuleName, placeholder: '例如：系统设置 / 仪表',
+										onChange: (event) => setNewModuleName(event.target.value),
+										onKeyDown: (event) => { if (event.key === 'Enter' && newProjectName.trim()) createProject(newProjectName.trim(), newModuleName.trim() || '默认模块'); } }))),
+							h('div', { className: 'cts-kv-desc', style: { fontFamily: 'var(--cts-font-mono)', fontSize: 11 } },
+								`存储路径：${dataDir || '插件数据目录'}`)),
+						h('div', { className: 'cts-modal-foot' },
+							h('button', { type: 'button', className: 'cts-btn', onClick: () => setNewProjectOpen(false) }, '取消'),
+							h('button', { type: 'button', className: 'cts-btn primary', disabled: !newProjectName.trim() || busyScope, onClick: () => createProject(newProjectName.trim(), newModuleName.trim() || '默认模块') }, '创建项目')))) : null,
+				settingsOpen ? h('dialog', { ref: settingsDialog, className: 'cts-modal', onClose: () => setSettingsOpen(false), style: { width: 'min(760px, 94vw)' } },
+					h('div', { className: 'cts-modal-wrap' },
+						h('div', { className: 'cts-modal-head' },
+							h('div', null,
+								h('h3', null, currentProject ? `项目设置 · ${currentProject.name}` : '项目设置'),
+								currentProject ? h('p', { className: 'cts-modal-sub', style: { fontFamily: 'var(--cts-font-mono)' } }, currentProject.id) : null),
+							h('button', { type: 'button', className: 'cts-modal-x', 'aria-label': '关闭', onClick: () => setSettingsOpen(false) }, '×')),
+						h('div', { className: 'cts-modal-body' },
+							!currentProject ? h('p', { className: 'cts-hint' }, '请先选择一个项目。') : h(React.Fragment, null,
+								currentProject.readonly ? h('div', { className: 'cts-notice', 'data-tone': 'warning', style: { margin: 0 } }, '只读项目：仅可查看，无法修改、删除或更改生成配置。') : null,
+								h('div', { className: 'cts-modes', style: { alignSelf: 'flex-start' } },
+									[['project', '基本信息'], ['modules', `模块管理 (${modules.length})`], ['quality', '生成配置']].map(([key, label]) => h('button', {
+										key, type: 'button', className: `cts-mode${settingsTab === key ? ' on' : ''}`,
+										onClick: () => setSettingsTab(key)
+									}, label))),
+								settingsTab === 'project' ? h(React.Fragment, null,
+									h('div', { className: 'cts-modal-card' },
+										h('label', { className: 'cts-field' },
+											h('span', { className: 'cts-field-l' }, '项目名称'),
+											h('div', { className: 'cts-row' },
+												h('input', { className: 'cts-input', style: { flex: '1 1 auto' }, disabled: currentProject.readonly || settingsBusy, value: settingsName,
+													onChange: (event) => setSettingsName(event.target.value) }),
+												h('button', { type: 'button', className: 'cts-btn primary', disabled: currentProject.readonly || settingsBusy || settingsName.trim() === currentProject.name, onClick: saveProjectName }, '保存'))),
+										h('div', { className: 'cts-kv-desc' }, `数据目录：${dataDir || '—'}`)),
+									!currentProject.readonly ? h('div', { className: 'cts-danger-zone' },
+										h('span', null, '删除项目将永久清除该项目下所有模块与产物，操作不可恢复。'),
+										h('button', { type: 'button', className: 'cts-btn danger', disabled: settingsBusy, onClick: deleteCurrentProject }, '删除项目')) : null
+								) : null,
+								settingsTab === 'modules' ? h(React.Fragment, null,
+									h('div', { className: 'cts-list', style: { marginTop: 0 } }, modules.map((module) => h('div', { className: 'cts-mod-row', key: module.id },
+										h('div', { className: 'cts-mod-info' },
+											h('div', { className: 'cts-mod-name' },
+												module.name || module.id,
+												module.id === moduleId ? h('span', { className: 'cts-pill info' }, '当前') : null),
+											(module.keywords || []).length ? h('div', { className: 'cts-kv-desc' }, (module.keywords || []).join('、')) : null),
+										h('div', { className: 'cts-row', style: { gap: 6 } },
+											h('button', { type: 'button', className: 'cts-btn', disabled: currentProject.readonly || settingsBusy, onClick: () => renameModule(module) }, '重命名'),
+											h('button', { type: 'button', className: 'cts-btn danger', disabled: currentProject.readonly || settingsBusy || modules.length <= 1, onClick: () => deleteModule(module.id) }, '删除'))))),
+									h('div', { className: 'cts-modal-card' },
+										h('span', { className: 'cts-field-l' }, '新增模块'),
+										h('div', { className: 'cts-row' },
+											h('input', { className: 'cts-input', style: { flex: '1 1 auto' }, disabled: currentProject.readonly || settingsBusy, placeholder: '输入新模块名称…', value: newSettingsModule,
+												onChange: (event) => setNewSettingsModule(event.target.value) }),
+											h('button', { type: 'button', className: 'cts-btn primary', disabled: currentProject.readonly || settingsBusy || !newSettingsModule.trim(), onClick: async () => {
+												await createModule(newSettingsModule.trim(), [newSettingsModule.trim()]);
+												setNewSettingsModule('');
+											} }, '新增模块')))
+								) : null,
+								settingsTab === 'quality' ? h(React.Fragment, null,
+									!qualityDraft ? h('div', { className: 'cts-modal-card' },
+										h('div', { className: 'cts-kv-desc' }, '选择预设模板或根据项目内已上传的资料自动识别生成配置：'),
+										h('div', { className: 'cts-cap-group' },
+											Object.entries(QUALITY_TEMPLATES).map(([key, template]) => h('button', { key, type: 'button', className: 'cts-btn', disabled: currentProject.readonly,
+												onClick: () => setQualityDraft(qualityTemplate(key)) }, template.label)),
+											h('button', { type: 'button', className: 'cts-btn primary', disabled: currentProject.readonly || settingsBusy, onClick: detectQuality }, '从项目资料自动识别'))) : h(React.Fragment, null,
+										h('div', { className: 'cts-modal-card' },
+											h('div', { className: 'cts-field' },
+												h('span', { className: 'cts-field-l' }, '启用的输入能力'),
+												h('div', { className: 'cts-cap-group' }, [['text', '文档 (text)'], ['protocol', '协议信号 (protocol)'], ['design', 'UI 设计稿 (design)'], ['bench', '台架 (bench)']].map(([capability, capLabel]) => {
+													const checked = (qualityDraft.capabilities || []).includes(capability);
+													return h('label', { key: capability, className: `cts-cap-chip${checked ? ' on' : ''}` },
+														h('input', { type: 'checkbox', disabled: currentProject.readonly, checked,
+															onChange: () => toggleQualityCapability(capability) }), capLabel);
+												}))),
+											h('div', { className: 'cts-modal-grid2' },
+												h('label', { className: 'cts-field' },
+													h('span', { className: 'cts-field-l' }, '默认界面'),
+													h('input', { className: 'cts-input', disabled: currentProject.readonly, value: qualityDraft.default_surface || '',
+														onChange: (event) => setQualityDraft({ ...qualityDraft, default_surface: event.target.value }) })),
+												h('label', { className: 'cts-field' },
+													h('span', { className: 'cts-field-l' }, '测试点展开粒度'),
+													h('select', { className: 'cts-input', disabled: currentProject.readonly, value: qualityDraft.coverage_mode === 'exhaustive' ? 'exhaustive' : 'standard',
+														onChange: (event) => setQualityDraft({ ...qualityDraft, coverage_mode: event.target.value }) },
+														h('option', { value: 'standard' }, '标准（等价类与边界）'),
+														h('option', { value: 'exhaustive' }, '全量展开（逐枚举/逐档位）')))),
+											h('label', { className: 'cts-field' },
+												h('span', { className: 'cts-field-l' }, '界面词表（每行一个页面名）'),
+												h('textarea', { className: 'cts-input', rows: 4, disabled: currentProject.readonly, value: (qualityDraft.surfaces || []).join('\n'),
+													onChange: (event) => setQualityDraft({ ...qualityDraft, surfaces: event.target.value.split('\n').map((item) => item.trim()).filter(Boolean) }) })),
+											h('label', { className: 'cts-row', style: { fontSize: 12, color: 'var(--dsw-alias-label-secondary)', cursor: 'pointer' } },
+												h('input', { type: 'checkbox', disabled: currentProject.readonly,
+													checked: qualityDraft.include_single_entries === true || qualityDraft.coverage_mode === 'exhaustive',
+													onChange: (event) => setQualityDraft({ ...qualityDraft, include_single_entries: event.target.checked }) }),
+												'闭环规则同时覆盖单入口对象（全量展开时自动启用）')),
+										h('div', { className: 'cts-modal-card' },
+											h('span', { className: 'cts-field-l' }, '主要来源路径（相对项目目录，可下拉选择）'),
+											h('div', { className: 'cts-modal-grid2' },
+												['prd', 'dbc', 'design', 'standard'].map((role) => {
+													const dirFilter = role === 'prd' ? 'prd' : role === 'dbc' ? 'signals' : role === 'design' ? 'design' : 'other';
+													const options = (assets || []).filter((a) => !a.dir || a.dir === dirFilter || role === 'standard').map((a) => a.relative || a.path).filter(Boolean);
+													const listId = `cts-src-list-${role}`;
+													return h('label', { className: 'cts-field', key: role },
+														h('span', { className: 'cts-field-l' }, role === 'prd' ? 'PRD 文档' : role === 'dbc' ? '信号矩阵 / DBC' : role === 'design' ? 'UI 设计稿' : '通用测试规范（可选）'),
+														h('input', { className: 'cts-input', list: listId, disabled: currentProject.readonly,
+															placeholder: role === 'prd' ? 'prd/需求.pdf' : role === 'dbc' ? 'signals/matrix.xlsx' : role === 'design' ? 'design/ui.pix' : 'other/规范.md',
+															value: (qualityDraft.sources || {})[role] || '',
+															onChange: (event) => updateQualitySource(role, event.target.value) }),
+														h('datalist', { id: listId }, options.map((rel) => h('option', { key: rel, value: rel }))));
+												}))),
+										h('div', { className: 'cts-row', style: { justifyContent: 'space-between', flexWrap: 'wrap' } },
+											h('div', { className: 'cts-row' },
+												h('button', { type: 'button', className: 'cts-btn', disabled: currentProject.readonly || settingsBusy, onClick: detectQuality }, '从资料自动识别'),
+												h('button', { type: 'button', className: 'cts-btn', disabled: settingsBusy, onClick: () => setQualityDraft(null) }, '切换模板')),
+											h('button', { type: 'button', className: 'cts-btn primary', disabled: currentProject.readonly || settingsBusy || !(qualityDraft.surfaces || []).length, onClick: saveQuality }, '保存生成配置')))
+								) : null)),
+						h('div', { className: 'cts-modal-foot' },
+							h('button', { type: 'button', className: 'cts-btn', onClick: () => setSettingsOpen(false) }, '完成')))) : null,
+				centerOpen ? h('dialog', { ref: centerDialog, className: 'cts-modal', onClose: () => setCenterOpen(false), style: { width: 'min(720px, 92vw)' } },
+					h('div', { className: 'cts-modal-wrap' },
+						h('div', { className: 'cts-modal-head' },
+							h('div', null,
+								h('h3', null, '设置与全局规则'),
+								h('p', { className: 'cts-modal-sub' }, '管理运行环境状态与跨项目共用的 Agent Skill 规则')),
+							h('button', { type: 'button', className: 'cts-modal-x', 'aria-label': '关闭', onClick: () => setCenterOpen(false) }, '×')),
+						h('div', { className: 'cts-modal-body' },
+							h('div', { className: 'cts-modes', style: { alignSelf: 'flex-start' } },
+								[['env', '运行环境'], ['skills', 'Skill 规则']].map(([key, label]) => h('button', {
+									key, type: 'button', className: `cts-mode${centerTab === key ? ' on' : ''}`,
+									onClick: () => setCenterTab(key)
+								}, label))),
+							centerTab === 'skills' ? h(SkillManager) : !centerStatus ? h('p', { className: 'cts-hint' }, '正在读取运行环境…') : h(React.Fragment, null,
+								h('div', { className: 'cts-modal-grid2' },
+									h('div', { className: 'cts-kv-card' },
+										h('span', { className: 'cts-kv-label' }, '当前模型'),
+										h('div', { className: 'cts-kv-val' }, centerStatus.model || '跟随 DSH 默认'),
+										h('span', { className: 'cts-kv-desc' }, `提供方：${centerStatus.provider || 'DSH 全局配置'}（密钥由宿主统一管理）`)),
+									h('div', { className: 'cts-kv-card' },
+										h('span', { className: 'cts-kv-label' }, 'Pixso 设计稿连接'),
+										h('div', { className: 'cts-kv-val', style: { fontSize: 12 } }, centerStatus.pixso?.mcpUrl || '未配置 MCP 地址'),
+										h('span', { className: 'cts-kv-desc' }, `令牌：${centerStatus.pixso?.hasToken ? '已配置' : '未配置'} · OAuth：${centerStatus.pixso?.oauthStored ? '已授权' : '未授权'}`))),
+								h('div', { className: 'cts-kv-card' },
+									h('div', { className: 'cts-row', style: { justifyContent: 'space-between' } },
+										h('span', { className: 'cts-kv-label' }, `本地数据目录（共 ${centerStatus.projects || 0} 个项目）`),
+										h('button', { type: 'button', className: 'cts-btn', style: { padding: '2px 9px', fontSize: 11.5 }, onClick: () => {
+											try {
+												const copy = navigator.clipboard?.writeText(centerStatus.dataDir || '');
+												if (copy) copy.then(() => notify('数据目录路径已复制', 'success')).catch(() => notify('无法访问剪贴板，请手动复制', 'warning'));
+												else notify('当前环境不支持剪贴板，请手动复制', 'warning');
+											} catch { notify('复制失败，请手动复制', 'warning'); }
+										} }, '复制路径')),
+									h('div', { className: 'cts-kv-val', style: { fontSize: 12 } }, centerStatus.dataDir || '—')),
+								(centerStatus.sourceRoots || []).length ? h('div', { className: 'cts-kv-card' },
+									h('span', { className: 'cts-kv-label' }, '已挂载资料根目录'),
+									h('div', { className: 'cts-list', style: { marginTop: 4 } },
+										(centerStatus.sourceRoots || []).map((root) => h('div', { className: 'cts-mod-row', key: root.dir, style: { padding: '7px 10px' } },
+											h('span', { style: { fontFamily: 'var(--cts-font-mono)', fontSize: 11.5, overflowWrap: 'anywhere' } }, root.dir),
+											h('span', { className: `cts-pill${root.readonly ? '' : ' ok'}` }, root.readonly ? '只读' : '可写'))))) : null)),
+						h('div', { className: 'cts-modal-foot' },
+							h('button', { type: 'button', className: 'cts-btn', onClick: refreshCenter }, '刷新状态'),
+							h('button', { type: 'button', className: 'cts-btn primary', onClick: () => setCenterOpen(false) }, '关闭')))) : null,
 				impact ? h('dialog', { ref: impactDialog, onClose: () => setImpact(null), style: { maxWidth: 'min(680px, 90vw)', maxHeight: '75vh' } },
 					h('h3', null, `${impact.id} · 影响范围`),
 					h('p', null, `${impact.points.length} 个测试点 · ${impact.cases.length} 条用例`),
@@ -5761,12 +6535,53 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 								void generate('cases', false, undefined, ids, isFast ? 'facts' : undefined, true);
 							}
 						}, `仅重跑受影响的 ${impactRun.affected_points.length} 个测试点用例`) : null)) : null,
+				cmdkOpen && projectId ? h('div', { className: 'cts-cmdk-mask', onClick: (e) => { if (e.target === e.currentTarget) setCmdkOpen(false); } },
+					h('div', { className: 'cts-cmdk', role: 'dialog', 'aria-label': '流程助手快捷指令' },
+						h('div', { className: 'cts-cmdk-input-wrap' },
+							h('span', { style: { color: 'var(--dsw-alias-brand-primary)', fontWeight: 600 } }, '✦'),
+							h('input', {
+								className: 'cts-cmdk-input',
+								autoFocus: true,
+								value: cmdkQuery,
+								placeholder: '输入指令直接驱动当前模块流程（例如：按全覆盖跑通并导出 / 批量修复打回用例）…',
+								onChange: (event) => setCmdkQuery(event.target.value),
+								onKeyDown: (event) => {
+									if (event.key === 'Enter' && cmdkQuery.trim()) {
+										event.preventDefault();
+										const q = cmdkQuery.trim();
+										setCmdkQuery('');
+										askCopilot(q);
+									} else if (event.key === 'Escape') {
+										setCmdkOpen(false);
+									}
+								}
+							}),
+							h('span', { className: 'cts-kbd' }, 'Enter')),
+						h('div', { className: 'cts-cmdk-list' }, [
+							['诊断当前模块进度与审查阻塞项', '诊断当前模块进度、产物数量、审查打回 Top 原因，并告诉我下一步最该做什么'],
+							['一键全自动跑通流水线并导出 Excel', '帮我按全覆盖模式端到端自动跑通当前模块（建证据→抽事实→推绑定→产测试点→批准→展用例→导出 Excel）'],
+							['批量修复审查打回用例', '找出当前模块所有审查状态为“待修改”的用例，统计主要问题码并帮我批量修复前 5 条'],
+							['分析资料变更影响并局部重跑', '分析当前模块最新资料变更影响了哪些测试点和用例'],
+							['导出当前模块测试用例 Excel', '将当前模块的测试用例导出为标准 Excel 并给我下载链接']
+						].filter(([label]) => !cmdkQuery.trim() || label.includes(cmdkQuery.trim())).map(([label, promptText]) =>
+							h('button', {
+								key: label,
+								type: 'button',
+								className: 'cts-cmdk-item',
+								onClick: () => { setCmdkQuery(''); askCopilot(promptText); }
+							}, h('span', null, label), h('span', { className: 'cts-kbd' }, '执行')))),
+						h('div', { className: 'cts-cmdk-foot' },
+							h('span', null, `当前作用域：${currentProject?.name || ''}${moduleId ? ' / ' + (modules.find((m) => m.id === moduleId)?.name || moduleId) : ''}`),
+							h('span', null, '⌘K 指令条 · ⌘J 抽屉 · Esc 关闭')))) : null,
+				h('div', { className: 'cts-copilot-shell' },
+				h('div', { className: 'cts-copilot-main' },
 				view === 'home' ? h(Workbench, {
 					projects, dataDir,
 					onCreate: () => { setNewProjectName(''); setNewModuleName('默认模块'); setNewProjectOpen(true); },
 					onOpen: openProject,
 					onRefresh: async () => { try { await refreshProjects(projectId); setError('项目列表已刷新'); } catch (error) { setError(error.message); } }
 				}) : view === 'center' ? h(AssetCenter, {
+					key: `${assetEntry.scope || 'pool'}:${assetEntry.project || ''}:${assetEntry.module || ''}`,
 					projects, initialProjectId: assetEntry.project, initialModuleId: assetEntry.module, initialScope: assetEntry.scope, moduleContext: Boolean(assetEntry.module),
 					onOpenProject: openProject,
 					onBackToModule: () => enterModule(moduleId),
@@ -5792,9 +6607,13 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					onUpload: moduleUpload,
 					onTag: moduleTag,
 					onImport: moduleImport,
-				onBatch: moduleBatch,
-				onAdopt: moduleAdopt,
+					onBatch: moduleBatch,
+					onAdopt: moduleAdopt,
+					onFastTrack: () => { openView('design'); setTab('points'); },
 					onNext: () => openView('ecsm'),
+					onOpenDesignTools: () => openView('assets'),
+					evidenceBuiltAt: evidence?.builtAt,
+					onOpenFact: (id) => { openView('ecsm'); setTab('facts'); setSelected({ kind: 'facts', id }); },
 					onOpenCenter: () => { setAssetEntry({ project: projectId, module: moduleId, scope: 'module' }); openView('center'); },
 					onRefreshAssets: async () => {
 						await refreshModuleTags();
@@ -5862,7 +6681,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 						cases: (artifacts.cases?.items || []).length
 					},
 					onRun: { evidence: () => build(), generate, all: runAll, freeze: freezeEcsm },
-					onOpen: openWorkflow, busy: busyScope, hideNext: view === 'ecsm'
+					onOpen: openWorkflow, busy: busyScope, hideNext: view === 'ecsm', onAskCopilot: askCopilot
 				}) : null,
 				view === 'delivery' ? h('div', { className: 'cts-pkg' },
 					packages.current
@@ -5871,49 +6690,6 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					h('button', { className: 'cts-btn', disabled: busyScope || !ecsmModel || !artifacts.delivery || Boolean(deliveryBlocker) || packages.current?.status === 'frozen', onClick: () => packageAction('freeze') }, '冻结交付包'),
 					h('button', { className: 'cts-btn', disabled: busyScope || !(packages.current && packages.current.status === 'frozen'), onClick: () => packageAction('fork') }, '派生新版本')) : null,
 				h('div', { className: 'cts-body' },
-					
-					chatOpen ? h('aside', { className: 'cts-main cts-chat', 'aria-label': 'Agent 对话' },
-						h('header', { className: 'cts-chat-head' },
-							h('strong', null, 'Agent 对话'),
-							h('button', { className: 'cts-btn', onClick: () => setChatOpen(false) }, '关闭对话')),
-						h('div', { className: 'cts-scroll', ref: scrollRef, tabIndex: 0, 'aria-label': '对话记录',
-							onScroll: (event) => {
-								const node = event.currentTarget;
-								followChat.current = node.scrollHeight - node.clientHeight - node.scrollTop < 48;
-							} },
-							messages.length === 0
-								? h('div', { className: 'cts-guide' }, '可以问 Agent 当前模块的需求、信号或测试覆盖。')
-								: messages.map((message) => h('div', { key: message.id, className: `cts-msg${message.role === 'user' ? ' user' : ''}` },
-									h('div', { className: 'cts-role' }, message.role === 'user' ? '你' : 'Agent'),
-									message.role === 'user'
-										? h('div', { className: 'cts-bubble' }, message.text)
-										: h('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
-											(message.tools || []).map((card) => h(ToolCard, { key: card.callId, card })),
-											message.gate ? h(GateCard, { key: message.gate.gateId, gate: message.gate, onAnswer: answerGate }) : null,
-											message.text ? h('div', { className: 'cts-bubble cts-bubble-md' }, h(Markdown, { text: message.text })) : null)
-								))
-						),
-						h('div', { className: 'cts-composer' },
-							h('textarea', {
-								className: 'cts-input',
-								value: draft,
-								'aria-label': '给 Agent 发消息',
-								placeholder: '询问当前模块的需求、信号或测试覆盖…',
-								onChange: (event) => setDraft(event.target.value),
-								onKeyDown: (event) => {
-									if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
-										event.preventDefault();
-										send();
-									}
-								}
-							}),
-							h('div', { className: 'cts-row' },
-								h('button', { className: 'cts-btn primary', onClick: send, disabled: status === 'running' || draft.trim() === '' }, status === 'running' ? '运行中…' : '发送'),
-								status === 'running' ? h('button', { className: 'cts-btn', onClick: stop }, '停止') : null,
-								h('span', { className: 'cts-hint' }, evidence?.stats.items ? 'Enter 发送 · Shift+Enter 换行' : '先构建证据，方便 Agent 查资料')
-							)
-						)
-					) : null,
 					view === 'delivery' ? h(Delivery, { key: scope, onOpen: openWorkflow, packages, ecsmModel, artifacts, blocker: deliveryBlocker, nextState: workbenchState, projectId, moduleId, exportCases, exportCandidate, busy: pkgBusy, report: (message) => { if (moduleRef.current === scope) setError(message); }, openCases: () => { openView('design'); setTab('cases'); }, projectQuality: currentProject?.quality || null, onQuickQualityChange: updateQuickQuality }) : h(RightPanel, {
 						key: scope, projectId, moduleId, refreshAll, onOpen: openWorkflow, busy: busyScope, locked: packages.current?.status === 'frozen', onImages, onImpact: openImpact, onJump: jump,
 						onOutlineStatus: (outlineStatus) => { if (moduleRef.current === scope) setArtifacts((current) => ({ ...current, outlineStatus })); },
@@ -5936,6 +6712,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 						onClear,
 						selected,
 						setSelected,
+						onCheckedChange: setCheckedIds,
 						coverageState,
 						reviewState,
 						bindings,
@@ -5966,7 +6743,104 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 						onQuickQualityChange: updateQuickQuality,
 						onOpenIncrementalImpact: openIncrementalImpact
 					})
-				))
+				))),
+				chatOpen && projectId ? (() => {
+					const activeModObj = modules.find((m) => m.id === moduleId);
+					const modName = activeModObj?.name || moduleId || currentProject?.name || '当前项目';
+					const ptCount = (artifacts.points?.items || []).length;
+					const caseCount = (artifacts.cases?.items || []).length;
+					const revReturned = (reviewState?.items || []).filter((r) => r.conclusion === '待修改').length;
+					const suggestions = caseCount === 0
+						? (ptCount === 0
+							? ['诊断当前模块状态并推荐下一步', '按全覆盖模式端到端自动跑通并导出 Excel', '构建证据并自动推荐信号绑定']
+							: ['把全部符合门禁的测试点批量批准并展开用例', '检查测试点是否漏掉反向阈值保护或故障恢复点'])
+						: (revReturned > 0
+							? [`汇总 ${revReturned} 条审查打回原因并批量修复前 5 条`, '导出当前模块测试用例 Excel']
+							: ['发起独立质量审查并统计问题分布', '导出标准模板 Excel 并给我下载链接']);
+					return h('aside', { className: 'cts-copilot-drawer', 'aria-label': '流程助手' },
+						h('header', { className: 'cts-copilot-head' },
+							h('div', { className: 'cts-copilot-head-left' },
+								h('strong', null, '✦ 流程助手'),
+								h('span', { className: 'cts-act-scope-tag', title: modName }, modName)),
+							h('div', { className: 'cts-copilot-head-actions' },
+								h('button', { type: 'button', className: 'cts-btn', style: { padding: '3px 8px', fontSize: 11.5 }, title: '撤销助手最近一次修改', onClick: undoCopilot }, '↺ 撤销'),
+								messages.length ? h('button', { type: 'button', className: 'cts-btn', style: { padding: '3px 8px', fontSize: 11.5 }, onClick: clearCopilot }, '清空') : null,
+								h('button', { type: 'button', className: 'cts-btn', style: { padding: '3px 8px', fontSize: 11.5 }, onClick: () => setChatOpen(false) }, '收起'))),
+						h('div', { className: 'cts-copilot-ctx' },
+							h('span', null, '上下文'),
+							h('span', { className: 'cts-ctx-chip' }, `${view}${tab ? ' / ' + tab : ''}`),
+							attachContext && selected?.id ? h('span', { className: 'cts-ctx-chip' },
+								`选中 ${selected.id}`,
+								h('button', { type: 'button', title: '取消挂载选中项', onClick: () => setAttachContext(false) }, '×')) : null,
+							attachContext && checkedIds.length > 0 ? h('span', { className: 'cts-ctx-chip' }, `已勾选 ${checkedIds.length} 项`) : null,
+							!attachContext && selected?.id ? h('button', { type: 'button', className: 'cts-btn', style: { padding: '1px 6px', fontSize: 10.5 }, onClick: () => setAttachContext(true) }, `+ 挂载 ${selected.id}`) : null,
+							attachContext && selected?.kind === 'cases' && selected?.id ? h('button', {
+								type: 'button',
+								className: 'cts-btn',
+								style: { padding: '1px 7px', fontSize: 10.5, marginLeft: 'auto' },
+								disabled: status === 'running',
+								onClick: () => askCopilot(`请查看当前选中的用例 ${selected.id} 及其审查意见，按原文依据直接帮我修复并保存。`)
+							}, '✦ 修当前用例') : null),
+						h('div', { className: 'cts-scroll', ref: scrollRef, tabIndex: 0, 'aria-label': '对话记录',
+							onScroll: (event) => {
+								const node = event.currentTarget;
+								followChat.current = node.scrollHeight - node.clientHeight - node.scrollTop < 48;
+							} },
+							messages.length === 0
+								? h('div', { className: 'cts-copilot-empty' },
+									h('strong', null, `已连接到模块「${modName}」`),
+									h('p', null, '你可以直接让我诊断进度、查三源证据与信号、局部增改测试点/用例、批量修复审查打回项，或一键端到端跑通流水线并导出。≤3 条改写自动落盘且支持撤销，大批量或全量重跑会先出计划卡请你确认。'),
+									h('div', { className: 'cts-copilot-suggest' }, suggestions.map((s) =>
+										h('button', { key: s, type: 'button', className: 'cts-suggest-btn', onClick: () => askCopilot(s) }, s))))
+								: messages.map((message, mIdx) => h('div', { key: message.id, className: `cts-msg${message.role === 'user' ? ' user' : ''}` },
+									h('div', { className: 'cts-role' }, message.role === 'user' ? '你' : '流程助手'),
+									message.role === 'user'
+										? h('div', { className: 'cts-bubble' }, message.text)
+										: h('div', { style: { display: 'flex', flexDirection: 'column', gap: 8 } },
+											(message.tools || []).map((card) => h(ToolCard, { key: card.callId, card })),
+											message.gate ? h(GateCard, { key: message.gate.gateId, gate: message.gate, onAnswer: answerGate }) : null,
+											message.text ? h('div', { className: 'cts-bubble cts-bubble-md' }, h(Markdown, { text: message.text })) : null,
+											status === 'running' && mIdx === messages.length - 1 && !message.text && !(message.tools || []).some((c) => !c.done) && !message.gate
+												? h('div', { className: 'cts-bubble', style: { display: 'inline-flex', alignItems: 'center', gap: 8, color: 'var(--dsw-alias-label-secondary)', fontSize: 12 } },
+													h('span', { className: 'cts-dot on' }),
+													h('span', null, message.thinking || '正在思考…'))
+												: null,
+											(message.download || message.undo) ? h('div', { className: 'cts-msg-actions' },
+												message.download ? h('button', {
+													type: 'button',
+													className: 'cts-btn primary',
+													onClick: () => triggerDownload(message.download.url, message.download.filename)
+												}, `⬇ 下载 ${message.download.filename}`) : null,
+												message.undo ? h('button', {
+													type: 'button',
+													className: 'cts-btn',
+													disabled: status === 'running',
+													onClick: undoCopilot
+												}, `↺ 撤销（${message.undo.label || '上次修改'}）`) : null) : null)
+								))
+						),
+						h('div', { className: 'cts-composer' },
+							h('textarea', {
+								className: 'cts-input',
+								value: draft,
+								'aria-label': '给流程助手发指令',
+								placeholder: '直接说你想做的事，如「批量修前 5 条打回用例」「按全覆盖跑通并导出」…',
+								onChange: (event) => setDraft(event.target.value),
+								onKeyDown: (event) => {
+									if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
+										event.preventDefault();
+										send();
+									}
+								}
+							}),
+							h('div', { className: 'cts-row' },
+								h('button', { className: 'cts-btn primary', onClick: () => send(), disabled: status === 'running' || draft.trim() === '' }, status === 'running' ? '执行中…' : '发送'),
+								status === 'running' ? h('button', { className: 'cts-btn', onClick: stop }, '停止') : null,
+								h('span', { className: 'cts-hint' }, '⌘K 快捷指令 · Enter 发送')
+							)
+						)
+					);
+				})() : null)
 			);
 		}
 

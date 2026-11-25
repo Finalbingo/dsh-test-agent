@@ -25,11 +25,12 @@ import { statePrompt, mergeStates, validate as validateState, loadStates, saveSt
 import { freeze as freezePackage, fork as forkPackage, list as listPackages, currentPackage, isFrozen, snapshotArtifacts, readSnapshot } from './package.js';
 import { build as buildHistory, search as searchHistory, load as loadHistory } from './history.js';
 import { listActivity, recordActivity } from './activity.js';
+import { COPILOT_TOOL_HELP, assessToolConfirmation, saveCopilotSnapshot, popLatestCopilotSnapshot, loadModuleChat, saveModuleChat } from './copilot-tools.js';
 import { authorRole, REVIEW_STAGES, ROLE_INSTRUCTIONS, STAGE_SKILLS } from './agent-roles.js';
 import { runWorker } from './worker.js';
 import { loadBundle, loadRules, makeSelection, digestFieldValid } from './tkr/registry.js';
 import { deriveProfile, derivePolicy, annotateSelection } from './tkr/profile.js';
-import { enterScope, resolveModule, currentModule, currentConfig, hasCapability, declaredSource, signalPrefixes, withModule, dutNode, defaultSurface, configTerms, coverageMode, includeSingleEntries } from './scope.js';
+import { enterScope, isolateScope, resolveModule, currentModule, currentConfig, hasCapability, declaredSource, signalPrefixes, withModule, dutNode, defaultSurface, configTerms, coverageMode, includeSingleEntries } from './scope.js';
 import { checkFacts, checkCases } from './agents.js';
 import { buildOutline, buildOutlineFromBranches, branchResolvers, outlineFeatures, outlineCoverage, deliveryCases, generatableScenario, methods, reviewChanges } from './test-design.js';
 import { buildWorkbook, zip } from './xlsx.js';
@@ -38,7 +39,9 @@ import { exportDelivery } from './delivery-export.js';
 import { contractBasis, editContract, contractPoints } from './contracts.js';
 import { skill, compose, enterSkillScope, listSkills, updateSkill, skillDigests } from './skills.js';
 import { acquire as acquireLock } from './lock.js';
-import { parseXlsx } from './parsers/xlsx.js';
+import { parseXlsx, extractSignalMatrix } from './parsers/xlsx.js';
+import { parsePdf } from './parsers/pdf.js';
+import { parseDocx } from './parsers/docx.js';
 import { PixsoMcp, savePng, isRemote, REMOTE_URL, DEFAULT_URL } from './design-mcp.js';
 import { caseVisuals, caseFigurePath, missingInterfaceFigures, designEvidenceApplicable, confirmedFigures, figureBasis } from './case-visuals.js';
 import { startFlow as startPixsoOAuth, finishFlow as finishPixsoOAuth, loadToken as loadPixsoToken, recordCallback } from './oauth.js';
@@ -148,6 +151,7 @@ const GENERATION_LABELS = {
 	facts: '提取产品事实', features: '归并功能点', states: '推导状态',
 	contracts: '生成需求合同', points: '生成测试点', cases: '生成用例'
 };
+const moduleLockKey = (projectId) => `${projectId}__${String(currentModule() || 'default').replace(/[^a-zA-Z0-9_.-]/g, '_')}`;
 
 function sendJson(res, status, payload) {
 	res.statusCode = status;
@@ -668,9 +672,452 @@ export function apply(ctx, config) {
 		return job;
 	}
 
+	// 内部零冗余复用适配器：将现有 handle / runGenerate / runReview 直接封装给 Copilot 工具调用
+	const makeInternalReq = (payload, baseHeaders = {}) => {
+		const raw = Buffer.from(JSON.stringify(payload), 'utf8');
+		return {
+			method: 'POST',
+			url: '/cts/api',
+			headers: { ...baseHeaders, 'content-type': 'application/json' },
+			once() {},
+			on() {},
+			async *[Symbol.asyncIterator]() { yield raw; }
+		};
+	};
+	const callInternalApi = async (payload, baseHeaders = {}) => {
+		let status = 200;
+		let chunks = '';
+		const res = {
+			statusCode: 200,
+			destroyed: false,
+			writableEnded: false,
+			setHeader() {},
+			once() {},
+			on() {},
+			write(chunk) { chunks += String(chunk || ''); return true; },
+			end(chunk) {
+				if (chunk) chunks += String(chunk);
+				status = this.statusCode;
+				this.writableEnded = true;
+			}
+		};
+		await isolateScope(() => handle(makeInternalReq(payload, baseHeaders), res));
+		let parsed = {};
+		try { parsed = JSON.parse(chunks || '{}'); } catch { parsed = { ok: false, error: chunks || `HTTP ${status}` }; }
+		if (status >= 400 || parsed.ok === false) throw new Error(parsed.error || `内部调用失败 (${status})`);
+		return parsed.state ?? parsed;
+	};
+	const callInternalStream = async (streamHandler, payload, baseHeaders = {}, onEvent = null) => {
+		let buf = '';
+		const events = [];
+		const flushFrames = () => {
+			let sep;
+			while ((sep = buf.indexOf('\n\n')) >= 0) {
+				const raw = buf.slice(0, sep);
+				buf = buf.slice(sep + 2);
+				let ev = 'message';
+				const lines = [];
+				for (const line of raw.split('\n')) {
+					if (line.startsWith('event:')) ev = line.slice(6).trim();
+					else if (line.startsWith('data:')) lines.push(line.slice(5).trim());
+				}
+				if (!lines.length) continue;
+				let data;
+				try { data = JSON.parse(lines.join('\n')); } catch { data = lines.join('\n'); }
+				events.push({ event: ev, data });
+				if (onEvent) onEvent(ev, data);
+			}
+		};
+		const res = {
+			statusCode: 200,
+			destroyed: false,
+			writableEnded: false,
+			setHeader() {},
+			once() {},
+			on() {},
+			write(chunk) {
+				buf += String(chunk || '');
+				flushFrames();
+				return true;
+			},
+			end(chunk) {
+				if (chunk) buf += String(chunk);
+				flushFrames();
+				this.writableEnded = true;
+			}
+		};
+		await isolateScope(() => streamHandler(makeInternalReq(payload, baseHeaders), res));
+		const errEv = events.find((e) => e.event === 'error');
+		if (errEv) throw new Error(errEv.data?.message || '流式任务执行失败');
+		return events;
+	};
+
+	const backupKindsForUndo = async (projectId, moduleId, label, kinds) => {
+		const files = {};
+		for (const kind of kinds) {
+			files[kind] = await withModule(moduleId, () => loadArtifact(root, projectId, kind));
+		}
+		return saveCopilotSnapshot(root, projectId, moduleId, { label, kinds, files });
+	};
+
+	const restoreLatestUndo = async (projectId, moduleId) => {
+		const snap = await popLatestCopilotSnapshot(root, projectId, moduleId);
+		if (!snap) return null;
+		for (const [kind, doc] of Object.entries(snap.files || {})) {
+			if (doc && typeof doc === 'object') {
+				await withModule(moduleId, () => saveArtifact(root, projectId, kind, doc));
+			}
+		}
+		return { snapshot_id: snap.id, label: snap.label, at: snap.at, kinds: snap.kinds };
+	};
+
 	async function runTool(context) {
-		const { projectId, name, args } = context;
+		const { projectId, moduleId = currentModule(), name, args = {}, headers = {}, onProgress = null } = context;
+		const withMod = { project: projectId, ...(moduleId ? { module: moduleId } : {}) };
 		if (name === 'project.summary') return summary(config, args.project || projectId);
+		if (name === 'workbench.inspect') {
+			const [wb, loaded, evIdx] = await Promise.all([
+				callInternalApi({ ...withMod, action: 'workbench.state' }, headers).catch(() => null),
+				callInternalApi({ ...withMod, action: 'artifacts.load' }, headers).catch(() => null),
+				callInternalApi({ ...withMod, action: 'evidence.index' }, headers).catch(() => null)
+			]);
+			const cases = loaded?.cases?.items || [];
+			const revItems = loaded?.review?.items || [];
+			const byConclusion = {};
+			const byCode = {};
+			for (const r of revItems) {
+				const c = r.conclusion || '未知';
+				byConclusion[c] = (byConclusion[c] || 0) + 1;
+				for (const f of (r.findings || [])) {
+					const code = f.code || 'OTHER';
+					byCode[code] = (byCode[code] || 0) + 1;
+				}
+			}
+			const topCodes = Object.entries(byCode).sort((a, b) => b[1] - a[1]).slice(0, 8);
+			return {
+				module: moduleId,
+				phase: wb?.phase || '',
+				next_action: wb?.next || null,
+				blockers: (wb?.blockers || []).slice(0, 8),
+				counts: {
+					evidence: evIdx?.index?.items?.length || 0,
+					facts: loaded?.facts?.items?.length || 0,
+					features: loaded?.features?.items?.length || 0,
+					states: loaded?.states?.items?.length || 0,
+					points: loaded?.points?.items?.length || 0,
+					points_approved: (loaded?.points?.items || []).filter((p) => p.review_status === 'approved').length,
+					cases: cases.length,
+					cases_approved: cases.filter((c) => c.review_status === 'approved').length
+				},
+				review: { total_reviewed: revItems.length, by_conclusion: byConclusion, top_finding_codes: topCodes }
+			};
+		}
+		if (name === 'artifact.query') {
+			const kind = ['facts', 'features', 'points', 'cases', 'questions'].includes(args.kind) ? args.kind : 'cases';
+			const limit = Math.min(30, Math.max(1, Number(args.limit) || 15));
+			const loaded = await callInternalApi({ ...withMod, action: 'artifacts.load' }, headers);
+			let listItems = kind === 'questions'
+				? ((await callInternalApi({ ...withMod, action: 'questions.list' }, headers))?.items || [])
+				: (loaded?.[kind]?.items || []);
+			const reviewById = new Map((loaded?.review?.items || []).map((r) => [r.case_id || r.object_id, r]));
+			if (Array.isArray(args.ids) && args.ids.length > 0) {
+				const idSet = new Set(args.ids.map(String));
+				listItems = listItems.filter((it) => idSet.has(it.case_id || it.point_id || it.fact_id || it.feature_id || it.id));
+			}
+			if (args.query) {
+				const q = String(args.query).toLowerCase();
+				listItems = listItems.filter((it) => JSON.stringify(it).toLowerCase().includes(q));
+			}
+			if (args.status) {
+				const st = String(args.status);
+				listItems = listItems.filter((it) => {
+					const id = it.case_id || it.point_id || it.id;
+					const rev = reviewById.get(id);
+					return it.review_status === st || it.status === st || rev?.conclusion === st;
+				});
+			}
+			if (args.code && kind === 'cases') {
+				const code = String(args.code);
+				listItems = listItems.filter((it) => (reviewById.get(it.case_id)?.findings || []).some((f) => f.code === code));
+			}
+			const compact = listItems.slice(0, limit).map((it) => {
+				if (kind === 'cases') {
+					const rev = reviewById.get(it.case_id);
+					return {
+						case_id: it.case_id, point_id: it.point_id, title: it.title, priority: it.priority,
+						review_status: it.review_status, conclusion: rev?.conclusion || '',
+						findings: (rev?.findings || []).slice(0, 4).map((f) => ({ code: f.code, field: f.field, message: String(f.message || '').slice(0, 120) })),
+						precondition: String(it.precondition || '').slice(0, 160),
+						steps: (it.steps || []).slice(0, 6),
+						expected: String(it.expected || '').slice(0, 260)
+					};
+				}
+				if (kind === 'points') {
+					return {
+						point_id: it.point_id, requirement: it.requirement, condition: it.condition,
+						action: it.action, expected: String(it.expected || '').slice(0, 200),
+						priority: it.priority, review_status: it.review_status
+					};
+				}
+				return it;
+			});
+			return { kind, matched_total: listItems.length, returned: compact.length, items: compact };
+		}
+		if (name === 'impact.analyze') {
+			const targetPath = typeof args.path === 'string' && args.path.trim() ? args.path.trim() : undefined;
+			const impact = await callInternalApi({ ...withMod, action: 'impact.sourceChanges', path: targetPath }, headers).catch((err) => ({ error: err.message }));
+			if (targetPath) return impact;
+			const coverage = await callInternalApi({ ...withMod, action: 'coverage.diff' }, headers).catch(() => null);
+			return { source_changes: impact, coverage_gaps: coverage };
+		}
+		if (name === 'materials.configure') {
+			const paths = Array.isArray(args.paths) ? args.paths.filter((p) => typeof p === 'string' && p.trim()) : [];
+			for (const rel of paths) {
+				await callInternalApi({ ...withMod, action: 'assets.tags.update', path: rel, add: true }, headers);
+			}
+			const info = await findProject(config, projectId);
+			const nextQuality = { ...(info?.quality || {}) };
+			if (args.coverage_mode === 'exhaustive' || args.coverage_mode === 'standard') {
+				nextQuality.coverage_mode = args.coverage_mode;
+				nextQuality.include_single_entries = args.coverage_mode === 'exhaustive';
+			}
+			const prd = paths.find((p) => p.startsWith('prd/'));
+			const sig = paths.find((p) => p.startsWith('signals/'));
+			if (prd || sig) {
+				nextQuality.sources = { ...(nextQuality.sources || {}), ...(prd ? { prd } : {}), ...(sig ? { dbc: sig } : {}) };
+			}
+			if (args.coverage_mode || prd || sig) {
+				await callInternalApi({ ...withMod, action: 'project.update', quality: nextQuality }, headers);
+			}
+			return { _mutated: true, tagged_paths: paths, coverage_mode: nextQuality.coverage_mode || 'standard' };
+		}
+		if (name === 'evidence.build_and_bind') {
+			onProgress?.('正在构建证据索引…');
+			const ev = await callInternalApi({ ...withMod, action: 'evidence.build' }, headers);
+			onProgress?.('正在自动推荐信号与 UI 绑定…');
+			const bd = await callInternalApi({ ...withMod, action: 'binding.suggest' }, headers).catch(() => null);
+			const idx = await callInternalApi({ ...withMod, action: 'evidence.index' }, headers).catch(() => null);
+			return {
+				_mutated: true,
+				evidence_items: idx?.index?.items?.length || ev?.stats?.items || 0,
+				bindings_total: bd?.document?.items?.length || 0
+			};
+		}
+		if (name === 'artifact.patch') {
+			const kind = args.kind === 'points' ? 'points' : 'cases';
+			const op = ['add', 'update', 'delete'].includes(args.op) ? args.op : 'update';
+			const patchItems = Array.isArray(args.items) ? args.items : [];
+			if (patchItems.length === 0) throw new Error('artifact.patch 缺少 items');
+			const undo = await backupKindsForUndo(projectId, moduleId, `${op === 'add' ? '新增' : op === 'delete' ? '删除' : '修改'} ${patchItems.length} 条 ${kind}`, [kind]);
+			const doc = await withModule(moduleId, () => loadArtifact(root, projectId, kind));
+			const idKey = kind === 'points' ? 'point_id' : 'case_id';
+			const prefix = kind === 'points' ? 'T-' : 'C-';
+			const changed = [];
+			if (op === 'update') {
+				for (const entry of patchItems) {
+					const targetId = String(entry.id || entry[idKey] || '');
+					const existing = (doc.items || []).find((x) => x[idKey] === targetId);
+					if (!existing) continue;
+					const patch = entry.patch && typeof entry.patch === 'object' ? entry.patch : entry;
+					for (const [k, v] of Object.entries(patch)) {
+						if (k === 'id' || k === idKey || k === 'patch') continue;
+						existing[k] = v;
+					}
+					if (kind === 'cases') structureCase(existing);
+					changed.push(targetId);
+				}
+			} else if (op === 'delete') {
+				const delSet = new Set(patchItems.map((e) => String(e.id || e[idKey] || e)));
+				const before = doc.items.length;
+				doc.items = doc.items.filter((x) => !delSet.has(x[idKey]));
+				changed.push(...[...delSet].slice(0, before - doc.items.length));
+			} else if (op === 'add') {
+				const maxNum = (doc.items || []).reduce((m, x) => {
+					const hit = /(\d+)$/.exec(String(x[idKey] || ''));
+					return hit ? Math.max(m, Number(hit[1])) : m;
+				}, 0);
+				let seq = maxNum;
+				for (const entry of patchItems) {
+					const patch = entry.patch && typeof entry.patch === 'object' ? entry.patch : entry;
+					seq += 1;
+					const newId = `${prefix}${String(seq).padStart(4, '0')}`;
+					const nextItem = kind === 'points'
+						? { point_id: newId, requirement: '', condition: '', action: '', expected: '', type: '功能', priority: 'P1', fact_refs: [], review_status: '草稿', ...patch }
+						: { case_id: newId, point_id: patch.point_id || '', title: '', precondition: '', steps: [], expected: '', priority: 'P1', review_status: '草稿', ...patch };
+					if (kind === 'cases') structureCase(nextItem);
+					doc.items.push(nextItem);
+					changed.push(newId);
+				}
+			}
+			await withModule(moduleId, () => saveArtifact(root, projectId, kind, doc));
+			return { _mutated: true, _undo: undo, kind, op, changed_count: changed.length, changed_ids: changed };
+		}
+		if (name === 'artifact.batch_status') {
+			const kind = args.kind === 'cases' ? 'cases' : 'points';
+			const act = args.action === 'reject' ? 'artifact.rejectBatch' : 'artifact.approveBatch';
+			const undo = await backupKindsForUndo(projectId, moduleId, `批量${args.action === 'reject' ? '驳回' : '批准'} ${kind}`, [kind]);
+			const res = await callInternalApi({
+				...withMod, action: act, kind,
+				scope: args.scope || (Array.isArray(args.ids) && args.ids.length ? 'selected' : 'all_pending'),
+				ids: Array.isArray(args.ids) ? args.ids : undefined
+			}, headers);
+			return { _mutated: true, _undo: undo, approved: res.approved?.length || 0, blocked: res.blocked?.length || 0, rejected: res.rejected?.length || 0 };
+		}
+		if (name === 'review.batch_repair') {
+			const [loaded, revReport] = await Promise.all([
+				callInternalApi({ ...withMod, action: 'artifacts.load' }, headers),
+				callInternalApi({ ...withMod, action: 'agent.review.view', stage: 'cases' }, headers).catch(() => null)
+			]);
+			const casesList = loaded?.cases?.items || [];
+			const caseById = new Map(casesList.map((c) => [c.case_id, c]));
+			const revItems = revReport?.items?.length ? revReport.items : (loaded?.review?.items || []);
+			const limit = Math.min(20, Math.max(1, Number(args.limit) || 5));
+			let targetIds = Array.isArray(args.case_ids) && args.case_ids.length
+				? args.case_ids.map(String)
+				: revItems
+					.filter((r) => r.conclusion === '待修改' && (r.findings || []).length > 0 && (!args.code || (r.findings || []).some((f) => f.code === args.code)))
+					.map((r) => r.case_id || r.object_id);
+			targetIds = [...new Set(targetIds.filter((id) => caseById.has(id)))].slice(0, limit);
+			if (targetIds.length === 0) return { repaired_count: 0, repaired_ids: [], failed: [], note: '没有匹配到待修改的审查用例' };
+			const targetPointIds = [...new Set(targetIds.map((id) => caseById.get(id)?.point_id).filter(Boolean))];
+			const undo = await backupKindsForUndo(projectId, moduleId, `批量修复 ${targetIds.length} 条打回用例`, ['cases']);
+			const fastTrack = loaded?.points?.source_kind === 'facts' && !loaded?.points?.source_ecsm_digest;
+			onProgress?.(`正在批量定向返修 ${targetIds.length} 条打回用例…`);
+			const genEvents = await callInternalStream(runGenerate, {
+				...withMod,
+				kind: 'cases',
+				draft: false,
+				...(fastTrack ? { source_mode: 'facts', require_outline: false } : {}),
+				retry_defective: true,
+				case_ids: targetIds,
+				point_ids: targetPointIds
+			}, headers, (ev, d) => {
+				if (ev === 'phase' && d?.label) onProgress?.(`批量返修 · ${d.label}`);
+			});
+			const genEnd = genEvents.findLast((e) => e.event === 'run.end')?.data || {};
+			const completedPts = new Set(genEnd.completed_ids || []);
+			const repaired = targetIds.filter((id) => completedPts.has(caseById.get(id)?.point_id));
+			const failed = targetIds.filter((id) => !repaired.includes(id)).map((id) => ({ case_id: id, reason: '模型未返回可通过结构校验的修订用例' }));
+			if (repaired.length > 0 && args.re_review !== false) {
+				onProgress?.(`已完成 ${repaired.length} 条返修，正在自动增量复审…`);
+				await callInternalStream(runReview, { ...withMod, stage: 'cases', object_ids: repaired }, headers, (ev, d) => {
+					if (ev === 'phase' && d?.label) onProgress?.(`自动复审 · ${d.label}`);
+				}).catch(() => null);
+			}
+			return { _mutated: repaired.length > 0, _undo: repaired.length > 0 ? undo : null, repaired_count: repaired.length, repaired_ids: repaired, failed };
+		}
+		if (name === 'questions.resolve') {
+			const listRes = Array.isArray(args.resolutions) ? args.resolutions : [];
+			const resolved = [];
+			for (const entry of listRes) {
+				if (!entry?.id || !entry?.answer) continue;
+				await callInternalApi({ ...withMod, action: 'questions.answer', id: entry.id, answer: String(entry.answer) }, headers);
+				resolved.push(entry.id);
+			}
+			return { _mutated: resolved.length > 0, resolved_count: resolved.length, resolved_ids: resolved };
+		}
+		if (name === 'delivery.export') {
+			const tpl = args.template || args.export_template || 'standard';
+			const exp = await callInternalApi({ ...withMod, action: 'artifacts.export', export_template: tpl }, headers);
+			const fileName = exp?.name || (exp?.file ? path.basename(exp.file) : '');
+			const downloadUrl = exp?.download_url || exportDownloadUrl(exp?.file);
+			return { file: exp?.file || '', filename: fileName, template: tpl, download_url: downloadUrl, _download: downloadUrl ? { url: downloadUrl, filename: fileName } : null };
+		}
+		if (name === 'copilot.undo') {
+			const restored = await restoreLatestUndo(projectId, moduleId);
+			if (!restored) return { undone: false, note: '当前模块没有可撤销的助手修改记录' };
+			return { _mutated: true, undone: true, ...restored };
+		}
+		if (name === 'pipeline.generate') {
+			const kind = String(args.kind || 'cases');
+			const undo = await backupKindsForUndo(projectId, moduleId, `运行生成阶段 ${kind}`, [kind]).catch(() => null);
+			const payload = {
+				...withMod,
+				kind,
+				draft: ['facts', 'features', 'states'].includes(kind),
+				replace: Boolean(args.replace),
+				source_mode: 'facts',
+				...(args.coverage_mode ? { coverage_mode: args.coverage_mode, include_single_entries: args.coverage_mode === 'exhaustive' } : {}),
+				...(Array.isArray(args.point_ids) && args.point_ids.length ? { point_ids: args.point_ids } : {})
+			};
+			await callInternalStream(runGenerate, payload, headers, (ev, data) => {
+				if (ev === 'phase' && data?.label) onProgress?.(data.label);
+			});
+			const loaded = await callInternalApi({ ...withMod, action: 'artifacts.load' }, headers);
+			return { _mutated: true, _undo: undo, kind, count: loaded?.[kind]?.items?.length || 0 };
+		}
+		if (name === 'pipeline.review') {
+			const stage = String(args.stage || 'cases');
+			const payload = { ...withMod, stage, ...(Array.isArray(args.case_ids) && args.case_ids.length ? { object_ids: args.case_ids } : {}) };
+			const events = await callInternalStream(runReview, payload, headers, (ev, data) => {
+				if (ev === 'phase' && data?.label) onProgress?.(data.label);
+			});
+			const end = events.findLast((e) => e.event === 'run.end')?.data || {};
+			let autoRepair = null;
+			if (stage === 'cases' && args.auto_repair && Number(end.returned || 0) > 0) {
+				onProgress?.(`审查发现 ${end.returned} 条待修改，正在自动闭环返修…`);
+				autoRepair = await runTool({ ...context, name: 'review.batch_repair', args: { limit: Math.min(20, Number(args.repair_limit) || 15), re_review: true } });
+			}
+			return { _mutated: true, stage, summary: end, ...(autoRepair ? { auto_repair: autoRepair } : {}) };
+		}
+		if (name === 'pipeline.autopilot') {
+			const cov = args.coverage_mode === 'exhaustive' ? 'exhaustive' : 'standard';
+			const stepsReport = [];
+			onProgress?.('步骤 1/6：构建证据并推荐绑定');
+			const evRes = await callInternalApi({ ...withMod, action: 'evidence.build' }, headers);
+			stepsReport.push(`证据 ${evRes?.stats?.items || 0} 条`);
+			onProgress?.('步骤 2/6：提取产品事实');
+			await callInternalStream(runGenerate, { ...withMod, kind: 'facts', draft: true, replace: true }, headers, (ev, d) => {
+				if (ev === 'phase' && d?.label) onProgress?.(`步骤 2/6 · ${d.label}`);
+			});
+			await callInternalApi({ ...withMod, action: 'binding.suggest' }, headers).catch(() => null);
+			onProgress?.('步骤 3/6：归并功能点与状态');
+			await callInternalStream(runGenerate, { ...withMod, kind: 'features', draft: true, replace: true }, headers, (ev, d) => {
+				if (ev === 'phase' && d?.label) onProgress?.(`步骤 3/6 · ${d.label}`);
+			});
+			await callInternalStream(runGenerate, { ...withMod, kind: 'states', draft: true, replace: true }, headers, (ev, d) => {
+				if (ev === 'phase' && d?.label) onProgress?.(`步骤 3/6 · ${d.label}`);
+			});
+			onProgress?.(`步骤 4/6：设计测试点（${cov === 'exhaustive' ? '全覆盖' : '标准'}）并批量批准`);
+			await callInternalStream(runGenerate, { ...withMod, kind: 'points', draft: false, replace: true, source_mode: 'facts', coverage_mode: cov, include_single_entries: cov === 'exhaustive' }, headers, (ev, d) => {
+				if (ev === 'phase' && d?.label) onProgress?.(`步骤 4/6 · ${d.label}`);
+			});
+			const appRes = await callInternalApi({ ...withMod, action: 'artifact.approveBatch', kind: 'points', scope: 'all_pending' }, headers);
+			stepsReport.push(`批准测试点 ${appRes?.approved?.length || 0} 条`);
+			onProgress?.('步骤 5/6：展开可执行测试用例');
+			await callInternalStream(runGenerate, { ...withMod, kind: 'cases', draft: false, replace: true, source_mode: 'facts' }, headers, (ev, d) => {
+				if (ev === 'phase' && d?.label) onProgress?.(`步骤 5/6 · ${d.label}`);
+			});
+			let reviewSummary = null;
+			if (args.include_review) {
+				onProgress?.('附加步骤：执行独立质量审查');
+				const rEvents = await callInternalStream(runReview, { ...withMod, stage: 'cases' }, headers, (ev, d) => {
+					if (ev === 'phase' && d?.label) onProgress?.(`质量审查 · ${d.label}`);
+				});
+				reviewSummary = rEvents.findLast((e) => e.event === 'run.end')?.data || null;
+				if (args.auto_repair !== false && Number(reviewSummary?.returned || 0) > 0) {
+					onProgress?.(`附加步骤：自动闭环返修打回项（前 ${Math.min(15, reviewSummary.returned)} 条）`);
+					const rep = await runTool({ ...context, name: 'review.batch_repair', args: { limit: 15, re_review: true } }).catch(() => null);
+					if (rep) stepsReport.push(`自动返修 ${rep.repaired_count || 0} 条`);
+				}
+			}
+			onProgress?.('步骤 6/6：导出用例 Excel');
+			const tpl = args.export_template || args.template || 'standard';
+			const exp = await callInternalApi({ ...withMod, action: 'artifacts.export', export_template: tpl }, headers);
+			const loaded = await callInternalApi({ ...withMod, action: 'artifacts.load' }, headers);
+			const fileName = exp?.name || (exp?.file ? path.basename(exp.file) : '');
+			const downloadUrl = exp?.download_url || exportDownloadUrl(exp?.file);
+			return {
+				_mutated: true,
+				_download: downloadUrl ? { url: downloadUrl, filename: fileName } : null,
+				facts: loaded?.facts?.items?.length || 0,
+				points: loaded?.points?.items?.length || 0,
+				cases: loaded?.cases?.items?.length || 0,
+				review: reviewSummary,
+				export_file: exp?.file || '',
+				steps: stepsReport
+			};
+		}
 		if (name === 'evidence.search') {
 			const query = pickArg(args, ['query', 'q', 'text', 'queries', 'value']);
 			const result = await searchEvidence(config, projectId, root, query, { limit: args.limit, kind: args.kind, document: await scopedEvidence(projectId) });
@@ -1794,6 +2241,8 @@ export function apply(ctx, config) {
 			if (event === 'tool.start') {
 				activeTools.set(data.callId, data.tool);
 				record('tool', data.tool);
+			} else if (event === 'tool.progress') {
+				record('progress', data.label || '');
 			} else if (event === 'tool.end') {
 				record(data.ok ? 'tool_completed' : 'tool_failed', activeTools.get(data.callId));
 				activeTools.delete(data.callId);
@@ -1832,19 +2281,40 @@ export function apply(ctx, config) {
 				? `证据库已构建：${evidenceIndex.stats.items} 条（${evidenceIndex.stats.chars} 字），构建于 ${evidenceIndex.builtAt}`
 				: '证据库尚未构建：先调用 evidence.build，否则 evidence.search 没有内容。';
 
+			const activeModuleId = currentModule();
+			const uiCtx = body.ui_context && typeof body.ui_context === 'object' ? body.ui_context : {};
+			const currentLoaded = await withModule(activeModuleId, async () => {
+				const [facts, points, cases, review] = await Promise.all(['facts', 'points', 'cases', 'review'].map((k) => loadArtifact(root, projectId, k)));
+				return { facts, points, cases, review };
+			}).catch(() => null);
+			const liveCounts = {
+				facts: currentLoaded?.facts?.items?.length || 0,
+				points: currentLoaded?.points?.items?.length || 0,
+				cases: currentLoaded?.cases?.items?.length || 0,
+				reviewed: currentLoaded?.review?.items?.length || 0
+			};
+			const uiSummaryParts = [];
+			if (uiCtx.view) uiSummaryParts.push(`当前视图=${uiCtx.view}`);
+			if (uiCtx.tab) uiSummaryParts.push(`当前标签=${uiCtx.tab}`);
+			if (uiCtx.selected?.id) uiSummaryParts.push(`当前选中=${uiCtx.selected.kind || ''}:${uiCtx.selected.id}`);
+			if (Array.isArray(uiCtx.checkedIds) && uiCtx.checkedIds.length) uiSummaryParts.push(`已勾选 ${uiCtx.checkedIds.length} 项：${uiCtx.checkedIds.slice(0, 12).join(', ')}`);
+
 			const messages = [
-				message('system', `${SYSTEM}\n\n${TOOL_HELP}`),
+				message('system', `${SYSTEM}\n\n${COPILOT_TOOL_HELP}`),
 				message('user', [
 					`项目摘要：${infoText}`,
+					`当前模块：${activeModuleId} · 已有事实 ${liveCounts.facts} / 测试点 ${liveCounts.points} / 用例 ${liveCounts.cases} / 已审 ${liveCounts.reviewed}`,
+					uiSummaryParts.length ? `【当前界面上下文】${uiSummaryParts.join(' · ')}` : '',
 					`文件：${JSON.stringify(info.files)}`,
 					evidenceNote,
 					'',
 					`用户：${userMessage}`
-				].join('\n'))
+				].filter(Boolean).join('\n'))
 			];
 
 			let answer = '';
-			for (let round = 0; round < MAX_ROUNDS; round += 1) {
+			const CHAT_ROUNDS = Math.max(MAX_ROUNDS, 8);
+			for (let round = 0; round < CHAT_ROUNDS; round += 1) {
 				if (Date.now() - startedAt > MAX_SECONDS * 1000) {
 					emit('budget', { limit: 'time', seconds: Math.round((Date.now() - startedAt) / 1000) });
 					break;
@@ -1869,6 +2339,7 @@ export function apply(ctx, config) {
 							if (head.length >= 1) {
 								decided = true;
 								buffered = head.startsWith('{') || head.startsWith('```');
+								if (buffered) send('agent.status', { label: '正在规划并准备工具调用…' });
 							}
 						}
 						if (decided && !buffered) {
@@ -1920,21 +2391,80 @@ export function apply(ctx, config) {
 						gated = true;
 						continue;
 					}
+					const confirmSpec = assessToolConfirmation(action.tool, action.args || {}, { counts: liveCounts });
+					let effectiveArgs = { ...(action.args || {}) };
+					if (confirmSpec) {
+						const gateId = `G-${crypto.randomBytes(4).toString('hex')}`;
+						emit('gate.request', {
+							gateId,
+							kind: 'confirm_plan',
+							title: confirmSpec.title,
+							summary: confirmSpec.summary,
+							question: confirmSpec.question,
+							options: confirmSpec.options
+						});
+						const choice = await new Promise((resolve) => {
+							const timer = setTimeout(() => {
+								pendingGates.delete(gateId);
+								resolve('取消');
+							}, 15 * 60 * 1000);
+							pendingGates.set(gateId, (value) => {
+								clearTimeout(timer);
+								pendingGates.delete(gateId);
+								resolve(value);
+							});
+						});
+						emit('gate.answered', { gateId, answer: choice });
+						if (/取消|放弃|不用/.test(String(choice))) {
+							replies.push(`用户取消了工具 ${action.tool} 的执行，请尊重用户决定并询问是否需要其他帮助。`);
+							continue;
+						}
+						if (/标准模式/.test(String(choice))) effectiveArgs.coverage_mode = 'standard';
+						if (/增量补跑/.test(String(choice))) effectiveArgs.replace = false;
+						if (/前\s*3\s*条/.test(String(choice))) effectiveArgs.limit = 3;
+						if (/前\s*20\s*条/.test(String(choice))) {
+							effectiveArgs.case_ids = (currentLoaded?.cases?.items || []).slice(0, 20).map((c) => c.case_id);
+						}
+					}
 					const toolId = `t${++callSeq}`;
 					toolCalls += 1;
-					emit('tool.start', { callId: toolId, tool: action.tool, input: action.args });
+					emit('tool.start', { callId: toolId, tool: action.tool, input: effectiveArgs });
 					let payload;
 					let ok = true;
 					try {
-						payload = await runTool({ projectId, name: action.tool, args: action.args });
+						payload = await runTool({
+							projectId,
+							moduleId: activeModuleId,
+							name: action.tool,
+							args: effectiveArgs,
+							headers: req.headers || {},
+							onProgress: (label) => emit('tool.progress', { callId: toolId, tool: action.tool, label })
+						});
 					} catch (error) {
 						ok = false;
 						payload = { error: error instanceof Error ? error.message : String(error) };
 					}
+					const undoMeta = payload?._undo || null;
+					const downloadMeta = payload?._download || null;
+					const mutated = Boolean(payload?._mutated);
+					if (payload && typeof payload === 'object') {
+						delete payload._undo;
+						delete payload._download;
+						delete payload._mutated;
+					}
 					const summaryLine = ok
-						? (Array.isArray(payload?.hits) ? `${payload.hits.length} 条命中` : action.tool === 'project.summary' ? '项目清单' : '已读取')
+						? (Array.isArray(payload?.hits) ? `${payload.hits.length} 条命中`
+							: typeof payload?.changed_count === 'number' ? `已处理 ${payload.changed_count} 条`
+							: typeof payload?.repaired_count === 'number' ? `已修复 ${payload.repaired_count} 条`
+							: typeof payload?.cases === 'number' ? `已生成 ${payload.cases} 条用例`
+							: payload?.filename ? `已导出 ${payload.filename}`
+							: payload?.undone ? `已撤销：${payload.label || '上次修改'}`
+							: action.tool === 'project.summary' ? '项目清单' : '已完成')
 						: `失败：${payload.error}`;
-					emit('tool.end', { callId: toolId, ok, summary: summaryLine, data: payload });
+					emit('tool.end', { callId: toolId, ok, summary: summaryLine, data: payload, meta: { undo: undoMeta, download: downloadMeta } });
+					if (ok && (mutated || downloadMeta)) {
+						emit('state.changed', { module: activeModuleId, tool: action.tool, undo: undoMeta, download: downloadMeta });
+					}
 					replies.push(`工具结果（${action.tool}）：\n${stringify(payload)}`);
 				}
 
@@ -1979,7 +2509,7 @@ export function apply(ctx, config) {
 				}
 			}
 			if (changed.size) {
-				const release = await acquireLock(root, projectId);
+				const release = await acquireLock(root, moduleLockKey(projectId));
 				try {
 					const { items, version, updatedAt, digest, ...meta } = await loadArtifact(root, projectId, 'cases');
 					if (!isFrozen(root, projectId)) {
@@ -2141,7 +2671,7 @@ export function apply(ctx, config) {
 						}
 					}
 				}
-				const unlock = await acquireLock(root, projectId);
+				const unlock = await acquireLock(root, moduleLockKey(projectId));
 				try {
 					assertWritable(projectId);
 					for (const [kind, prior] of [['contracts', doc], ['facts', facts], ['features', features]]) {
@@ -2339,7 +2869,7 @@ export function apply(ctx, config) {
 					items = items.concat(added.map((fact, offset) => ({ ...fact, fact_id: `F-${String(base + offset + 1).padStart(4, '0')}` })));
 					send('artifact.updated', { kind: 'facts', count: items.length });
 				}
-				const unlock = await acquireLock(root, projectId);
+				const unlock = await acquireLock(root, moduleLockKey(projectId));
 				let saved;
 				try {
 					assertWritable(projectId);
@@ -2379,7 +2909,7 @@ export function apply(ctx, config) {
 					}
 					send('artifact.updated', { kind: 'features', count: items.length });
 				}
-				const unlock = await acquireLock(root, projectId);
+				const unlock = await acquireLock(root, moduleLockKey(projectId));
 				let saved;
 				try {
 					assertWritable(projectId);
@@ -2603,7 +3133,7 @@ export function apply(ctx, config) {
 				}
 				if (!fromContracts && !fromBranches) attachFeatures(items, facts.items, featureDoc.items);
 				const keptReviews = keepPointReviews(items, current.items);
-				const release = await acquireLock(root, projectId);
+				const release = await acquireLock(root, moduleLockKey(projectId));
 				let saved;
 				try {
 					assertWritable(projectId);
@@ -2926,7 +3456,7 @@ export function apply(ctx, config) {
 			const droppedDetailsByPoint = new Map();
 			// Each batch is persisted on its own: a later failure keeps earlier work.
 			const persist = async (nextItems) => {
-				const release = await acquireLock(root, projectId);
+				const release = await acquireLock(root, moduleLockKey(projectId));
 				try {
 					assertWritable(projectId);
 					const latest = await loadArtifact(root, projectId, 'cases');
@@ -3286,10 +3816,13 @@ export function apply(ctx, config) {
 			const model = await resolveModel(ctx, config);
 			send('run.start', { kind: 'review', role: 'quality', stage, object_ids: items.map((item) => item[key]), total: items.length });
 			record('progress', selected ? [...selected].join('、') : '本阶段全部条目');
-			const pageSize = Math.max(1, Math.min(stage === 'cases' ? 4 : 8, Math.round(Number(body.page_size) || (stage === 'cases' ? 2 : 4))));
 			const reviewer = String(body.reviewer || '质量审查 Agent');
 			const reviewVision = stage === 'cases' && (config?.reviewVision === true || currentConfig().review_vision === true);
-			const reviewParams = { maxTokens: 4000, reasoningEffort: 'off→low→default', visual: reviewVision };
+			const defaultPageSize = stage === 'cases' ? (reviewVision ? 3 : 5) : 6;
+			const pageSize = Math.max(1, Math.min(8, Math.round(Number(body.page_size) || defaultPageSize)));
+			const concurrency = Math.max(1, Math.min(4, Math.round(Number(body.concurrency) || (reviewVision ? 2 : 3))));
+			const reviewTokens = pageSize >= 4 ? 6000 : 4000;
+			const reviewParams = { maxTokens: reviewTokens, reasoningEffort: 'off→low→default', visual: reviewVision };
 			const promptFor = (rows) => [
 				'角色：质量审查 Agent。只根据当前产物及所给依据审查。' + stageInfo.checks,
 				stage === 'cases' ? reviewPrompt(rows) : compose(STAGE_SKILLS.review,
@@ -3309,7 +3842,7 @@ export function apply(ctx, config) {
 			const cached = loadReviewPages(root, body.project, stage);
 			const reusable = cached.baseline === baseline && cached.config === reviewConfig ? cached.pages : {};
 			send('review.config', {
-				reviewer, role: 'quality', stage, page_size: pageSize, config_digest: reviewConfig, baseline,
+				reviewer, role: 'quality', stage, page_size: pageSize, concurrency, config_digest: reviewConfig, baseline,
 				provider: model.provider, model: model.model, skill: STAGE_SKILLS.review,
 				prompt_digest: digestOf(skeleton), skill_digest: skillVersion?.sha256 || '',
 				params: { ...reviewParams, temperature: '服务未提供', top_p: '服务未提供', seed: '服务未提供' },
@@ -3325,8 +3858,8 @@ export function apply(ctx, config) {
 					? await collectCase(model, body.project, promptFor(page),
 						Object.fromEntries(page.map((item) => [item.case_id, (item.image_refs || [])
 							.filter((figure) => figure.expected_id || figure.role === '预期界面参考').slice(0, 2)])),
-						() => send('review.visualUnavailable', { case_ids: ids }), 4000)
-					: await collect(model, promptFor(page), 4000);
+						() => send('review.visualUnavailable', { case_ids: ids }), reviewTokens)
+					: await collect(model, promptFor(page), reviewTokens);
 				const rows = validateReceipts(parseJson(rawText), ids);
 				for (const row of rows) {
 					const sources = contextFor(page.find((item) => item[key] === row.case_id)).sources;
@@ -3350,47 +3883,60 @@ export function apply(ctx, config) {
 					findings: rows.reduce((sum, row) => sum + row.findings.length, 0)
 				});
 			};
+			const pendingQueue = [];
+			let finishedPages = 0;
 			for (let index = 0; index < pages.length; index += 1) {
-				if (aborted) break;
 				const page = pages[index];
 				const ids = page.map((item) => item[key]);
-				send('phase', { step: index + 1, total: pages.length, label: `审查 ${index * pageSize + 1}-${index * pageSize + page.length} / ${items.length}` });
 				const saved = reusable[digestOf(ids)];
 				if (saved) {
 					for (const row of saved.receipts) receipts.set(row.case_id, row);
+					finishedPages += 1;
 					send('review.pageReused', { page: index + 1, case_ids: ids });
-					continue;
-				}
-				try {
-					await reviewOnePage(page, index + 1);
-				} catch (error) {
-					const message = error instanceof Error ? error.message : String(error);
-					failedPages.push({ page: index + 1, case_ids: ids, error: message, items: page });
-					send('review.pageFailed', { page: index + 1, case_ids: ids, error: message });
+				} else {
+					pendingQueue.push({ page, pageNumber: index + 1, ids });
 				}
 			}
-			// 失败页自动重试最多 2 轮（成功页已缓存，仅重跑失败页）
+			if (finishedPages > 0 && pendingQueue.length > 0) {
+				send('phase', { step: finishedPages, total: pages.length, label: `已复用缓存 ${finishedPages}/${pages.length} 页，并发审查剩余 ${pendingQueue.length} 页…` });
+			}
+			const runPagePool = async (queue, onFail, labelPrefix) => {
+				let cursor = 0;
+				const workerCount = Math.min(concurrency, queue.length);
+				const workers = Array.from({ length: workerCount }, async () => {
+					while (cursor < queue.length && !aborted) {
+						const slot = cursor++;
+						const entry = queue[slot];
+						try {
+							await reviewOnePage(entry.page, entry.pageNumber);
+							finishedPages += 1;
+							send('phase', { step: Math.min(finishedPages, pages.length), total: pages.length, label: `${labelPrefix} ${receipts.size}/${items.length} 条（已完成 ${Math.min(finishedPages, pages.length)}/${pages.length} 批）` });
+						} catch (error) {
+							const message = error instanceof Error ? error.message : String(error);
+							onFail(entry, message);
+						}
+					}
+				});
+				await Promise.all(workers);
+			};
+			if (pendingQueue.length > 0 && !aborted) {
+				send('phase', { step: Math.max(1, finishedPages), total: pages.length, label: `正在并发审查（${Math.min(concurrency, pendingQueue.length)} 路）0/${items.length} 条…` });
+				await runPagePool(pendingQueue, (entry, message) => {
+					failedPages.push({ page: entry.pageNumber, case_ids: entry.ids, error: message, items: entry.page });
+					send('review.pageFailed', { page: entry.pageNumber, case_ids: entry.ids, error: message });
+				}, '审查进度');
+			}
+			// 失败页自动重试最多 2 轮（成功页已缓存，仅并发重跑失败页）
 			const maxRetryRounds = Math.max(0, Math.min(3, Number(body.retry_rounds ?? 2)));
 			for (let round = 1; round <= maxRetryRounds && failedPages.length > 0 && !aborted; round += 1) {
-				const retryQueue = failedPages;
+				const retryQueue = failedPages.map((f) => ({ page: f.items, pageNumber: f.page, ids: f.case_ids }));
 				failedPages = [];
-				send('review.retry', { round, pages: retryQueue.length, case_ids: retryQueue.flatMap((entry) => entry.case_ids) });
+				send('review.retry', { round, pages: retryQueue.length, case_ids: retryQueue.flatMap((entry) => entry.ids) });
 				await new Promise((resolve) => setTimeout(resolve, 1500));
-				for (let idx = 0; idx < retryQueue.length; idx += 1) {
-					if (aborted) {
-						failedPages.push(...retryQueue.slice(idx));
-						break;
-					}
-					const entry = retryQueue[idx];
-					send('phase', { step: idx + 1, total: retryQueue.length, label: `自动重试失败页（第 ${round} 轮 · ${idx + 1}/${retryQueue.length}）` });
-					try {
-						await reviewOnePage(entry.items, entry.page);
-					} catch (error) {
-						const message = error instanceof Error ? error.message : String(error);
-						failedPages.push({ ...entry, error: message });
-						send('review.pageFailed', { page: entry.page, case_ids: entry.case_ids, error: message, retry_round: round });
-					}
-				}
+				await runPagePool(retryQueue, (entry, message) => {
+					failedPages.push({ page: entry.pageNumber, case_ids: entry.ids, error: message, items: entry.page });
+					send('review.pageFailed', { page: entry.pageNumber, case_ids: entry.ids, error: message, retry_round: round });
+				}, `自动重试第 ${round} 轮`);
 			}
 			if (aborted) {
 				const reviewed = receipts.size;
@@ -3417,7 +3963,7 @@ export function apply(ctx, config) {
 					basis: own.map((finding) => finding.code + ': ' + finding.message).join('；')
 				};
 			});
-			const release = await acquireLock(root, body.project);
+			const release = await acquireLock(root, moduleLockKey(body.project));
 			try {
 				const latest = await reviewInputs(body.project, stage);
 				if (latest.baseline !== baseline || latest.sourceBasis !== sourceBasis) throw new Error('审查期间内容或资料已变化，请重新审查');
@@ -3494,10 +4040,12 @@ export function apply(ctx, config) {
 			record('started', actionDetail);
 			res[activityResult] = record;
 		}
+		const PROJECT_WRITES = new Set(['evidence.build', 'sources.save', 'ui.build']);
 		const WRITES = new Set(['artifact.update', 'artifact.delete', 'artifact.clear', 'artifact.approve', 'artifact.reject', 'artifact.regenerate', 'binding.suggest', 'binding.confirm', 'binding.manual', 'binding.reject', 'evidence.build', 'package.freeze', 'package.fork', 'features.attach', 'cases.decorate', 'cases.images', 'ecsm.freeze', 'ecsm.export', 'questions.answer', 'ecsm.repair', 'contracts.save', 'sources.save', 'outline.save', 'outline.approve', 'outline.apply', 'deferral.save', 'conflict.save', 'cases.reviewApply', 'cases.reviewImport', 'branches.save', 'tkr.select', 'ui.build', 'ui.links.derive', 'ui.link.save', 'ui.propagate', 'ui.figures']);
 		try {
 			if (WRITES.has(body.action) && typeof body.project === 'string') {
-				release = await acquireLock(root, body.project);
+				const lockKey = PROJECT_WRITES.has(body.action) ? body.project : moduleLockKey(body.project);
+				release = await acquireLock(root, lockKey);
 			}
 			switch (body.action) {
 				case 'activity.list': {
@@ -3505,6 +4053,30 @@ export function apply(ctx, config) {
 						project: typeof body.project === 'string' ? body.project : '',
 						module: typeof body.module === 'string' ? body.module : ''
 					}) });
+					return;
+				}
+				case 'chat.history': {
+					const mod = typeof body.module === 'string' && body.module ? body.module : currentModule();
+					const doc = await loadModuleChat(root, body.project || '', mod);
+					sendJson(res, 200, { ok: true, state: doc });
+					return;
+				}
+				case 'chat.save': {
+					const mod = typeof body.module === 'string' && body.module ? body.module : currentModule();
+					if (body.project) await saveModuleChat(root, body.project, mod, body.messages || []);
+					sendJson(res, 200, { ok: true, state: { saved: true } });
+					return;
+				}
+				case 'chat.clear': {
+					const mod = typeof body.module === 'string' && body.module ? body.module : currentModule();
+					if (body.project) await saveModuleChat(root, body.project, mod, []);
+					sendJson(res, 200, { ok: true, state: { cleared: true } });
+					return;
+				}
+				case 'copilot.undo': {
+					const mod = typeof body.module === 'string' && body.module ? body.module : currentModule();
+					const restored = body.project ? await restoreLatestUndo(body.project, mod) : null;
+					sendJson(res, 200, { ok: true, state: restored ? { undone: true, ...restored } : { undone: false } });
 					return;
 				}
 				case 'agent.review.view':
@@ -4123,7 +4695,7 @@ export function apply(ctx, config) {
 					if (!['facts', 'points', 'cases'].includes(kind)) throw new Error(`不支持批量评审的产物类型：${kind}`);
 					const status = body.action === 'artifact.approveBatch' ? 'approved' : 'rejected';
 					const idField = kind === 'facts' ? 'fact_id' : kind === 'points' ? 'point_id' : 'case_id';
-					const release = await acquireLock(root, body.project);
+					const release = await acquireLock(root, moduleLockKey(body.project));
 					try {
 						const doc = await loadArtifact(root, body.project, kind);
 						const requestedIds = body.scope === 'all_pending'
@@ -5204,6 +5776,152 @@ export function apply(ctx, config) {
 					sendJson(res, 200, { ok: true, state: { from: sourceScope, to: targetScope, path: relative, mode: body.mode === 'copy' ? 'copy' : 'move' } });
 					return;
 				}
+				case 'assets.preview': {
+					const relPath = String(body.path || '').trim();
+					if (!relPath || relPath.includes('..') || path.isAbsolute(relPath)) {
+						throw new Error('非法的预览文件路径');
+					}
+					const scope = String(body.scope || (body.project ? 'project' : 'pool'));
+					let baseDir = '';
+					let fileUrl = '';
+					if (scope === 'pool') {
+						baseDir = path.join(root, 'assets', 'inbox');
+						fileUrl = `/cts/file?scope=pool&path=${encodeURIComponent(relPath)}`;
+					} else {
+						const info = await findProject(config, body.project);
+						if (!info) throw new Error('项目不存在');
+						if (scope === 'module' && body.module) {
+							baseDir = path.join(info.dir, 'modules', String(body.module), 'assets');
+							fileUrl = `/cts/file?project=${encodeURIComponent(body.project)}&path=${encodeURIComponent(path.posix.join('modules', String(body.module), 'assets', relPath))}`;
+						} else {
+							baseDir = info.dir;
+							fileUrl = `/cts/file?project=${encodeURIComponent(body.project)}&path=${encodeURIComponent(relPath)}`;
+						}
+					}
+					const allowedBase = path.resolve(baseDir);
+					let resolved = path.resolve(path.join(baseDir, relPath));
+					if (!resolved.startsWith(allowedBase + path.sep) && resolved !== allowedBase) {
+						throw new Error('无权访问目标文件');
+					}
+					let buf;
+					try {
+						buf = await fs.readFile(resolved);
+					} catch {
+						if (scope !== 'pool') {
+							const poolBase = path.resolve(path.join(root, 'assets', 'inbox'));
+							const poolPath = path.resolve(path.join(poolBase, relPath));
+							if (poolPath.startsWith(poolBase + path.sep)) {
+								buf = await fs.readFile(poolPath);
+								resolved = poolPath;
+								fileUrl = `/cts/file?scope=pool&path=${encodeURIComponent(relPath)}`;
+							}
+						}
+						if (!buf) throw new Error(`文件不存在：${relPath}`);
+					}
+					const ext = path.extname(resolved).toLowerCase();
+					const name = path.basename(resolved);
+					const buildToc = (blocks) => blocks
+						.map((b, idx) => ({ idx, kind: b.kind, level: b.level || 1, text: b.text || '' }))
+						.filter((b) => b.kind === 'heading' && b.text)
+						.slice(0, 200);
+					if (ext === '.md' || ext === '.markdown' || ext === '.txt') {
+						const text = buf.toString('utf8');
+						const normRel = relPath.split(path.sep).join('/');
+						const relDir = path.posix.dirname(normRel);
+						const assetBase = {
+							scope: fileUrl.includes('scope=pool') ? 'pool' : 'project',
+							project: fileUrl.includes('scope=pool') ? '' : String(body.project || ''),
+							dir: relDir === '.' ? '' : (scope === 'module' && body.module ? path.posix.join('modules', String(body.module), 'assets', relDir) : relDir)
+						};
+						sendJson(res, 200, { ok: true, state: { kind: 'markdown', name, ext, bytes: buf.length, assetBase, text: text.slice(0, 300000), truncated: text.length > 300000 } });
+						return;
+					}
+					if (ext === '.docx') {
+						const blocks = parseDocx(buf);
+						sendJson(res, 200, { ok: true, state: { kind: 'blocks', name, ext, bytes: buf.length, blocks: blocks.slice(0, 2500), totalBlocks: blocks.length, toc: buildToc(blocks) } });
+						return;
+					}
+					if (ext === '.doc') {
+						try {
+							const { stdout } = await run('/usr/bin/textutil', ['-convert', 'txt', '-stdout', resolved], { timeout: 8000, maxBuffer: 10 * 1024 * 1024 });
+							const rawLines = String(stdout || '').replace(/\r\n?/g, '\n').split('\n');
+							const blocks = [];
+							for (const rawLine of rawLines) {
+								const t = rawLine.trim();
+								if (!t) continue;
+								const isHeading = t.length <= 60 && (/^(?:第[一二三四五六七八九十百\d]+[章节部分篇]|\d+(?:\.\d+){0,3}[\s、.．])/.test(t));
+								blocks.push({ kind: isHeading ? 'heading' : 'paragraph', level: isHeading ? Math.min(3, (t.match(/\./g) || []).length + 1) : 1, text: t });
+							}
+							sendJson(res, 200, { ok: true, state: { kind: 'blocks', name, ext, bytes: buf.length, blocks: blocks.slice(0, 2500), totalBlocks: blocks.length, toc: buildToc(blocks) } });
+							return;
+						} catch {
+							sendJson(res, 200, { ok: true, state: { kind: 'unsupported', name, ext, bytes: buf.length, message: '当前环境无法直接转换旧版二进制 .doc，建议另存为 .docx 或 .pdf 后预览' } });
+							return;
+						}
+					}
+					if (ext === '.pdf') {
+						let blocks = [];
+						try { blocks = parsePdf(buf, '.pdf', resolved); } catch { blocks = []; }
+						sendJson(res, 200, { ok: true, state: { kind: 'pdf', name, ext, bytes: buf.length, fileUrl, blocks: blocks.slice(0, 2500), totalBlocks: blocks.length, toc: buildToc(blocks) } });
+						return;
+					}
+					if (ext === '.xlsx') {
+						const rawSheets = parseXlsx(buf);
+						const sheetNames = rawSheets.map((s) => s.name);
+						const wantSheets = body.mode === 'sheets';
+						if (!wantSheets) {
+							const matrix = extractSignalMatrix(buf, resolved);
+							if (matrix.signals && matrix.signals.length > 0) {
+								const messagesCount = new Set(matrix.signals.map((s) => `${s.message_id || ''}::${s.message || ''}`)).size;
+								sendJson(res, 200, { ok: true, state: {
+									kind: 'matrix', name, ext, bytes: buf.length, sheetNames, messagesCount,
+									signals: matrix.signals.slice(0, 4000), totalSignals: matrix.signals.length
+								} });
+								return;
+							}
+						}
+						const activeName = body.sheet && sheetNames.includes(body.sheet) ? body.sheet : (sheetNames[0] || '');
+						const targetSheet = rawSheets.find((s) => s.name === activeName) || rawSheets[0] || { name: '', rows: [] };
+						const pageSize = 200;
+						const page = Math.max(1, Number(body.page) || 1);
+						const start = (page - 1) * pageSize;
+						const rows = (targetSheet.rows || []).slice(start, start + pageSize);
+						const hasMatrix = wantSheets ? (extractSignalMatrix(buf, resolved).signals?.length || 0) > 0 : false;
+						sendJson(res, 200, { ok: true, state: {
+							kind: 'sheets', name, ext, bytes: buf.length, sheetNames, hasMatrix,
+							activeSheet: targetSheet.name, rows, totalRows: (targetSheet.rows || []).length, page, pageSize
+						} });
+						return;
+					}
+					if (ext === '.dbc') {
+						const parsed = parseDbc(resolved);
+						const msgList = parsed.messages instanceof Map ? [...parsed.messages.values()] : (parsed.messages || []);
+						const signals = [];
+						for (const msg of msgList) {
+							for (const sig of (msg.signals || [])) {
+								const vt = sig.valueTable || sig.values || null;
+								signals.push({
+									message: msg.name || '',
+									message_id: msg.id || '',
+									transmitter: msg.transmitter || msg.sender || '',
+									cycle: msg.cycle || '',
+									name: sig.name || '',
+									description: sig.comment || '',
+									min: sig.min ?? '',
+									max: sig.max ?? '',
+									unit: sig.unit || '',
+									initial: sig.initial ?? '',
+									invalid: sig.invalid ?? '',
+									valueDesc: vt ? Object.entries(vt).map(([k, v]) => `0x${Number(k).toString(16).toUpperCase()}: ${v}`).join('\n') : ''
+								});
+							}
+						}
+						sendJson(res, 200, { ok: true, state: { kind: 'matrix', name, ext, bytes: buf.length, sheetNames: [], messagesCount: msgList.length, signals, totalSignals: signals.length } });
+						return;
+					}
+					sendJson(res, 200, { ok: true, state: { kind: 'unsupported', name, ext, bytes: buf.length, message: `暂不支持在线预览 ${ext || '该'} 格式文件` } });
+					return;
+				}
 				case 'assets.list': {
 					const info = await findProject(config, body.project);
 					if (!info) throw new Error(`项目不存在：${body.project}`);
@@ -5618,7 +6336,7 @@ export function apply(ctx, config) {
 					const moduleId = resolveModule(info, body.module);
 					const pathToRemove = String(body.path || '');
 					if (!pathToRemove || pathToRemove.includes('..')) throw new Error('非法资料路径');
-					const release = await acquireLock(root, body.project);
+					const release = await acquireLock(root, moduleLockKey(body.project));
 					try {
 						const doc = await withModule(moduleId, () => loadArtifact(root, body.project, 'material-selection'));
 						const items = (doc.items || []).filter((item) => item.path !== pathToRemove);
@@ -7413,10 +8131,10 @@ export function apply(ctx, config) {
 		}
 	};
 
-	ctx.effect(() => ctx.webServer.register({ kind: 'exact', path: API, handler: handle }), `cts-agent: POST ${API}`);
-	ctx.effect(() => ctx.webServer.register({ kind: 'exact', path: CHAT, handler: runChat }), `cts-agent: POST ${CHAT}`);
-	ctx.effect(() => ctx.webServer.register({ kind: 'exact', path: GENERATE, handler: runGenerate }), `cts-agent: POST ${GENERATE}`);
-	ctx.effect(() => ctx.webServer.register({ kind: 'exact', path: REVIEW, handler: runReview }), `cts-agent: POST ${REVIEW}`);
+	ctx.effect(() => ctx.webServer.register({ kind: 'exact', path: API, handler: (req, res) => isolateScope(() => handle(req, res)) }), `cts-agent: POST ${API}`);
+	ctx.effect(() => ctx.webServer.register({ kind: 'exact', path: CHAT, handler: (req, res) => isolateScope(() => runChat(req, res)) }), `cts-agent: POST ${CHAT}`);
+	ctx.effect(() => ctx.webServer.register({ kind: 'exact', path: GENERATE, handler: (req, res) => isolateScope(() => runGenerate(req, res)) }), `cts-agent: POST ${GENERATE}`);
+	ctx.effect(() => ctx.webServer.register({ kind: 'exact', path: REVIEW, handler: (req, res) => isolateScope(() => runReview(req, res)) }), `cts-agent: POST ${REVIEW}`);
 		ctx.effect(() => ctx.webServer.register({ kind: 'exact', path: UPLOAD, handler: runUpload }), `cts-agent: POST ${UPLOAD}`);
 
 		const exportsRoot = path.resolve(path.join(root, 'exports'));
@@ -7480,27 +8198,42 @@ export function apply(ctx, config) {
 			}
 			const url = new URL(req.url || '/', 'http://127.0.0.1');
 			const relative = url.searchParams.get('path') || '';
+			const fileScope = url.searchParams.get('scope') || 'projects';
+			const projectParam = url.searchParams.get('project') || '';
 			if (relative === '' || relative.includes('..')) {
 				res.statusCode = 400;
 				res.end('bad path');
 				return;
 			}
-			const absolute = path.join(root, 'projects', relative);
+			let rootDir = fileScope === 'pool' ? path.join(root, 'assets', 'inbox') : path.join(root, 'projects');
+			if (projectParam) {
+				const info = await findProject(config, projectParam);
+				if (!info) {
+					res.statusCode = 404;
+					res.end('not found');
+					return;
+				}
+				rootDir = info.dir;
+			}
+			const absolute = path.join(rootDir, relative);
 			const resolved = path.resolve(absolute);
-			if (!resolved.startsWith(path.resolve(path.join(root, 'projects')))) {
+			const allowedRoot = path.resolve(rootDir);
+			if (!resolved.startsWith(allowedRoot + path.sep) && resolved !== allowedRoot) {
 				res.statusCode = 403;
 				res.end('forbidden');
 				return;
 			}
-			const type = /\.png$/i.test(resolved) ? 'image/png'
-				: /\.jpe?g$/i.test(resolved) ? 'image/jpeg'
-					: /\.webp$/i.test(resolved) ? 'image/webp'
-						: /\.svg$/i.test(resolved) ? 'image/svg+xml'
-							: 'application/octet-stream';
+			const type = /\.pdf$/i.test(resolved) ? 'application/pdf'
+				: /\.png$/i.test(resolved) ? 'image/png'
+					: /\.jpe?g$/i.test(resolved) ? 'image/jpeg'
+						: /\.webp$/i.test(resolved) ? 'image/webp'
+							: /\.svg$/i.test(resolved) ? 'image/svg+xml'
+								: 'application/octet-stream';
 			try {
 				const buffer = await fs.readFile(resolved);
 				res.statusCode = 200;
 				res.setHeader('content-type', type);
+				if (/\.pdf$/i.test(resolved)) res.setHeader('content-disposition', 'inline');
 				res.setHeader('cache-control', 'max-age=300');
 				res.end(buffer);
 			} catch {

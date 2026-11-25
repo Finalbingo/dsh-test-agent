@@ -14,6 +14,17 @@ export function withModule(moduleId, fn, config) {
 	return storage.run({ module: moduleId || 'default', config: config || null }, fn);
 }
 
+/** Run fn in an isolated child AsyncLocalStorage frame so any enterScope inside fn never mutates the caller's frame. */
+export function isolateScope(fn) {
+	const cur = storage.getStore();
+	return storage.run({ module: cur?.module || 'default', config: cur?.config || null }, fn);
+}
+
+/** @param {{ module?: string, config?: object | null }} scope @param {() => any} fn */
+export function runScope(scope, fn) {
+	return storage.run({ module: scope?.module || 'default', config: scope?.config || null }, fn);
+}
+
 /** Set the module for the current request's async context (no wrapping needed). */
 export function enterModule(moduleId, config) {
 	storage.enterWith({ module: moduleId || 'default', config: config === undefined ? currentConfig() : (config || null) });
