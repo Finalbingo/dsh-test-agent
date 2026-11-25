@@ -49,7 +49,7 @@ import { build as buildEcsm, currentVersion as currentEcsmVersion, versions as e
 import { derive as deriveQuestions, load as loadQuestions, save as saveQuestions, merge as mergeQuestions } from './questions.js';
 import { startRun, recordBatch, finishRun, loadRun, listRuns, pendingPoints } from './case-runs.js';
 import { parseDbc, auditCases, locateSignal, directionOf } from './signal-audit.js';
-import { caseContentDigest as caseDigest, REVIEW_FIELDS, loadReviews, recordReview, recordReviews, approvalGate, markLintPassed, firstReviewStats, PASS, validateReceipts, loadReviewPages, saveReviewPage, reviewConfigKey } from './quality-gate.js';
+import { caseContentDigest as caseDigest, REVIEW_FIELDS, loadReviews, recordReview, recordReviews, approvalGate, markLintPassed, firstReviewStats, PASS, validateReceipts, loadReviewPages, saveReviewPage, reviewConfigKey, classifyApprovalBuckets } from './quality-gate.js';
 import { applyAuthority, applyCaseIds, attachReviewCard, buildGaps, buildRestore, normalizeCaseStructure, structureCase, enrichSignals, boundaryTargets, boundaryPrompt, buildCells, matrixPrompt, familyCoverage, digestOf, assignUnassigned, factPrompt, factTask, pointPrompt, casePrompt, caseVariant, parseJson, mergeFacts, mergePoints, checkPointQuality, mergeCases, mergeCasesDetailed, keepPointReviews, lint, isPointCopy, load as loadArtifact, save as saveArtifact, archive as archiveArtifact, exportCases, EXPORT_TEMPLATES, CASE_COLUMN_KEYS, applyPatch, removeItem, markReview, coverage, reviewPrompt, featurePrompt, mergeFeatures, attachFeatures, decorateCases, buildClosedLoopCoveragePlan, closedLoopForBatch, evaluateClosedLoopCoverage, closedLoopSupplementPrompt, buildExhaustiveExpansionHints, resolvePointFeedbackAttribution, enrichPrepareFeedbackReadback } from './artifacts.js';
 
 export const name = 'cts-agent';
@@ -133,7 +133,7 @@ const ACTIVITY_ACTIONS = new Map([
 	['design.renderAll', '批量获取设计预览'], ['design.importLibrary', '导入设计组件库'],
 	// 合同 / 大纲 / 测试点 / 用例操作
 	['contracts.save', '保存需求合同'], ['outline.save', '保存测试大纲'], ['outline.approve', '批准测试大纲'], ['outline.apply', '应用大纲范围'],
-	['artifact.approve', '批准条目'], ['artifact.reject', '驳回条目'], ['artifact.approveBatch', '批量批准'], ['artifact.rejectBatch', '批量驳回'],
+	['artifact.approve', '批准条目'], ['artifact.reject', '驳回条目'], ['artifact.approveBatch', '批量批准'], ['artifact.rejectBatch', '批量驳回'], ['review.humanSignoff', '人工分流签收'],
 	['artifact.update', '编辑条目'], ['artifact.delete', '删除条目'], ['artifact.clear', '清空产物'], ['artifact.regenerate', '重生成条目'],
 	['points.dedupe', '测试点去重'], ['points.expand', '展开测试点'], ['points.boundary', '补全边界测试点'],
 	['points.transitions', '补全状态迁移测试点'], ['points.matrix', '补全组合矩阵测试点'],
@@ -809,7 +809,12 @@ export function apply(ctx, config) {
 					cases: cases.length,
 					cases_approved: cases.filter((c) => c.review_status === 'approved').length
 				},
-				review: { total_reviewed: revItems.length, by_conclusion: byConclusion, top_finding_codes: topCodes }
+				review: { total_reviewed: revItems.length, by_conclusion: byConclusion, top_finding_codes: topCodes },
+				triage: loaded?.triage ? {
+					contracts: loaded.triage.contracts?.counts || null,
+					points: loaded.triage.points?.counts || null,
+					cases: loaded.triage.cases?.counts || null
+				} : null
 			};
 		}
 		if (name === 'artifact.query') {
@@ -953,9 +958,24 @@ export function apply(ctx, config) {
 			return { _mutated: true, _undo: undo, kind, op, changed_count: changed.length, changed_ids: changed };
 		}
 		if (name === 'artifact.batch_status') {
-			const kind = args.kind === 'cases' ? 'cases' : 'points';
+			const kind = ['cases', 'contracts'].includes(args.kind) ? args.kind : 'points';
+			const signoffScopes = new Set(['green_only', 'green_and_p0_passed', 'feature_group', 'inherit_outline']);
+			const useSignoff = args.action !== 'reject' && (kind === 'cases' || kind === 'contracts' || signoffScopes.has(String(args.scope || '')));
+			const undo = await backupKindsForUndo(projectId, moduleId, `批量${args.action === 'reject' ? '驳回' : '签收批准'} ${kind}`, [kind]);
+			if (useSignoff) {
+				const res = await callInternalApi({
+					...withMod,
+					action: 'review.humanSignoff',
+					kind,
+					scope: signoffScopes.has(String(args.scope || '')) ? String(args.scope) : (Array.isArray(args.ids) && args.ids.length ? 'ids' : 'green_only'),
+					ids: Array.isArray(args.ids) ? args.ids : undefined,
+					feature_id: args.feature_id || undefined,
+					reviewer: args.reviewer || '测试工程师',
+					comment: args.comment || ''
+				}, headers);
+				return { _mutated: (res.approved?.length || 0) > 0, _undo: (res.approved?.length || 0) > 0 ? undo : null, approved: res.approved?.length || 0, blocked: res.blocked?.length || 0, reviewer: res.reviewer };
+			}
 			const act = args.action === 'reject' ? 'artifact.rejectBatch' : 'artifact.approveBatch';
-			const undo = await backupKindsForUndo(projectId, moduleId, `批量${args.action === 'reject' ? '驳回' : '批准'} ${kind}`, [kind]);
 			const res = await callInternalApi({
 				...withMod, action: act, kind,
 				scope: args.scope || (Array.isArray(args.ids) && args.ids.length ? 'selected' : 'all_pending'),
@@ -4041,7 +4061,7 @@ export function apply(ctx, config) {
 			res[activityResult] = record;
 		}
 		const PROJECT_WRITES = new Set(['evidence.build', 'sources.save', 'ui.build']);
-		const WRITES = new Set(['artifact.update', 'artifact.delete', 'artifact.clear', 'artifact.approve', 'artifact.reject', 'artifact.regenerate', 'binding.suggest', 'binding.confirm', 'binding.manual', 'binding.reject', 'evidence.build', 'package.freeze', 'package.fork', 'features.attach', 'cases.decorate', 'cases.images', 'ecsm.freeze', 'ecsm.export', 'questions.answer', 'ecsm.repair', 'contracts.save', 'sources.save', 'outline.save', 'outline.approve', 'outline.apply', 'deferral.save', 'conflict.save', 'cases.reviewApply', 'cases.reviewImport', 'branches.save', 'tkr.select', 'ui.build', 'ui.links.derive', 'ui.link.save', 'ui.propagate', 'ui.figures']);
+		const WRITES = new Set(['artifact.update', 'artifact.delete', 'artifact.clear', 'artifact.approve', 'artifact.reject', 'artifact.regenerate', 'review.humanSignoff', 'binding.suggest', 'binding.confirm', 'binding.manual', 'binding.reject', 'evidence.build', 'package.freeze', 'package.fork', 'features.attach', 'cases.decorate', 'cases.images', 'ecsm.freeze', 'ecsm.export', 'questions.answer', 'ecsm.repair', 'contracts.save', 'sources.save', 'outline.save', 'outline.approve', 'outline.apply', 'deferral.save', 'conflict.save', 'cases.reviewApply', 'cases.reviewImport', 'branches.save', 'tkr.select', 'ui.build', 'ui.links.derive', 'ui.link.save', 'ui.propagate', 'ui.figures']);
 		try {
 			if (WRITES.has(body.action) && typeof body.project === 'string') {
 				const lockKey = PROJECT_WRITES.has(body.action) ? body.project : moduleLockKey(body.project);
@@ -4166,10 +4186,11 @@ export function apply(ctx, config) {
 					const projects = await listProjects(config);
 					const roots = sourceRoots(config).map((item) => ({ dir: item.dir, readonly: item.readonly }));
 					const oauthFile = path.join(root, 'pixso-oauth.json');
+					const resolvedModel = await resolveModel(ctx, config).catch(() => null);
 					sendJson(res, 200, { ok: true, state: {
 						dataDir: root,
-						provider: config?.provider || '',
-						model: config?.model || '',
+						provider: resolvedModel?.provider || config?.provider || '',
+						model: resolvedModel?.model || config?.model || '',
 						sourceRoots: roots,
 						projects: projects.length,
 						pixso: {
@@ -4673,7 +4694,23 @@ export function apply(ctx, config) {
 						const pointById = new Map(points.items.map((entry) => [entry.point_id, entry]));
 						const errors = lint([target], new Set(points.items.map((entry) => entry.point_id)), new Set(facts.items.map((entry) => entry.fact_id)), pointById)
 							.map((entry) => ({ ...entry, at: `cases[${id}]` }));
-						const reviews = loadReviews(root, body.project);
+						let reviews = loadReviews(root, body.project);
+						if (body.human_signoff === true) {
+							const blockingLint = errors.filter((e) => e.severity !== 'warning');
+							const pt = pointById.get(target.point_id);
+							if (blockingLint.length === 0 && pt && pt.review_status === 'approved') {
+								const reviewerName = String(body.reviewer || '测试工程师').trim() || '测试工程师';
+								reviews = recordReviews(root, body.project, [{
+									case_id: id,
+									variant_id: caseVariant(target),
+									case_digest: caseDigest(target),
+									review_kind: 'content',
+									conclusion: '通过',
+									reviewer: reviewerName,
+									basis: String(body.comment || '在线人工单条裁决通过').trim()
+								}]);
+							}
+						}
 						const gate = approvalGate(target, { reviews, errors, point: pointById.get(target.point_id), points, cases: doc });
 						if (!gate.ok) {
 							sendJson(res, 409, { ok: false, error: '用例不能批准：' + gate.reasons.join('；'), state: { case_id: id, reasons: gate.reasons, lint_passed: gate.lint_passed, case_digest: gate.case_digest } });
@@ -4686,6 +4723,174 @@ export function apply(ctx, config) {
 					const { items, version, updatedAt, digest, ...meta } = doc;
 					const saved = await saveArtifact(root, body.project, kind, { version, items, meta });
 					sendJson(res, 200, { ok: true, state: { item, version: saved.version } });
+					return;
+				}
+				case 'review.humanSignoff': {
+					assertWritable(body.project);
+					const kind = String(body.kind || 'cases');
+					if (!['points', 'cases', 'contracts'].includes(kind)) throw new Error(`不支持在线签收的产物类型：${kind}`);
+					const reviewerName = String(body.reviewer || '测试工程师').trim() || '测试工程师';
+					const scope = String(body.scope || 'green_only');
+					const comment = String(body.comment || '').trim();
+					const approved = [];
+					const blocked = [];
+
+					if (kind === 'contracts') {
+						const [doc, facts, features, evidence, conflicts] = await Promise.all([
+							loadArtifact(root, body.project, 'contracts'),
+							loadArtifact(root, body.project, 'facts'),
+							loadArtifact(root, body.project, 'features'),
+							scopedEvidence(body.project).catch(() => null),
+							loadArtifact(root, body.project, 'conflicts')
+						]);
+						const states = loadStates(root, body.project);
+						const bindings = loadBindings(root, body.project);
+						const triage = classifyApprovalBuckets('contracts', doc.items, {
+							conflicts,
+							bindings,
+							factIds: new Set(facts.items.map((f) => f.fact_id))
+						});
+						const idFilter = Array.isArray(body.ids) ? new Set(body.ids.map(String)) : null;
+						for (let index = 0; index < doc.items.length; index += 1) {
+							const item = doc.items[index];
+							if (item.status === 'approved') continue;
+							if (scope === 'ids' && (!idFilter || !idFilter.has(item.contract_id))) continue;
+							if (scope === 'feature_group' && body.feature_id && item.feature_id !== body.feature_id) continue;
+							const t = triage.byId[item.contract_id];
+							if (scope === 'green_only' && t?.bucket !== 'green') continue;
+							if (t?.bucket === 'red') {
+								blocked.push({ id: item.contract_id, title: item.title, error: t.reasons.join('；'), reasons: t.reasons });
+								continue;
+							}
+							try {
+								doc.items[index] = editContract(item, { ...item }, features.items, facts.items, evidence?.items || [], true, states.items);
+								approved.push(item.contract_id);
+							} catch (error) {
+								blocked.push({ id: item.contract_id, title: item.title, error: error.message, reasons: [error.message] });
+							}
+						}
+						if (approved.length) {
+							await saveArtifact(root, body.project, 'contracts', doc);
+							await refreshUiLinks(body.project).catch(() => null);
+						}
+						sendJson(res, 200, { ok: true, state: { kind, scope, reviewer: reviewerName, approved, blocked, version: doc.version } });
+						return;
+					}
+
+					if (kind === 'points') {
+						const [doc, facts, outline] = await Promise.all([
+							loadArtifact(root, body.project, 'points'),
+							loadArtifact(root, body.project, 'facts'),
+							loadArtifact(root, body.project, 'outline')
+						]);
+						if (scope === 'inherit_outline') {
+							const design = outline.items[0];
+							if (!design || design.status !== 'approved') throw new Error('当前模块尚未批准受控测试大纲，无法继承放行');
+						}
+						const states = loadStates(root, body.project);
+						const bindings = loadBindings(root, body.project);
+						const pointQuality = checkPointQuality(doc.items, new Set(facts.items.map((f) => f.fact_id)),
+							new Set(states.items.flatMap((m) => (m.transitions || []).map((t) => t.transition_id))));
+						const triage = classifyApprovalBuckets('points', doc.items, { pointQuality, bindings });
+						const idFilter = Array.isArray(body.ids) ? new Set(body.ids.map(String)) : null;
+						const featureMap = new Map(doc.items.map((p) => [p.point_id, p.feature_id || '']));
+						for (const item of doc.items) {
+							const id = item.point_id;
+							if (!id || item.review_status === 'approved') continue;
+							if (scope === 'ids' && (!idFilter || !idFilter.has(id))) continue;
+							if (scope === 'feature_group' && body.feature_id && featureMap.get(id) !== body.feature_id) continue;
+							const t = triage.byId[id];
+							if ((scope === 'green_only' || scope === 'inherit_outline') && t?.bucket !== 'green') continue;
+							if (scope === 'green_and_p0_passed' && t?.bucket === 'red') continue;
+							if (t?.bucket === 'red') {
+								blocked.push({ id, error: t.reasons.join('；'), reasons: t.reasons });
+								continue;
+							}
+							markReview(doc, id, 'approved', 'points');
+							item.reviewer = reviewerName;
+							item.review_comment = comment || (scope === 'inherit_outline' ? '继承已批大纲自动放行' : '在线人工分流签收');
+							approved.push(id);
+						}
+						let version = doc.version;
+						if (approved.length) {
+							const { items, version: curVer, updatedAt, digest, ...meta } = doc;
+							const saved = await saveArtifact(root, body.project, 'points', { version: curVer, items, meta });
+							version = saved.version;
+						}
+						sendJson(res, 200, { ok: true, state: { kind, scope, reviewer: reviewerName, approved, blocked, version } });
+						return;
+					}
+
+					// kind === 'cases'
+					const [doc, points, facts, agentReview] = await Promise.all([
+						loadArtifact(root, body.project, 'cases'),
+						loadArtifact(root, body.project, 'points'),
+						loadArtifact(root, body.project, 'facts'),
+						loadArtifact(root, body.project, 'agent-review-cases')
+					]);
+					const pointIds = new Set(points.items.map((p) => p.point_id));
+					const factIds = new Set(facts.items.map((f) => f.fact_id));
+					const pointById = new Map(points.items.map((p) => [p.point_id, p]));
+					const lintErrorsByCase = new Map();
+					for (const item of doc.items) {
+						const errs = lint([item], pointIds, factIds, pointById).filter((e) => e.severity !== 'warning');
+						if (errs.length) lintErrorsByCase.set(item.case_id, errs);
+					}
+					let reviews = loadReviews(root, body.project);
+					const bindings = loadBindings(root, body.project);
+					const triage = classifyApprovalBuckets('cases', doc.items, { reviews, agentReview, pointById, lintErrorsByCase, bindings });
+					const idFilter = Array.isArray(body.ids) ? new Set(body.ids.map(String)) : null;
+					const candidates = [];
+					for (const item of doc.items) {
+						const id = item.case_id;
+						if (!id || item.review_status === 'approved') continue;
+						if (scope === 'ids' && (!idFilter || !idFilter.has(id))) continue;
+						if (scope === 'feature_group' && body.feature_id && (item.feature_id || '') !== body.feature_id) continue;
+						const t = triage.byId[id];
+						if (scope === 'green_only' && t?.bucket !== 'green') continue;
+						if (scope === 'green_and_p0_passed' && !(t?.bucket === 'green' || (t?.bucket === 'yellow' && t?.p0 && t?.modelPassed && !(item.deferred_items || []).length))) continue;
+						// 批量签收绝不放行红灯阻塞项（结构错误 / 来源点未批 / AI审查打回）
+						if (t?.bucket === 'red') {
+							blocked.push({ id, error: '红灯项禁止签收：' + t.reasons.join('；'), reasons: t.reasons });
+							continue;
+						}
+						candidates.push(item);
+					}
+					if (candidates.length) {
+						const basisText = comment || (scope === 'green_only' ? '绿灯已过审池一键人工签收'
+							: scope === 'green_and_p0_passed' ? '绿灯池及已过审 P0 一键人工签收'
+							: scope === 'feature_group' ? '按功能组人工抽检签收'
+							: '在线人工裁决通过');
+						reviews = recordReviews(root, body.project, candidates.map((item) => ({
+							case_id: item.case_id,
+							variant_id: caseVariant(item),
+							case_digest: caseDigest(item),
+							review_kind: 'content',
+							conclusion: '通过',
+							reviewer: reviewerName,
+							basis: basisText
+						})));
+						for (const item of candidates) {
+							const errs = (lintErrorsByCase.get(item.case_id) || []).map((entry) => ({ ...entry, at: `cases[${item.case_id}]` }));
+							const gate = approvalGate(item, { reviews, errors: errs, point: pointById.get(item.point_id), points, cases: doc });
+							if (!gate.ok) {
+								blocked.push({ id: item.case_id, error: '用例不能批准：' + gate.reasons.join('；'), reasons: gate.reasons });
+								continue;
+							}
+							item.review_digest = gate.case_digest;
+							item.review_kind = 'content';
+							item.reviewer = reviewerName;
+							markReview(doc, item.case_id, 'approved', 'cases');
+							approved.push(item.case_id);
+						}
+					}
+					let version = doc.version;
+					if (approved.length) {
+						const { items, version: curVer, updatedAt, digest, ...meta } = doc;
+						const saved = await saveArtifact(root, body.project, 'cases', { version: curVer, items, meta });
+						version = saved.version;
+					}
+					sendJson(res, 200, { ok: true, state: { kind, scope, reviewer: reviewerName, approved, blocked, version } });
 					return;
 				}
 				case 'artifact.approveBatch':
@@ -8001,13 +8206,33 @@ export function apply(ctx, config) {
 						? deliveryBlocker({ points, cases: signedCases }, frozen, outline, rows, delivery)
 						: { step: 'model', message: '请先在 ECSM 确认需求并冻结产品模型。' };
 					const variantOf = new Map(cases.items.map((item) => [item.case_id, caseVariant(item)]));
-					const firstReview = firstReviewStats(loadReviews(root, body.project), variantOf, new Set(variantOf.values()));
+					const caseReviewsDoc = loadReviews(root, body.project);
+					const firstReview = firstReviewStats(caseReviewsDoc, variantOf, new Set(variantOf.values()));
 					delivery.first_review = { denominator: firstReview.denominator, reviewed: firstReview.reviewed,
 						passed: firstReview.passed, returned: firstReview.returned, anchor: 'variant' };
 					delivery.runs = listRuns(root, body.project).slice(-5).map(({ run_id, started_at, finished_at, baseline_digest, completed_ids, failed_ids, pending_ids, stopped }) =>
 						({ run_id, started_at, finished_at, baseline_digest, completed: completed_ids.length, failed: failed_ids.length, pending: pending_ids.length, stopped }));
 					const outlineStatus = summarizeOutline(design, Boolean(delivery.outlineBranchesStale));
-					sendJson(res, 200, { ok: true, state: { features, facts, points, cases, review, states, pointQuality, delivery, outlineStatus } });
+					const [agentReviewCases, contractsDoc, conflictsDoc] = await Promise.all([
+						loadArtifact(root, body.project, 'agent-review-cases'),
+						loadArtifact(root, body.project, 'contracts'),
+						loadArtifact(root, body.project, 'conflicts')
+					]);
+					const triageBindings = loadBindings(root, body.project);
+					const triagePointIds = new Set(points.items.map((p) => p.point_id));
+					const triageFactIds = new Set(facts.items.map((f) => f.fact_id));
+					const triagePointById = new Map(points.items.map((p) => [p.point_id, p]));
+					const lintErrorsByCase = new Map();
+					for (const c of cases.items) {
+						const errs = lint([c], triagePointIds, triageFactIds, triagePointById).filter((e) => e.severity !== 'warning');
+						if (errs.length) lintErrorsByCase.set(c.case_id, errs);
+					}
+					const triage = {
+						contracts: classifyApprovalBuckets('contracts', contractsDoc.items, { conflicts: conflictsDoc, bindings: triageBindings, factIds: triageFactIds }),
+						points: classifyApprovalBuckets('points', points.items, { pointQuality, bindings: triageBindings }),
+						cases: classifyApprovalBuckets('cases', cases.items, { reviews: caseReviewsDoc, agentReview: agentReviewCases, pointById: triagePointById, lintErrorsByCase, bindings: triageBindings })
+					};
+					sendJson(res, 200, { ok: true, state: { features, facts, points, cases, review, states, pointQuality, delivery, outlineStatus, triage } });
 					return;
 				}
 				case 'branches.save': {

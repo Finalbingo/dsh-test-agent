@@ -196,3 +196,165 @@ export function markLintPassed(item, errors) {
 	if (item.review_status === 'approved' && !item.lint_passed) item.review_status = 'candidate';
 	return item;
 }
+
+/**
+ * 确定性三色异常分流引擎（Review-by-Exception，零大模型开销）：
+ * - approved：已正式批准
+ * - red：红灯阻断（缺必填/结构错误/AI审查打回/非必测分支），禁止批量放行
+ * - yellow：黄灯重点裁决（P0 核心项/含延期或待确认缺口/信号绑定歧义/尚未独立审查），需人工重点看
+ * - green：绿灯常规项（证据齐全、零阻塞错误、AI审查已判通过），支持一键人工签收
+ */
+export function classifyApprovalBuckets(kind, items = [], context = {}) {
+	const byId = {};
+	const counts = { approved: 0, red: 0, yellow: 0, green: 0, total: items.length };
+	const pendingBindings = new Set(
+		(context.bindings?.items || [])
+			.filter((b) => b.status === 'ambiguous' || b.status === 'unmatched')
+			.map((b) => b.subject?.name)
+			.filter(Boolean)
+	);
+	const hasUnresolvedBinding = (text) => {
+		if (!pendingBindings.size || !text) return false;
+		for (const name of pendingBindings) {
+			if (name.length >= 2 && text.includes(name)) return true;
+		}
+		return false;
+	};
+	const TBD_RE = /\bTBD\b|待确认|待定|原文未明确|PRD未明确/i;
+
+	if (kind === 'contracts') {
+		const openConflicts = new Set((context.conflicts?.items || []).filter((c) => c.status === 'open').map((c) => c.contract_id));
+		const factIds = context.factIds instanceof Set ? context.factIds : null;
+		for (const item of items) {
+			const id = item.contract_id;
+			if (!id) continue;
+			if (item.status === 'approved') {
+				byId[id] = { bucket: 'approved', reasons: [] };
+				counts.approved += 1;
+				continue;
+			}
+			const redReasons = [];
+			const missing = [!item.trigger && '触发动作', !item.condition && '前置条件', !item.expected && '可观察预期'].filter(Boolean);
+			if (missing.length) redReasons.push(`缺字段：${missing.join('、')}`);
+			if (!item.fact_refs?.length) redReasons.push('缺少来源事实');
+			else if (factIds && item.fact_refs.some((ref) => !factIds.has(ref))) redReasons.push('引用事实已失效');
+			if (redReasons.length) {
+				byId[id] = { bucket: 'red', reasons: redReasons };
+				counts.red += 1;
+				continue;
+			}
+			const yellowReasons = [];
+			if (openConflicts.has(id)) yellowReasons.push('存在待裁决冲突');
+			const joined = `${item.condition || ''} ${item.trigger || ''} ${item.expected || ''}`;
+			if (TBD_RE.test(joined)) yellowReasons.push('含待确认/TBD条款');
+			if (hasUnresolvedBinding(joined)) yellowReasons.push('关联未确认信号/控件');
+			if (yellowReasons.length) {
+				byId[id] = { bucket: 'yellow', reasons: yellowReasons };
+				counts.yellow += 1;
+			} else {
+				byId[id] = { bucket: 'green', reasons: ['四要素齐全且无冲突'] };
+				counts.green += 1;
+			}
+		}
+		return { byId, counts };
+	}
+
+	if (kind === 'points') {
+		const pointQuality = context.pointQuality || {};
+		for (const item of items) {
+			const id = item.point_id;
+			if (!id) continue;
+			if (item.review_status === 'approved') {
+				byId[id] = { bucket: 'approved', reasons: [], p0: item.priority === 'P0' };
+				counts.approved += 1;
+				continue;
+			}
+			const redReasons = [];
+			if (item.classification && item.classification !== 'required') {
+				redReasons.push(`非必测分支（${item.classification}）`);
+			}
+			const missingPointFields = [!item.action && '操作步骤', !item.expected && '预期结果'].filter(Boolean);
+			if (missingPointFields.length) redReasons.push(`缺字段：${missingPointFields.join('、')}`);
+			if (!item.fact_refs?.length && !item.contract_id) redReasons.push('缺少来源依据');
+			const qIssues = pointQuality[id] || [];
+			if (qIssues.length) redReasons.push(...qIssues.slice(0, 2));
+			if (redReasons.length) {
+				byId[id] = { bucket: 'red', reasons: redReasons, p0: item.priority === 'P0' };
+				counts.red += 1;
+				continue;
+			}
+			const yellowReasons = [];
+			if (item.priority === 'P0') yellowReasons.push('★ P0 核心主流程/高危项');
+			const joined = `${item.condition || ''} ${item.action || ''} ${item.expected || ''}`;
+			if (TBD_RE.test(joined)) yellowReasons.push('含待确认/TBD表述');
+			if (hasUnresolvedBinding(joined)) yellowReasons.push('关联未确认信号/控件');
+			if (yellowReasons.length) {
+				byId[id] = { bucket: 'yellow', reasons: yellowReasons, p0: item.priority === 'P0' };
+				counts.yellow += 1;
+			} else {
+				byId[id] = { bucket: 'green', reasons: ['来源齐全且零质量告警'], p0: false };
+				counts.green += 1;
+			}
+		}
+		return { byId, counts };
+	}
+
+	// kind === 'cases'
+	const reviewByCase = new Map((context.reviews?.items || []).map((r) => [r.case_id, r]));
+	const agentReviewByCase = new Map((context.agentReview?.items || []).map((r) => [r.object_id || r.case_id, r]));
+	const pointById = context.pointById instanceof Map
+		? context.pointById
+		: new Map((context.points || []).map((p) => [p.point_id, p]));
+	const lintErrorsByCase = context.lintErrorsByCase instanceof Map ? context.lintErrorsByCase : new Map();
+
+	for (const item of items) {
+		const id = item.case_id;
+		if (!id) continue;
+		const isP0 = item.priority === 'P0';
+		if (item.review_status === 'approved') {
+			byId[id] = { bucket: 'approved', reasons: [], p0: isP0, modelPassed: true };
+			counts.approved += 1;
+			continue;
+		}
+		const digest = caseContentDigest(item);
+		const rec = reviewByCase.get(id);
+		const agentRec = agentReviewByCase.get(id);
+		const freshRec = rec && rec.case_digest === digest ? rec : null;
+		const freshConclusion = freshRec?.conclusion || (agentRec && (!agentRec.case_digest || agentRec.case_digest === digest) ? agentRec.conclusion : '');
+		const modelPassed = Boolean(freshConclusion && PASS.has(freshConclusion));
+
+		const redReasons = [];
+		const lintErrs = lintErrorsByCase.get(id) || [];
+		if (lintErrs.length) redReasons.push(`结构校验未通过（${lintErrs[0].code || 'LINT'}）`);
+		else if (!(item.steps?.length) || !(item.expected_items?.length)) redReasons.push('缺少执行步骤或预期结果');
+		const pt = pointById.get(item.point_id);
+		if (!pt) redReasons.push('来源测试点缺失');
+		else if (pt.review_status !== 'approved') redReasons.push('来源测试点尚未批准');
+		if (freshConclusion === '待修改') {
+			const fCount = (freshRec?.findings || agentRec?.findings || []).length;
+			redReasons.push(`AI 审查打回（${fCount || 1} 处待修改）`);
+		}
+		if (redReasons.length) {
+			byId[id] = { bucket: 'red', reasons: redReasons, p0: isP0, modelPassed: false };
+			counts.red += 1;
+			continue;
+		}
+
+		const yellowReasons = [];
+		if ((item.deferred_items || []).length > 0) yellowReasons.push(`含 ${item.deferred_items.length} 项待裁决延期缺口`);
+		if (freshConclusion === '待证据') yellowReasons.push('AI 审查标记待补充证据');
+		if (!modelPassed) yellowReasons.push('尚未完成独立审查');
+		if (isP0) yellowReasons.push('★ P0 核心主流程/高危项');
+		const joined = `${item.title || ''} ${item.expected || ''}`;
+		if (TBD_RE.test(joined)) yellowReasons.push('含待确认/TBD条款');
+
+		if (yellowReasons.length) {
+			byId[id] = { bucket: 'yellow', reasons: yellowReasons, p0: isP0, modelPassed };
+			counts.yellow += 1;
+		} else {
+			byId[id] = { bucket: 'green', reasons: ['结构零错误 · AI 审查已通过'], p0: false, modelPassed: true };
+			counts.green += 1;
+		}
+	}
+	return { byId, counts };
+}

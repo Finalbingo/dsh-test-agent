@@ -2060,25 +2060,39 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 
 		const contractStatus = { draft: '待确认', approved: '已确认', stale: '来源变化，待复核' };
 
-		function ContractView({ model, projectId, readOnly, onSave, seed, target, onApproveAll }) {
+		function ContractView({ model, projectId, readOnly, onSave, seed, target, onApproveAll, triage, onHumanSignoff }) {
 			const contracts = model.inputs?.contracts?.items || [];
 			const [bulkBusy, setBulkBusy] = React.useState(false);
 			const [bulkNotice, setBulkNotice] = React.useState('');
 			const [selected, setSelected] = React.useState(seed ? 'seed' : target || contracts.find((item) => item.status !== 'approved')?.contract_id || contracts[0]?.contract_id || '');
 			const [filter, setFilter] = React.useState('');
+			const [bucketFilter, setBucketFilter] = React.useState('');
 			const [search, setSearch] = React.useState('');
 			const query = search.trim().toLowerCase();
+			const triageById = triage?.byId || {};
+			const triageCounts = triage?.counts || null;
 			const shown = selected || contracts.find((item) => item.status !== 'approved')?.contract_id || contracts[0]?.contract_id;
 			const current = shown === 'new' || shown === 'seed' ? { feature_id: '', fact_refs: [], title: '', trigger: '', condition: '', expected: '', ...(selected === 'seed' ? seed : null) }
 				: contracts.find((item) => item.contract_id === shown);
 			const groups = new Map((model.features || []).map((feature) => [feature.feature_id, { name: feature.name, items: [] }]));
 			for (const item of contracts) {
 				if (filter && item.status !== filter) continue;
+				const bucket = triageById[item.contract_id]?.bucket || (item.status === 'approved' ? 'approved' : '');
+				if (bucketFilter && bucket !== bucketFilter) continue;
 				const name = groups.get(item.feature_id)?.name || '';
 				if (query && !`${item.contract_id} ${item.title} ${name} ${item.trigger} ${item.expected}`.toLowerCase().includes(query)) continue;
 				if (!groups.has(item.feature_id)) groups.set(item.feature_id, { name: '功能点待核对', items: [] });
 				groups.get(item.feature_id).items.push(item);
 			}
+			const runContractGroupSignoff = async (featureId, label) => {
+				if (!onHumanSignoff) return;
+				setBulkBusy(true); setBulkNotice('');
+				try {
+					const res = await onHumanSignoff('contracts', { scope: 'feature_group', feature_id: featureId });
+					setBulkNotice(`${label}：已整组确认 ${res?.approved?.length || 0} 条${res?.blocked?.length ? `，${res.blocked.length} 条阻断` : ''}`);
+				} catch (error) { setBulkNotice(error.message); }
+				finally { setBulkBusy(false); }
+			};
 			return h('div', { className: 'cts-model-workbench cts-contract-workbench' },
 				h('section', { className: 'cts-model-issues', 'aria-label': '需求合同列表' },
 					h('div', { className: 'cts-filter' },
@@ -2094,24 +2108,36 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 								finally { setBulkBusy(false); }
 							} }, bulkBusy ? '确认中…' : '确认全部完整合同') : null,
 						!readOnly ? h('button', { className: 'cts-btn primary', onClick: () => setSelected('new') }, '新建合同') : null),
+					triageCounts ? h('div', { className: 'cts-summary-strip', style: { margin: '4px 0' } },
+						[['', `全部 ${triageCounts.total}`], ['yellow', `🟡 重点审 ${triageCounts.yellow}`], ['green', `🟢 绿灯 ${triageCounts.green}`], ['red', `🔴 缺字段 ${triageCounts.red}`], ['approved', `✓ 已确认 ${triageCounts.approved}`]].map(([k, lbl]) =>
+							h('button', { key: k || 'all', type: 'button', className: `cts-pill${bucketFilter === k ? ' info' : ''}`, onClick: () => setBucketFilter(k) }, lbl))) : null,
 					bulkNotice ? h('div', { className: 'cts-hint' }, bulkNotice) : null,
 					h('div', { className: 'cts-filter' },
 						h('input', { type: 'search', className: 'cts-input cts-input-sm', 'aria-label': '搜索需求合同', value: search, placeholder: '搜索功能、合同或预期', onChange: (event) => setSearch(event.target.value) }),
 						h('select', { className: 'cts-select', 'aria-label': '合同评审状态', value: filter, onChange: (event) => setFilter(event.target.value) },
 							h('option', { value: '' }, '全部状态'), Object.entries(contractStatus).map(([key, label]) => h('option', { key, value: key }, label)))),
 					contracts.length ? h('div', { className: 'cts-contract-list' },
-						[...groups.entries()].filter(([, group]) => group.items.length).map(([id, group]) => h('section', { key: id },
-						h('h3', null, group.name || id),
-						h('div', { className: 'cts-list' }, group.items.map((item) => h('button', {
-							key: item.contract_id, className: 'cts-btn cts-model-issue', 'aria-pressed': item.contract_id === shown,
-							onClick: () => setSelected(item.contract_id)
-						}, h('strong', null, item.title), h('div', { className: 'cts-item-m' }, contractStatus[item.status]),
-						(() => {
-							const missing = item.missing_fields?.length ? item.missing_fields
-								: [!item.trigger && '触发动作', !item.condition && '前置条件', !item.expected && '可观察预期'].filter(Boolean);
-							return missing.length ? h('div', { className: 'cts-lint' }, `缺字段：${missing.join('、')}`) : null;
-						})(),
-						item.expected ? h('div', { className: 'cts-item-s' }, item.expected.slice(0, 110)) : null))))))
+						[...groups.entries()].filter(([, group]) => group.items.length).map(([id, group]) => {
+							const pendingInGroup = group.items.filter((it) => it.status !== 'approved' && triageById[it.contract_id]?.bucket !== 'red').length;
+							return h('section', { key: id },
+								h('div', { className: 'cts-row', style: { justifyContent: 'space-between', margin: '8px 0 4px' } },
+									h('h3', { style: { margin: 0 } }, `${group.name || id}（${group.items.length}）`),
+									!readOnly && pendingInGroup > 0 && onHumanSignoff ? h('button', { type: 'button', className: 'cts-btn', style: { padding: '2px 8px', fontSize: 11 }, disabled: bulkBusy, onClick: () => runContractGroupSignoff(id, group.name || id) }, `✓ 整组确认 (${pendingInGroup})`) : null),
+								h('div', { className: 'cts-list' }, group.items.map((item) => {
+									const ti = triageById[item.contract_id];
+									const dot = ti?.bucket === 'approved' ? '✓ ' : ti?.bucket === 'red' ? '🔴 ' : ti?.bucket === 'yellow' ? '🟡 ' : ti?.bucket === 'green' ? '🟢 ' : '';
+									return h('button', {
+										key: item.contract_id, className: 'cts-btn cts-model-issue', 'aria-pressed': item.contract_id === shown,
+										onClick: () => setSelected(item.contract_id)
+									}, h('strong', null, dot + item.title), h('div', { className: 'cts-item-m' }, [contractStatus[item.status], ti?.bucket !== 'approved' && ti?.reasons?.length ? ti.reasons[0] : ''].filter(Boolean).join(' · ')),
+									(() => {
+										const missing = item.missing_fields?.length ? item.missing_fields
+											: [!item.trigger && '触发动作', !item.condition && '前置条件', !item.expected && '可观察预期'].filter(Boolean);
+										return missing.length ? h('div', { className: 'cts-lint' }, `缺字段：${missing.join('、')}`) : null;
+									})(),
+									item.expected ? h('div', { className: 'cts-item-s' }, item.expected.slice(0, 110)) : null);
+								})));
+						}))
 						: h('p', { className: 'cts-hint' }, readOnly ? '此冻结版本没有需求合同。' : model.stats?.facts
 							? `暂无需求合同。已有 ${model.stats.facts} 条事实，可在「模型树与问题」中选择一条并点「整理为合同」。`
 							: '暂无需求合同。构建证据并生成事实后，可引用原文整理合同。')),
@@ -2119,7 +2145,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					onSave: async (payload) => { const result = await onSave(payload); setSelected(result.contract_id); return result; } }) : null);
 		}
 
-		function EcsmView({ state, section, setSection, contractTarget, generate, genBusy, onExport, onReload, onLoadVersion, projectId, moduleId, locked, onJump, onRepair, onConfirm, onManual, onImpact, onSaveContract, onApproveContracts }) {
+		function EcsmView({ state, section, setSection, contractTarget, generate, genBusy, onExport, onReload, onLoadVersion, projectId, moduleId, locked, onJump, onRepair, onConfirm, onManual, onImpact, onSaveContract, onApproveContracts, contractTriage, onHumanSignoff }) {
 			const [draftFeatures, setDraftFeatures] = React.useState([]);
 			const [contractSeed, setContractSeed] = React.useState(null);
 			const startContract = (seed) => { setContractSeed(seed); setSection('contracts'); };
@@ -2187,7 +2213,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				section === 'contracts' && !snapshot ? h(AgentReviewPanel, { projectId, moduleId, stage: 'contracts', locked,
 					revision: model.digest, onSaved: onReload, onLocate: (id) => onJump('contracts', id),
 					objects: (model.inputs?.contracts?.items || []).map((item) => ({ id: item.contract_id, title: item.title })) }) : null,
-				section === 'contracts' ? h(ContractView, { key: snapshot?.version || contractTarget || 'working', model, projectId, readOnly: Boolean(snapshot), target: snapshot ? '' : contractTarget, seed: contractSeed, onSave: onSaveContract, onApproveAll: onApproveContracts })
+				section === 'contracts' ? h(ContractView, { key: snapshot?.version || contractTarget || 'working', model, projectId, readOnly: Boolean(snapshot), target: snapshot ? '' : contractTarget, seed: contractSeed, onSave: onSaveContract, onApproveAll: onApproveContracts, triage: contractTriage, onHumanSignoff })
 				: h('div', { className: 'cts-model-workbench' },
 				h('section', { 'aria-label': '模型浏览' },
 				h('div', { className: 'cts-filter' },
@@ -2542,7 +2568,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				notice ? h('div', { role: 'status' }, notice) : null);
 		}
 
-		function DetailEditor({ kind, item, onJump, onOpen, gaps, quality = [], onImpact, onClose, onSave, onRegenerate, onDelete, onApprove, busy, projectId, onImages, moduleId, onVariantGenerated, locked }) {
+		function DetailEditor({ kind, item, onJump, onOpen, gaps, quality = [], triageInfo = null, onApproveNext = null, hasNextPending = false, onImpact, onClose, onSave, onRegenerate, onDelete, onApprove, busy, projectId, onImages, moduleId, onVariantGenerated, locked }) {
 			const [draft, setDraft] = React.useState(() => toDraft(kind, item));
 			const [dirty, setDirty] = React.useState(false);
 			const [editing, setEditing] = React.useState(kind !== 'cases');
@@ -2550,6 +2576,17 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const [variantBusy, setVariantBusy] = React.useState(false);
 			const [activeAnchor, setActiveAnchor] = React.useState(null);
 			React.useEffect(() => { setDraft(toDraft(kind, item)); setDirty(false); setActiveAnchor(null); }, [kind, item]);
+			React.useEffect(() => {
+				if (!onApproveNext || item.review_status === 'approved' || dirty || busy || locked) return;
+				const onKey = (event) => {
+					if (event.altKey && event.key === 'Enter') {
+						event.preventDefault();
+						onApproveNext('approved');
+					}
+				};
+				window.addEventListener('keydown', onKey);
+				return () => window.removeEventListener('keydown', onKey);
+			}, [onApproveNext, item.review_status, dirty, busy, locked]);
 			const stepIndexById = React.useMemo(() => {
 				const map = new Map();
 				(item.step_items || []).forEach((s, idx) => {
@@ -2587,7 +2624,12 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			return h('div', { className: 'cts-detail' },
 				h('div', { className: 'cts-detail-head' },
 					h('button', { className: 'cts-btn', onClick: onClose }, '← 返回'),
-					h('span', { className: 'cts-item-m' }, `${item[idField]} · ${status}`)),
+					h('span', { className: 'cts-item-m' }, `${item[idField]} · ${status}${item.reviewer ? `（${item.reviewer}）` : ''}`)),
+				triageInfo && item.review_status !== 'approved' && (triageInfo.reasons || []).length > 0 ? h('div', {
+					className: 'cts-notice',
+					'data-tone': triageInfo.bucket === 'red' ? 'error' : triageInfo.bucket === 'yellow' ? 'warning' : 'success',
+					style: { margin: '0 0 8px', padding: '7px 10px', fontSize: 12 }
+				}, `${triageInfo.bucket === 'red' ? '🔴 阻断项（请先修复）：' : triageInfo.bucket === 'yellow' ? '🟡 需人工重点审：' : '🟢 绿灯常规项：'}${triageInfo.reasons.join(' · ')}`) : null,
 				kind === 'cases' ? h('div', { className: 'cts-case-header' },
 					h('h2', null, item.title),
 					h('div', { className: 'cts-item-m' }, [item.priority, item.feature_id, item.point_id].filter(Boolean).join(' · ')),
@@ -2689,7 +2731,10 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					!contractRefs.length ? h('button', { className: 'cts-btn', disabled: busy, onClick: onRegenerate }, busy ? '…' : '重生成') : null,
 					item.review_status === 'approved'
 						? h('button', { className: 'cts-btn', disabled: busy || dirty, onClick: () => onApprove('rejected') }, '撤销批准')
-						: h('button', { className: 'cts-btn', disabled: busy || dirty, onClick: () => onApprove('approved') }, '批准'),
+						: h(React.Fragment, null,
+							h('button', { className: 'cts-btn primary', disabled: busy || dirty || triageInfo?.bucket === 'red', title: triageInfo?.bucket === 'red' ? '红灯阻断项请先修复' : '人工裁决通过并保存记录', onClick: () => onApprove('approved') }, '✓ 签收批准'),
+							hasNextPending && onApproveNext ? h('button', { className: 'cts-btn primary', disabled: busy || dirty || triageInfo?.bucket === 'red', title: '快捷键 Alt+Enter', onClick: () => onApproveNext('approved') }, '✓ 批准并看下一条 (⌥↵)') : null,
+							hasNextPending && onApproveNext ? h('button', { className: 'cts-btn', disabled: busy || dirty, onClick: () => onApproveNext('rejected') }, '✕ 退回并看下一条') : null),
 					h('button', { className: 'cts-btn', disabled: busy, onClick: onDelete }, '删除')));
 		}
 
@@ -3238,16 +3283,20 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				props.tab === 'outline' ? h(OutlinePanel, props) : props.tab === 'conflicts' ? h(ConflictPanel, { ...props, contracts: props.ecsmModel?.model?.inputs?.contracts?.items || [], onSaved: props.refreshAll }) : h(ArtifactPanel, props));
 		}
 
-		function ArtifactPanel({ artifacts, tab, setTab, onOpen, moduleId, refreshAll, generate, genBusy, phase, lintState, onClear, selected, setSelected, onCheckedChange, reviewState, onSave, onRegenerate, onDelete, onApprove, onBatchReview, itemBusy, bindings, bindingBusy, onSuggestBindings, onConfirmBinding, onManualBinding, issuesState, questions, onAnswerQuestion, onDismissQuestion, onDismissAll, agentsDoc, agentBusy, onRunAgent, mode, onExportEcsm, onReloadEcsm, onLoadVersion, ecsmModel, modelSection, setModelSection, contractTarget, projectId, onImages, onImpact, onJump, onRepair, onSaveContract, onApproveContracts, locked, projectQuality, onQuickQualityChange, onOpenIncrementalImpact }) {
+		function ArtifactPanel({ artifacts, tab, setTab, onOpen, moduleId, refreshAll, generate, genBusy, phase, lintState, onClear, selected, setSelected, onCheckedChange, reviewState, onSave, onRegenerate, onDelete, onApprove, onBatchReview, onHumanSignoff, reviewerName, onReviewerChange, itemBusy, bindings, bindingBusy, onSuggestBindings, onConfirmBinding, onManualBinding, issuesState, questions, onAnswerQuestion, onDismissQuestion, onDismissAll, agentsDoc, agentBusy, onRunAgent, mode, onExportEcsm, onReloadEcsm, onLoadVersion, ecsmModel, modelSection, setModelSection, contractTarget, projectId, onImages, onImpact, onJump, onRepair, onSaveContract, onApproveContracts, locked, projectQuality, onQuickQualityChange, onOpenIncrementalImpact }) {
 			const [query, setQuery] = React.useState('');
 			const [filter, setFilter] = React.useState('');
+			const [bucketFilter, setBucketFilter] = React.useState('');
+			const [groupView, setGroupView] = React.useState(true);
+			const [expandedGroups, setExpandedGroups] = React.useState({});
+			const [includeP0Green, setIncludeP0Green] = React.useState(false);
 			const [page, setPage] = React.useState(0);
 			const [scroll, setScroll] = React.useState(0);
 			const [checked, setChecked] = React.useState([]);
 			const [showClosedLoop, setShowClosedLoop] = React.useState(false);
 			const panelRef = React.useRef(null);
 			React.useEffect(() => { if (panelRef.current) panelRef.current.scrollTop = scroll; }, [selected]);
-			React.useEffect(() => { setQuery(''); setFilter(''); setPage(0); setScroll(0); setChecked([]); }, [tab]);
+			React.useEffect(() => { setQuery(''); setFilter(''); setBucketFilter(''); setPage(0); setScroll(0); setChecked([]); setExpandedGroups({}); }, [tab]);
 			React.useEffect(() => { onCheckedChange?.(checked); }, [checked]);
 			const batchable = tab === 'points' || tab === 'cases';
 			const toggleChecked = (id) => setChecked((current) => current.includes(id) ? current.filter((entry) => entry !== id) : [...current, id]);
@@ -3272,7 +3321,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const idField = tab === 'features' ? 'feature_id' : tab === 'states' ? 'feature_id' : tab === 'facts' ? 'fact_id' : tab === 'bindings' ? 'binding_id' : tab === 'points' ? 'point_id' : 'case_id';
 
 			if (tab === 'model') {
-				return h(EcsmView, { state: ecsmModel, generate, genBusy, contractTarget, section: modelSection, setSection: setModelSection, onExport: onExportEcsm, onReload: onReloadEcsm, onLoadVersion, projectId, moduleId, locked, onJump: (_, id) => onOpen('model', id), onRepair, onConfirm: onConfirmBinding, onManual: onManualBinding, onImpact, onSaveContract, onApproveContracts });
+				return h(EcsmView, { state: ecsmModel, generate, genBusy, contractTarget, section: modelSection, setSection: setModelSection, onExport: onExportEcsm, onReload: onReloadEcsm, onLoadVersion, projectId, moduleId, locked, onJump: (_, id) => onOpen('model', id), onRepair, onConfirm: onConfirmBinding, onManual: onManualBinding, onImpact, onSaveContract, onApproveContracts, contractTriage: artifacts.triage?.contracts || null, onHumanSignoff });
 			}
 
 			if (tab === 'questions') {
@@ -3333,6 +3382,30 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 							: bindingItems.map((item) => h(BindingRow, { key: item.binding_id, item, onConfirm: onConfirmBinding, onManual: onManualBinding, busy: bindingBusy }))));
 			}
 
+			const triage = batchable ? (artifacts.triage?.[tab] || null) : null;
+			const triageById = triage?.byId || {};
+			const triageCounts = triage?.counts || null;
+			const findings = reviewState?.items || [];
+			const search = query.trim().toLowerCase();
+			const filtered = items.filter((item) => {
+				if (filter === 'pending' && item.review_status === 'approved') return false;
+				if (filter === 'gaps' && !gaps[item.case_id]?.length) return false;
+				if (filter === 'quality' && !pointQuality[item.point_id]?.length) return false;
+				if (bucketFilter && triage) {
+					const b = triageById[item[idField]]?.bucket || '';
+					if (b !== bucketFilter) return false;
+				}
+				return !search || [item[idField], item.feature_id, item.title, item.name, item.statement, item.requirement]
+					.some((value) => String(value || '').toLowerCase().includes(search));
+			});
+			const pendingInFiltered = filtered.filter((it) => it.review_status !== 'approved');
+			const findNextPendingId = (currentId) => {
+				const idx = pendingInFiltered.findIndex((it) => it[idField] === currentId);
+				if (idx >= 0 && idx + 1 < pendingInFiltered.length) return pendingInFiltered[idx + 1][idField];
+				const other = pendingInFiltered.find((it) => it[idField] !== currentId);
+				return other ? other[idField] : '';
+			};
+
 			let detail = null;
 			if (selected && selected.kind === tab) {
 				const item = items.find((entry) => entry[idField] === selected.id);
@@ -3348,10 +3421,18 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 							h('button', { className: 'cts-btn', onClick: () => onImpact('transition_id', entry.transition_id) }, '查看影响范围'))),
 						(feature?.issues || []).map((issue, index) => h('p', { key: index, className: 'cts-lint' }, issue.message)));
 				} else if (item) {
+					const nextPendingId = findNextPendingId(item[idField]);
 					detail = h('div', { className: 'cts-right', key: item[idField] },
 						h(DetailEditor, {
 							key: item[idField], kind: tab, onJump, onOpen,
 							item, gaps: gaps[item.case_id] || [], quality: pointQuality[item.point_id] || [],
+							triageInfo: triageById[item[idField]] || null,
+							hasNextPending: Boolean(nextPendingId),
+							onApproveNext: async (status) => {
+								await onApprove(tab, item[idField], status);
+								if (nextPendingId) setSelected({ kind: tab, id: nextPendingId });
+								else setSelected(null);
+							},
 							projectId, moduleId, locked, onVariantGenerated: refreshAll, onImages, onImpact,
 							onClose: () => setSelected(null),
 							onSave: (patch) => onSave(tab, item[idField], patch),
@@ -3365,6 +3446,8 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 
 			const row = (item, key) => {
 				const onClick = () => { setScroll(panelRef.current?.scrollTop || 0); setSelected({ kind: tab, id: item[idField] }); };
+				const ti = triageById[item[idField]];
+				const dot = ti ? (ti.bucket === 'approved' ? '✓ ' : ti.bucket === 'red' ? '🔴 ' : ti.bucket === 'yellow' ? '🟡 ' : '🟢 ') : '';
 				const flag = item.review_status === 'approved' ? ' ✓' : item.review_status === 'rejected' ? ' ✕' : '';
 				const pick = batchable ? h('input', { type: 'checkbox', className: 'cts-item-pick', checked: checked.includes(item[idField]),
 					'aria-label': `选择 ${item[idField]}`, onClick: (event) => event.stopPropagation(), onChange: () => toggleChecked(item[idField]) }) : null;
@@ -3389,26 +3472,43 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				if (tab === 'points') {
 					return h('div', { className: 'cts-item', key, onClick, role: 'button', 'aria-current': selected?.id === item[idField], tabIndex: 0, onKeyDown: (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onClick(); } }, style: { cursor: 'pointer' } },
 						pick,
-						h('div', { className: 'cts-item-t' }, `${item.priority || ''} ${item.requirement || ''}${flag}`),
+						h('div', { className: 'cts-item-t' }, `${dot}${item.priority || ''} ${item.requirement || ''}${flag}`),
 						h('div', { className: 'cts-item-s' }, `条件：${item.condition || ''}`),
-						h('div', { className: 'cts-item-m' }, [item.point_id, ...(item.fact_refs || []), pointQuality[item.point_id]?.length ? '待核对质量' : ''].filter(Boolean).join(' · ')));
+						h('div', { className: 'cts-item-m' }, [item.point_id, ...(item.fact_refs || []), ti?.bucket !== 'approved' && ti?.reasons?.length ? ti.reasons[0] : ''].filter(Boolean).join(' · ')));
 				}
 				return h('div', { className: 'cts-item', key, onClick, role: 'button', 'aria-current': selected?.id === item[idField], tabIndex: 0, onKeyDown: (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); onClick(); } }, style: { cursor: 'pointer' } },
 					pick,
-					h('div', { className: 'cts-item-t' }, `${item.priority || ''} ${item.title || '…'}${flag}`),
+					h('div', { className: 'cts-item-t' }, `${dot}${item.priority || ''} ${item.title || '…'}${flag}`),
 					h('div', { className: 'cts-item-s' }, `预期：${(item.expected || '').slice(0, 90)}`),
-					h('div', { className: 'cts-item-m' }, `${item.point_id || ''} · ${(item.steps || []).length} 步 · ${gaps[item.case_id]?.length ? '待补界面图' : item.image_refs?.some((f) => f.role !== '信号参考') ? '有界面图' : item.image_refs?.length ? '信号参考' : '无配图'}`));
+					h('div', { className: 'cts-item-m' }, [item.point_id || '', `${(item.steps || []).length} 步`, ti?.bucket !== 'approved' && ti?.reasons?.length ? ti.reasons[0] : (item.reviewer ? `签收：${item.reviewer}` : ''), gaps[item.case_id]?.length ? '待补界面图' : ''].filter(Boolean).join(' · ')));
 			};
 
-			const findings = reviewState?.items || [];
-			const search = query.trim().toLowerCase();
-			const filtered = items.filter((item) => {
-				if (filter === 'pending' && item.review_status === 'approved') return false;
-				if (filter === 'gaps' && !gaps[item.case_id]?.length) return false;
-				if (filter === 'quality' && !pointQuality[item.point_id]?.length) return false;
-				return !search || [item[idField], item.feature_id, item.title, item.name, item.statement, item.requirement]
-					.some((value) => String(value || '').toLowerCase().includes(search));
-			});
+			const featureNameById = new Map([
+				...(artifacts.features?.items || []).map((f) => [f.feature_id, f.name]),
+				...(ecsmModel?.model?.features || []).map((f) => [f.feature_id, f.name])
+			]);
+			const groupedFeatures = React.useMemo(() => {
+				if (!batchable) return [];
+				const map = new Map();
+				for (const item of filtered) {
+					const fid = item.feature_id || '';
+					const label = (fid && featureNameById.get(fid)) || fid || '未归组 / 通用';
+					if (!map.has(fid)) map.set(fid, { feature_id: fid, label, items: [], green: 0, yellow: 0, red: 0, approved: 0 });
+					const g = map.get(fid);
+					g.items.push(item);
+					const b = triageById[item[idField]]?.bucket || (item.review_status === 'approved' ? 'approved' : 'yellow');
+					g[b] = (g[b] || 0) + 1;
+				}
+				return [...map.values()];
+			}, [batchable, filtered, triage]);
+			const greenP0PassedCount = tab === 'cases' && triage
+				? items.filter((it) => {
+					const ti = triageById[it.case_id];
+					return ti && ti.bucket === 'yellow' && ti.p0 && ti.modelPassed && !(it.deferred_items || []).length;
+				}).length
+				: 0;
+			const greenSignoffCount = (triageCounts?.green || 0) + (tab === 'cases' && includeP0Green ? greenP0PassedCount : 0);
+			const useGroupMode = batchable && groupView && groupedFeatures.length > 1;
 			const pages = Math.max(1, Math.ceil(filtered.length / 40));
 			const currentPage = Math.min(page, pages - 1);
 			const pageItems = filtered.slice(currentPage * 40, (currentPage + 1) * 40);
@@ -3416,6 +3516,11 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const allPicked = pageItems.length > 0 && pageItems.every((item) => checked.includes(item[idField]));
 			const runBatch = async (status, scope = 'selected') => {
 				if (scope === 'selected' && !checked.length) return;
+				if (status === 'approved' && tab === 'cases' && onHumanSignoff) {
+					const res = await onHumanSignoff('cases', { scope: scope === 'selected' ? 'ids' : 'green_only', ids: scope === 'selected' ? checked : undefined });
+					setChecked((res?.blocked || []).map((entry) => entry.id));
+					return;
+				}
 				const result = await onBatchReview(tab, scope === 'selected' ? checked : [], status, scope);
 				setChecked((result.blocked || []).map((entry) => entry.id));
 			};
@@ -3508,19 +3613,62 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 						tab === 'points' ? h('option', { value: 'quality' }, `待核对质量（${Object.keys(pointQuality).length}）`) : null,
 						tab === 'cases' ? h('option', { value: 'gaps' }, '待补界面图') : null) : null,
 					h('span', { className: 'cts-hint' }, `${filtered.length} 条`)),
-				batchable && items.length ? h('div', { className: 'cts-filter' },
-					h('label', null, h('input', { type: 'checkbox', checked: allPicked,
+				batchable && items.length && triageCounts ? h('div', { className: 'cts-summary-strip', style: { flexWrap: 'wrap', gap: 6 } },
+					[['', `全部 ${triageCounts.total}`], ['yellow', `🟡 需人工重点审 ${triageCounts.yellow}`], ['green', `🟢 绿灯常规 ${triageCounts.green}`], ['red', `🔴 待修复 ${triageCounts.red}`], ['approved', `✓ 已批准 ${triageCounts.approved}`]].map(([k, lbl]) =>
+						h('button', { key: k || 'all', type: 'button', className: `cts-pill${bucketFilter === k ? ' info' : ''}`, onClick: () => { setBucketFilter(k); setPage(0); } }, lbl)),
+					h('div', { className: 'cts-modes', style: { marginLeft: 'auto' } },
+						h('button', { type: 'button', className: `cts-mode${groupView ? ' on' : ''}`, onClick: () => setGroupView(true) }, '按功能分组'),
+						h('button', { type: 'button', className: `cts-mode${!groupView ? ' on' : ''}`, onClick: () => setGroupView(false) }, '平铺列表'))) : null,
+				batchable && items.length ? h('div', { className: 'cts-filter', style: { flexWrap: 'wrap', alignItems: 'center' } },
+					!useGroupMode ? h('label', null, h('input', { type: 'checkbox', checked: allPicked,
 						onChange: (event) => setChecked(event.target.checked
 							? [...new Set([...checked, ...pageIds])]
-							: checked.filter((id) => !pageIds.includes(id))) }), ' 全选本页'),
-					h('span', { className: 'cts-hint' }, `已选 ${checked.length}`),
-					h('button', { className: 'cts-btn', disabled: !checked.length || itemBusy || locked, onClick: () => runBatch('approved', 'selected') }, '批准选中'),
-					h('button', { className: 'cts-btn', disabled: !checked.length || itemBusy || locked, onClick: () => runBatch('rejected', 'selected') }, '退回选中'),
-					approvedCount < items.length ? h('button', { className: 'cts-btn primary', disabled: itemBusy || locked, onClick: () => runBatch('approved', 'all_pending') }, `一键批准全部符合门禁项（${items.length - approvedCount}）`) : null) : null,
+							: checked.filter((id) => !pageIds.includes(id))) }), ' 全选本页') : null,
+					checked.length > 0 ? h(React.Fragment, null,
+						h('span', { className: 'cts-hint' }, `已选 ${checked.length}`),
+						h('button', { className: 'cts-btn', disabled: itemBusy || locked, onClick: () => runBatch('approved', 'selected') }, '签收选中'),
+						h('button', { className: 'cts-btn', disabled: itemBusy || locked, onClick: () => runBatch('rejected', 'selected') }, '退回选中')) : null,
+					onReviewerChange ? h('input', { className: 'cts-input cts-input-sm', style: { width: 110 }, value: reviewerName || '', placeholder: '评审人署名', 'aria-label': '评审人署名', onChange: (event) => onReviewerChange(event.target.value) }) : null,
+					tab === 'points' && hasFrozenOutline && (triageCounts?.green || 0) > 0 && onHumanSignoff ? h('button', {
+						className: 'cts-btn primary', disabled: itemBusy || locked,
+						onClick: () => onHumanSignoff('points', { scope: 'inherit_outline' })
+					}, `⚡ 继承已批大纲放行绿灯点（${triageCounts.green}）`) : null,
+					greenSignoffCount > 0 && onHumanSignoff ? h('button', {
+						className: 'cts-btn primary', disabled: itemBusy || locked,
+						onClick: () => onHumanSignoff(tab, { scope: tab === 'cases' && includeP0Green ? 'green_and_p0_passed' : 'green_only' })
+					}, `✓ 一键签收绿灯项（${greenSignoffCount}）`) : null,
+					tab === 'cases' && greenP0PassedCount > 0 ? h('label', { className: 'cts-hint', style: { display: 'inline-flex', alignItems: 'center', gap: 4, cursor: 'pointer' } },
+						h('input', { type: 'checkbox', checked: includeP0Green, onChange: (e) => setIncludeP0Green(e.target.checked) }),
+						`含 AI 已审通过 P0 (${greenP0PassedCount})`) : null,
+					tab === 'points' && approvedCount < items.length ? h('button', { className: 'cts-btn', disabled: itemBusy || locked, onClick: () => runBatch('approved', 'all_pending') }, `全部合规点批准（${items.length - approvedCount}）`) : null) : null,
 				h('div', { className: 'cts-list' },
-					filtered.length === 0 ? h('div', { className: 'cts-hint' }, items.length ? '没有匹配项，试试其他搜索条件。' : '暂无内容。可以从上方生成对应产物。')
-						: pageItems.map((item, index) => row(item, item[idField] || index))),
-				pages > 1 ? h('div', { className: 'cts-filter' },
+					filtered.length === 0 ? h('div', { className: 'cts-hint' }, items.length ? '没有匹配项，试试切换红黄绿筛选或清空搜索词。' : '暂无内容。可以从上方生成对应产物。')
+						: useGroupMode
+							? groupedFeatures.map((grp) => {
+								const gKey = grp.feature_id || '__none__';
+								const isOpen = Boolean(expandedGroups[gKey]);
+								const signableCount = grp.items.filter((it) => it.review_status !== 'approved' && triageById[it[idField]]?.bucket !== 'red').length;
+								return h('div', { key: gKey, style: { border: '1px solid var(--dsw-alias-border-l1)', borderRadius: 8, background: 'var(--dsw-alias-bg-layer-1)', marginBottom: 8, overflow: 'hidden' } },
+									h('div', {
+										style: { display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', cursor: 'pointer', background: 'var(--dsw-alias-bg-base)', flexWrap: 'wrap' },
+										onClick: () => setExpandedGroups((prev) => ({ ...prev, [gKey]: !prev[gKey] }))
+									},
+										h('strong', { style: { fontSize: 13 } }, `${isOpen ? '▾' : '▸'} ${grp.label}`),
+										h('span', { className: 'cts-hint' }, `${grp.items.length} 条`),
+										grp.green ? h('span', { className: 'cts-pill ok' }, `🟢 ${grp.green}`) : null,
+										grp.yellow ? h('span', { className: 'cts-pill warn' }, `🟡 ${grp.yellow}`) : null,
+										grp.red ? h('span', { className: 'cts-pill err' }, `🔴 ${grp.red}`) : null,
+										grp.approved ? h('span', { className: 'cts-pill' }, `✓ ${grp.approved}`) : null,
+										signableCount > 0 && onHumanSignoff && !locked ? h('button', {
+											type: 'button', className: 'cts-btn', style: { marginLeft: 'auto', padding: '2px 9px', fontSize: 11.5 },
+											disabled: itemBusy,
+											onClick: (event) => { event.stopPropagation(); onHumanSignoff(tab, { scope: 'feature_group', feature_id: grp.feature_id }); }
+										}, `✓ 整组签收合规项 (${signableCount})`) : null),
+									isOpen ? h('div', { style: { padding: '6px 10px 10px', display: 'flex', flexDirection: 'column', gap: 6 } },
+										grp.items.map((item, idx) => row(item, item[idField] || idx))) : null);
+							})
+							: pageItems.map((item, index) => row(item, item[idField] || index))),
+				!useGroupMode && pages > 1 ? h('div', { className: 'cts-filter' },
 					h('button', { className: 'cts-btn', disabled: currentPage === 0, onClick: () => { setPage(currentPage - 1); panelRef.current?.scrollTo(0, 0); } }, '上一页'),
 					h('span', null, `${currentPage + 1} / ${pages}`),
 					h('button', { className: 'cts-btn', disabled: currentPage + 1 >= pages, onClick: () => { setPage(currentPage + 1); panelRef.current?.scrollTo(0, 0); } }, '下一页')) : null), detail);
@@ -4851,6 +4999,13 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const [lintState, setLintState] = React.useState(null);
 			const [selected, setSelected] = React.useState(null);
 			const [checkedIds, setCheckedIds] = React.useState([]);
+			const [reviewerName, setReviewerName] = React.useState(() => {
+				try { return localStorage.getItem('cts:reviewer') || ''; } catch { return ''; }
+			});
+			const updateReviewerName = (value) => {
+				setReviewerName(value);
+				try { localStorage.setItem('cts:reviewer', value); } catch {}
+			};
 			const [coverageState, setCoverageState] = React.useState(null);
 			const [reviewState, setReviewState] = React.useState(null);
 			const [bindings, setBindings] = React.useState({ items: [] });
@@ -5476,8 +5631,28 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 								next[next.length - 1] = last;
 								return next;
 							});
+						} else if (event === 'run.start') {
+							setMessages((prev) => {
+								if (prev.length === 0) return prev;
+								const next = prev.slice();
+								next[next.length - 1] = { ...next[next.length - 1], modelTag: [data.provider, data.model].filter(Boolean).join(' / ') };
+								return next;
+							});
 						} else if (event === 'error') {
-							setError(`${data.code || 'ERROR'}：${data.message || ''}`);
+							const rawErr = `${data.code || 'ERROR'}：${data.message || ''}`;
+							setError(rawErr);
+							setMessages((prev) => {
+								if (prev.length === 0) return prev;
+								const next = prev.slice();
+								const last = { ...next[next.length - 1], thinking: '' };
+								const routeHint = last.modelTag ? `（当前路由：\`${last.modelTag}\`）` : '';
+								const friendly = /insufficient_balance|402|QUOTA/i.test(rawErr)
+									? `⚠️ **模型接口余额不足**${routeHint}：服务端返回 \`402 Insufficient account balance\`，请检查该供应商开放平台账户余额或免费额度包是否已激活，或切换至其他可用模型。`
+									: `⚠️ **调用中断**${routeHint}：${rawErr}`;
+								last.text = last.text ? `${last.text}\n\n${friendly}` : friendly;
+								next[next.length - 1] = last;
+								return next;
+							});
 						}
 					}, controller.signal);
 					setStatus('idle');
@@ -5487,6 +5662,14 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				} catch (err) {
 					if (err.name !== 'AbortError') {
 						setError(err.message);
+						setMessages((prev) => {
+							if (prev.length === 0) return prev;
+							const next = prev.slice();
+							const last = { ...next[next.length - 1], thinking: '' };
+							if (!last.text) last.text = `⚠️ **请求失败**：${err.message}`;
+							next[next.length - 1] = last;
+							return next;
+						});
 					}
 					setStatus('idle');
 				} finally {
@@ -5562,7 +5745,34 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 			const onSave = (kind, id, patch) => itemAction(() => post('artifact.update', { project: projectId, kind, id, patch }));
 			const onImages = (id, edit) => itemAction(() => post('cases.images', { project: projectId, id, ...edit }));
 			const onRegenerate = (kind, id) => itemAction(() => post('artifact.regenerate', { project: projectId, kind, id }));
-			const onApprove = (kind, id, status) => itemAction(() => post(status === 'approved' ? 'artifact.approve' : 'artifact.reject', { project: projectId, kind, id }));
+			const onApprove = (kind, id, status) => itemAction(() => post(status === 'approved' ? 'artifact.approve' : 'artifact.reject', {
+				project: projectId, kind, id,
+				...(kind === 'cases' && status === 'approved' ? { human_signoff: true, reviewer: (reviewerName || '测试工程师').trim() } : {})
+			}));
+			const humanSignoff = async (kind, opts = {}) => {
+				setItemBusy(true);
+				try {
+					const result = await post('review.humanSignoff', {
+						project: projectId,
+						kind,
+						reviewer: (opts.reviewer || reviewerName || '测试工程师').trim(),
+						...opts
+					});
+					const approved = result.approved || [];
+					const blocked = result.blocked || [];
+					await refreshAll();
+					notify(
+						`人工签收完成（${result.reviewer || '测试工程师'}）：${approved.length} 条已批准${blocked.length ? `，${blocked.length} 条阻断未放行（${blocked[0].error}${blocked.length > 1 ? ' 等' : ''}）` : ''}`,
+						blocked.length ? 'warning' : 'success'
+					);
+					return result;
+				} catch (err) {
+					notify(err.message, 'error');
+					return { approved: [], blocked: [] };
+				} finally {
+					setItemBusy(false);
+				}
+			};
 			const batchApproveContracts = async () => {
 				const state = await post('contracts.approveAll', { project: projectId });
 				await refreshAll();
@@ -6701,6 +6911,9 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 						},
 						onApproveContracts: batchApproveContracts,
 						onBatchReview: batchReview,
+						onHumanSignoff: humanSignoff,
+						reviewerName,
+						onReviewerChange: updateReviewerName,
 						artifacts,
 						tab,
 						setTab,

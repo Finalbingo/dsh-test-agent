@@ -23,7 +23,7 @@ export const COPILOT_TOOL_HELP = [
 	'{"tool":"materials.configure","args":{"paths":["prd/xxx.pdf","signals/xxx.xlsx"],"coverage_mode":"standard|exhaustive"}}  → 关联模块资料并更新覆盖模式',
 	'{"tool":"evidence.build_and_bind","args":{}}  → 构建当前模块证据索引并自动推荐信号/UI绑定',
 	'{"tool":"artifact.patch","args":{"kind":"points|cases","op":"add|update|delete","items":[{"id":"C-0001","patch":{"title":"...","precondition":"...","steps":["..."],"expected":"..."}}]}}  → 增删改指定测试点或用例',
-	'{"tool":"artifact.batch_status","args":{"kind":"points|cases","action":"approve|reject","scope":"all_pending|ids","ids":["T-0001"]}}  → 批量批准或驳回条目',
+	'{"tool":"artifact.batch_status","args":{"kind":"points|cases|contracts","action":"approve|reject","scope":"green_only|green_and_p0_passed|feature_group|inherit_outline|all_pending|ids","ids":["T-0001"],"feature_id":"FTR_001","reviewer":"评审人署名"}}  → 按红黄绿分流池/功能组批量签收或驳回条目',
 	'{"tool":"review.batch_repair","args":{"case_ids":["C-0001"],"code":"PREPARE_NO_READBACK","limit":10}}  → 针对审查打回项自动生成修订并应用',
 	'{"tool":"questions.resolve","args":{"resolutions":[{"id":"Q-0001","answer":"答复内容"}]}}  → 批量回答待决问题',
 	'{"tool":"delivery.export","args":{"template":"standard|zentao|jira"}}  → 导出当前模块用例 Excel 并返回下载链接',
