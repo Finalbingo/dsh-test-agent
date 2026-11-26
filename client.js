@@ -3487,7 +3487,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 				...(artifacts.features?.items || []).map((f) => [f.feature_id, f.name]),
 				...(ecsmModel?.model?.features || []).map((f) => [f.feature_id, f.name])
 			]);
-			const groupedFeatures = React.useMemo(() => {
+			const groupedFeatures = (() => {
 				if (!batchable) return [];
 				const map = new Map();
 				for (const item of filtered) {
@@ -3500,7 +3500,7 @@ button.cts-pill.active { background:var(--dsw-alias-brand-primary); border-color
 					g[b] = (g[b] || 0) + 1;
 				}
 				return [...map.values()];
-			}, [batchable, filtered, triage]);
+			})();
 			const greenP0PassedCount = tab === 'cases' && triage
 				? items.filter((it) => {
 					const ti = triageById[it.case_id];
